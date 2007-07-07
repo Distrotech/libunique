@@ -1,0 +1,18 @@
+INCLUDES = \
+	-DG_LOG_DOMAIN=\"Test-Unique\" 	\
+	-I$(top_srcdir) 		\
+	-I$(top_builddir)/unique 	\
+	$(UNIQUE_CFLAGS) 		\
+	$(UNIQUE_DEBUG_FLAGS)
+
+DEPS = $(top_builddir)/unique/$(uniquebackendlib)
+
+LDADD = $(top_builddir)/unique/$(uniquebackendlib)
+
+noinst_PROGRAMS = 	\
+	test-unique
+
+test_unique_DEPENDENCIES = $(DEPS)
+test_unique_LDADD = $(LDADD)
+
+test_unique_SOURCES = test-unique.c

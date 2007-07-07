@@ -1,0 +1,23 @@
+#ifndef __UNIQUE_VERSION_H__
+#define __UNIQUE_VERSION_H__
+
+#define UNIQUE_MAJOR_VERSION            @UNIQUE_MAJOR_VERSION@
+#define UNIQUE_MINOR_VERSION            @UNIQUE_MINOR_VERSION@
+#define UNIQUE_MICRO_VERSION            @UNIQUE_MICRO_VERSION@
+#define UNIQUE_VERSION_S                "@UNIQUE_VERSION@"
+#define UNIQUE_VERSION_HEX              (UNIQUE_MAJOR_VERSION << 16 | \
+                                         UNIQUE_MINOR_VERSION << 8 | \
+                                         UNIQUE_MICRO_VERSION)
+
+#define UNIQUE_API_VERSION              @UNIQUE_API_VERSION@
+#define UNIQUE_API_VERSION_S            "@UNIQUE_API_VERSION@"
+
+#define UNIQUE_PROTOCOL_VERSION         @UNIQUE_PROTOCOL_VERSION@
+#define UNIQUE_PROTOCOL_VERSION_S       "@UNIQUE_PROTOCOL_VERSION@"
+
+#define UNIQUE_CHECK_VERSION(major,minor,micro) \
+        ((UNIQUE_MAJOR_VERSION > (major)) || \
+         (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION > (minor)) || \
+         (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION == (minor) && UNIQUE_MICRO > (micro)))
+
+#endif /* __UNIQUE_VERSION_H__ */
