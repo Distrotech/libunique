@@ -2,8 +2,6 @@ SUBDIRS = unique doc tests po
 
 AUTOMAKE_OPTIONS = 1.7
 
-git_repository = ssh://www.gnome.org/~ebassi/public_html/git/unique.git
-
 backend = @uniquebackend@
 
 unique-1.0.pc: unique.pc
@@ -28,6 +26,3 @@ release:
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-snap`date +"%Y%m%d"`
-
-upload:
-	git push --all --force $(git_repository)
