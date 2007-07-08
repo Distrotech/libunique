@@ -214,6 +214,21 @@ unique_app_get_property (GObject    *gobject,
 }
 
 static void
+unique_app_dispose (GObject *gobject)
+{
+  UniqueApp *app = UNIQUE_APP (gobject);
+  UniqueAppPrivate *priv = app->priv;
+
+  if (priv->backend)
+    {
+      g_object_unref (priv->backend);
+      priv->backend = NULL;
+    }
+
+  G_OBJECT_CLASS (unique_app_parent_class)->dispose (gobject);
+}
+
+static void
 unique_app_class_init (UniqueAppClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -221,6 +236,7 @@ unique_app_class_init (UniqueAppClass *klass)
   gobject_class->constructor = unique_app_constructor;
   gobject_class->set_property = unique_app_set_property;
   gobject_class->get_property = unique_app_get_property;
+  gobject_class->dispose = unique_app_dispose;
 
   /**
    * UniqueApp:name:
