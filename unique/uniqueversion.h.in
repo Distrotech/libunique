@@ -15,6 +15,8 @@
 #define UNIQUE_PROTOCOL_VERSION         @UNIQUE_PROTOCOL_VERSION@
 #define UNIQUE_PROTOCOL_VERSION_S       "@UNIQUE_PROTOCOL_VERSION@"
 
+#define UNIQUE_BACKEND_S                "@uniquebackend@"
+
 #define UNIQUE_CHECK_VERSION(major,minor,micro) \
         ((UNIQUE_MAJOR_VERSION > (major)) || \
          (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION > (minor)) || \
