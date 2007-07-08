@@ -45,16 +45,35 @@ app_message_cb (UniqueApp         *app,
   switch (command)
     {
     case UNIQUE_NEW:
+      title = g_strdup ("Received the NEW command");
       message = NULL;
+      break;
     case UNIQUE_OPEN:
-      title = NULL;
-      message = NULL;
+      {
+        gchar **uris;
+        gint n_uris, i;
+        GString *buf;
+
+        title = g_strdup ("Received the OPEN command");
+        
+        uris = unique_message_data_get_uris (message_data);
+        n_uris = g_strv_length (uris);
+        buf = g_string_new (NULL);
+        for (i = 0; i < n_uris; i++)
+          g_string_append_printf (buf, "uri: %s\n", uris[i]);
+
+        message = g_string_free (buf, FALSE);
+        g_strfreev (uris);
+      }
+      break;
     case UNIQUE_ACTIVATE:
-      title = NULL;
+      title = g_strdup ("Received the ACTIVATE command");
       message = NULL;
+      break;
     case COMMAND_FOO:
-      title = NULL;
-      message = NULL;
+      title = g_strdup ("Received the FOO command");
+      message = unique_message_data_get_text (message_data);
+      break;
     default:
       break;
     }
@@ -70,8 +89,11 @@ app_message_cb (UniqueApp         *app,
 
   screen = unique_message_data_get_screen (message_data);
   gtk_window_set_screen (GTK_WINDOW (dialog), screen);
+  
+  if (command == UNIQUE_ACTIVATE)
+    gtk_window_present (GTK_WINDOW (main_window));
+  
   gtk_dialog_run (GTK_DIALOG (dialog));
-
   gtk_widget_destroy (dialog);
 
   g_free (message);
