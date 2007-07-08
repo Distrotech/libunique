@@ -19,6 +19,35 @@
  * 02110-1301 USA
  */
 
+/**
+ * SECTION:unique-app
+ * @short_description: Base class for singleton applications
+ *
+ * #UniqueApp is the base class for single instance applications. You
+ * can either create an instance of #UniqueApp via unique_app_new()
+ * and unique_app_new_with_startup_id(); or you can subclass #UniqueApp
+ * with your own application class.
+ *
+ * A #UniqueApp instance is guaranteed to either be the first running
+ * at the time of creation or be able to send messages to the currently
+ * running instance; there is no race possible between the creation
+ * of the #UniqueApp instance and the call to unique_app_is_running().
+ *
+ * The usual method for using the #UniqueApp API is to create a new
+ * instance, passing an application-dependent name as constuctio-only
+ * property; the UniqueApp:name property is required, and should be in the
+ * form of a domain name, like <literal>org.gnome.YourApplication</literal>.
+ *
+ * After the creation, you should check whether an instance of your
+ * application is already running, using unique_app_is_running(); if this
+ * method returns %FALSE the usual application construction sequence can
+ * continue; if it returns %TRUE you can either exit or send a message using
+ * #UniqueMessageData and unique_app_send_message().
+ *
+ * You can define custom commands using unique_command_register(): you
+ * need to provide an arbitrary integer and a string for the command.
+ */
+
 #include <config.h>
 
 #include <stdlib.h>

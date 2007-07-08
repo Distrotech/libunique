@@ -1,3 +1,12 @@
+/**
+ * SECTION:unique-backend
+ * @short_description: Backend abstraction
+ *
+ * #UniqueBackend is the base, abstract class implemented by the different
+ * IPC mechanisms used by Unique. Each #UniqueApp instance creates a
+ * #UniqueBackend to request the name or to send messages.
+ */
+
 #include <config.h>
 
 #include <stdlib.h>

@@ -9,6 +9,27 @@
 #include "uniquemessage.h"
 #include "uniqueinternals.h"
 
+/**
+ * SECTION:unique-message
+ * @short_description: Message container for UniqueApp
+ *
+ * #UniqueMessageData contains the data sent from a #UniqueApp to a
+ * running instance of the same application. It can contain arbitrary
+ * binary data, and provides convenience functions to set plain text
+ * or URI list.
+ *
+ * You should create a #UniqueMessageData structure using
+ * unique_message_data_new(), you can copy it using the
+ * unique_message_data_copy() and you should free it using
+ * unique_message_data_free().
+ *
+ * You can set data using unique_message_data_set(),
+ * unique_message_data_set_text() or unique_message_data_set_uris().
+ *
+ * You can retrieve the data set using unique_message_data_get(),
+ * unique_message_data_get_text() or unique_message_data_get_uris().
+ */
+
 GType
 unique_message_data_get_type (void)
 {
@@ -375,6 +396,14 @@ unique_message_data_get_uris (UniqueMessageData *message_data)
   return result;
 }
 
+/**
+ * unique_message_data_get_screen:
+ * @message_data: a #UniqueMessageData
+ *
+ * FIXME
+ *
+ * Return value: a #GdkScreen
+ */
 GdkScreen *
 unique_message_data_get_screen (UniqueMessageData *message_data)
 {
@@ -383,7 +412,17 @@ unique_message_data_get_screen (UniqueMessageData *message_data)
   return message_data->screen;
 }
 
-gchar *
+/**
+ * unique_message_data_get_startup_id:
+ * @message_data: a #UniqueMessageData
+ *
+ * Retrieves the startup notification id set inside @message_data.
+ *
+ * Return value: the startup notification id. The returned string is
+ *   owned by the #UniqueMessageData structure and should not be
+ *   modified or freed
+ */
+G_CONST_RETURN gchar *
 unique_message_data_get_startup_id (UniqueMessageData *message_data)
 {
   g_return_val_if_fail (message_data != NULL, NULL);

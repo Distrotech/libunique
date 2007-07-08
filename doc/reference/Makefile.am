@@ -77,7 +77,7 @@ expand_content_files=
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 
 INCLUDES=-I$(top_srcdir) $(UNIQUE_CFLAGS)
-GTKDOC_LIBS=$(top_builddir)/unique/libunique-$(uniquebackend).la $(UNIQUE_LIBS)
+GTKDOC_LIBS=$(top_builddir)/unique/libunique-$(uniquebackend)-1.0.la $(UNIQUE_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
