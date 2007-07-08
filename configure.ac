@@ -161,6 +161,7 @@ AC_CONFIG_FILES([
         doc/reference/version.xml
         unique/Makefile
         unique/uniqueversion.h
+        unique/bacon/Makefile
         unique/dbus/Makefile
         tests/Makefile
         po/Makefile.in
