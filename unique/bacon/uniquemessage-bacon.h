@@ -32,7 +32,6 @@ gchar *            unique_message_data_pack   (gint               command_id,
                                                guint              time_,
                                                gsize             *length);
 UniqueMessageData *unique_message_data_unpack (const gchar       *data,
-                                               gsize              length,
                                                gint              *command_id,
                                                guint             *time_);
 

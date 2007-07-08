@@ -319,10 +319,8 @@ unique_backend_bacon_close_connection (UniqueBackendBacon *backend)
   if (g_unlink (backend->socket_path) == -1)
     {
       if (errno != ENOENT)
-        {
-          g_warning ("Unable to remove old socket file: %s",
-                     g_strerror (errno));
-        }
+        g_warning ("Unable to remove old socket file: %s",
+                   g_strerror (errno));
     }
 
   g_slist_foreach (backend->connections, (GFunc) g_object_unref, NULL);
@@ -375,7 +373,18 @@ unique_backend_send_message (UniqueBackend     *backend,
   if (!try_client (backend_bacon))
     {
       g_warning ("Unable to send message: no connection to the "
-                 "running instance found (possible stale named pipe)");
+                 "running instance found (stale named pipe)");
+      
+      /* force removal of the named pipe */
+      if (g_unlink (backend_bacon->socket_path) == -1)
+        {
+          if (errno != ENOENT)
+            {
+              g_warning ("Unable to remove stale named pipe: %s",
+                         g_strerror (errno));
+            }
+        }
+
       return UNIQUE_RESPONSE_FAIL;
     }
 
@@ -458,7 +467,22 @@ unique_backend_request_name (UniqueBackend *backend)
       backend_bacon->is_server = TRUE;
     }
   else
-    backend_bacon->is_server = FALSE;
+    {
+      if (!try_client (backend_bacon))
+        {
+          if (g_unlink (backend_bacon->socket_path) == -1)
+            {
+              if (errno != ENOENT)
+                g_warning ("Unable to remove stale pipe: %s",
+                           g_strerror (errno));
+            }
+
+          create_server (backend_bacon);
+          backend_bacon->is_server = TRUE;
+        }
+      else
+        backend_bacon->is_server = FALSE;
+    }
 
   return backend_bacon->is_server;
 }
