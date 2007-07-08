@@ -81,7 +81,7 @@ unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
   return (backend_dbus->proxy != NULL);
 }
 
-/**
+/*
  * unique_backend_request_name:
  * @backend: a #UniqueBackend
  *

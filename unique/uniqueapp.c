@@ -501,7 +501,7 @@ unique_app_is_running (UniqueApp *app)
  * unique_app_send_message:
  * @app: FIXME
  * @command_id: FIXME
- * @command_data: FIXME
+ * @message_data: FIXME
  *
  * FIXME
  *
@@ -530,6 +530,18 @@ unique_app_send_message (UniqueApp         *app,
   return response;
 }
 
+/*
+ * unique_app_emit_message:
+ * @app: a #UniqueApp
+ * @command_id: a command
+ * @message_data: a #UniqueMessageData
+ * @time_: time of the command
+ *
+ * Emits the UniqueApp::message-received on @app. This function should
+ * be called by the backend implementation when it receives a message.
+ *
+ * Return value: the response accumulated from the signal
+ */
 UniqueResponse
 unique_app_emit_message (UniqueApp         *app,
                          gint               command_id,
