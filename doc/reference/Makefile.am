@@ -48,8 +48,9 @@ CFILE_GLOB=$(top_srcdir)/unique/*.c
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES=\
-	unique-internals.h \
-	stamp-unique-marshal.h \
+	unique.h \
+	uniqueinternals.h \
+	stamp-uniquemarshal.h \
 	bacon \
 	dbus \
 	xlibs 

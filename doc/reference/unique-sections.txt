@@ -2,6 +2,7 @@
 <FILE>unique-backend</FILE>
 <TITLE>UniqueBackend</TITLE>
 UniqueBackend
+UniqueBackendClass
 unique_backend_get_name
 unique_backend_set_name
 unique_backend_get_startup_id
@@ -28,6 +29,7 @@ UniqueResponse
 UniqueAppPrivate
 <TITLE>UniqueApp</TITLE>
 UniqueApp
+UniqueAppClass
 unique_app_new
 unique_app_new_with_startup_id
 unique_app_is_running

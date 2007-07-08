@@ -18,17 +18,16 @@ G_BEGIN_DECLS
 
 /**
  * UniqueCommand:
- *
- * Command to send to a currently active instance. User defined commands
- * should be positive integers, and should be added using
- * unique_command_register() before creating the UniqueApp instance.
- *
  * @UNIQUE_INVALID: used internally
  * @UNIQUE_ACTIVATE: request to activate a currently active instance; this
  *   usually means calling gtk_window_present() on the application window.
  * @UNIQUE_NEW: request to create a new file.
  * @UNIQUE_OPEN: request to open a file.
  * @UNIQUE_CLOSE: requests to close the currently running instance.
+ *
+ * Command to send to a currently active instance. User defined commands
+ * should be positive integers, and should be added using
+ * unique_command_register() before creating the UniqueApp instance.
  */
 typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_INVALID  = 0,
@@ -44,14 +43,13 @@ void   unique_command_register (const gchar *command_name,
 
 /**
  * UniqueResponse:
- *
- * Response that a currently active instance of the application should
- * return to the caller which sent a command.
- *
  * @UNIQUE_RESPONSE_INVALID: Internal error code, should never be used.
  * @UNIQUE_RESPONSE_OK: The command was successfully executed.
  * @UNIQUE_RESPONSE_CANCEL: The command was cancelled by the user.
  * @UNIQUE_RESPONSE_FAIL: The command failed due to a IPC failure.
+ *
+ * Response that a currently active instance of the application should
+ * return to the caller which sent a command.
  */
 typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
   UNIQUE_RESPONSE_INVALID,
