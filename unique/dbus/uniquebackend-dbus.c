@@ -53,9 +53,7 @@ struct _UniqueBackendDBusClass
   UniqueBackendClass parent_class;
 };
 
-G_DEFINE_TYPE (UniqueBackendDBus,
-               unique_backend_dbus,
-               UNIQUE_TYPE_BACKEND);
+G_DEFINE_TYPE (UniqueBackendDBus, unique_backend_dbus, UNIQUE_TYPE_BACKEND);
 
 static gboolean
 unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
@@ -155,7 +153,7 @@ create_value_array (UniqueMessageData *message_data)
 
   /* data */
   g_value_init (&item, G_TYPE_STRING);
-  g_value_set_string (&item, message_data->data);
+  g_value_set_string (&item, (const gchar *) message_data->data);
   g_value_array_append (retval, &item);
   g_value_unset (&item);
 

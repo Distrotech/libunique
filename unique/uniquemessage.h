@@ -22,7 +22,7 @@ gboolean           unique_message_data_set_text       (UniqueMessageData *messag
                                                        GdkScreen         *screen,
                                                        const gchar       *str,
                                                        gsize              length);
-guchar *           unique_message_data_get_text       (UniqueMessageData *message_data);
+gchar *            unique_message_data_get_text       (UniqueMessageData *message_data);
 gboolean           unique_message_data_set_uris       (UniqueMessageData *message_data,
                                                        GdkScreen         *screen,
                                                        gchar            **uris);

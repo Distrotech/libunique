@@ -56,8 +56,7 @@ unique_factory_dbus_send_message (UniqueFactoryDBus  *factory,
   gint command;
   UniqueResponse response;
   GdkDisplay *display;
-  gint screen_n;
-  GdkScreen *screen;
+  guint screen_n;
 
   command = unique_command_from_string (command_IN);
   if (command == 0)
@@ -69,7 +68,7 @@ unique_factory_dbus_send_message (UniqueFactoryDBus  *factory,
   display = gdk_display_get_default ();
 
   data = g_slice_new (UniqueMessageData);
-  data->data = g_value_dup_string (g_value_array_get_nth (message_IN, 0));
+  data->data = (guchar *) g_value_dup_string (g_value_array_get_nth (message_IN, 0));
   data->length = g_value_get_uint (g_value_array_get_nth (message_IN, 1));
   screen_n = g_value_get_uint (g_value_array_get_nth (message_IN, 2));
   data->screen = gdk_display_get_screen (display, screen_n);

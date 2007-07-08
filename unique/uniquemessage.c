@@ -111,7 +111,7 @@ unique_message_data_set (UniqueMessageData *message_data,
       if (length < 0)
         message_data->data = NULL;
       else
-        message_data->data = g_strdup ("");
+        message_data->data = (guchar *) g_strdup ("");
     }
 
   message_data->length = length;
@@ -210,7 +210,9 @@ message_data_set_text_plain (UniqueMessageData *message_data,
 
   unique_message_data_set (message_data,
                            screen,
-                           result, strlen (result));
+                           (guchar *) result, strlen (result));
+  
+  return TRUE;
 }
 
 static gchar *
@@ -221,7 +223,7 @@ message_data_get_text_plain (UniqueMessageData *message_data)
   gsize len;
   GError *error = NULL;
 
-  str = g_strdup (message_data->data);
+  str = g_strdup ((gchar *) message_data->data);
   len = message_data->length;
 
   g_get_charset (&charset);
@@ -295,7 +297,7 @@ unique_message_data_set_text (UniqueMessageData *message_data,
  *
  * Return value: FIXME
  */
-guchar *
+gchar *
 unique_message_data_get_text (UniqueMessageData *message_data)
 {
   return message_data_get_text_plain (message_data);

@@ -156,7 +156,7 @@ main (int argc, char *argv[])
       else
         {
           command = COMMAND_FOO;
-          unique_message_data_set (message, NULL, "foo", 3);
+          unique_message_data_set (message, NULL, (const guchar *) "bar", 3);
         }
       
       response = unique_app_send_message (app, command, message);

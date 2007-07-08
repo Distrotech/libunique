@@ -50,7 +50,7 @@ struct _UniqueFactoryDBusClass
   GObjectClass parent_class;
 };
 
-GType _unique_factory_dbus_get_type (void) G_GNUC_CONST;
+GType unique_factory_dbus_get_type (void) G_GNUC_CONST;
 
 G_END_DECLS
 

@@ -142,7 +142,6 @@ unique_app_constructor (GType                  gtype,
   GObject *retval;
   UniqueApp *app;
   UniqueAppPrivate *priv;
-  UniqueBackend *backend;
 
   parent_class = G_OBJECT_CLASS (unique_app_parent_class);
   retval = parent_class->constructor (gtype, n_params, params);
@@ -153,6 +152,7 @@ unique_app_constructor (GType                  gtype,
    * backend returns TRUE then it means that we have it, and that
    * this is the first instance.
    */
+  g_assert (UNIQUE_IS_BACKEND (priv->backend));
   priv->is_running = (unique_backend_request_name (priv->backend) == FALSE);
 
   return retval;
