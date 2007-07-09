@@ -18,7 +18,7 @@ EXTRA_DIST = unique.pc.in NEWS TODO
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 
-DISTCLEANFILES = unique-$(backend)-1.0.pc
+DISTCLEANFILES = unique-$(backend)-1.0.pc unique-1.0.pc
 
 release:
 	@rm -rf .deps */.deps

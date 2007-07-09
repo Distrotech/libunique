@@ -1,7 +1,7 @@
 NULL =
 
 SUBDIRS = $(uniquebackend)
-DIST_SUBDIRS = dbus
+DIST_SUBDIRS = bacon dbus
 
 target = $(uniquebackend)
 
@@ -84,7 +84,7 @@ uniquemarshal.c: uniquemarshal.list Makefile
 	cp xgen-umc uniquemarshal.c && \
 	rm -f xgen-umc
 
-CLEANFILES = stamp-uniquemarshal.list
+CLEANFILES = stamp-uniquemarshal.h
 
 DISTCLEANFILES = \
 	uniquemarshal.h \
