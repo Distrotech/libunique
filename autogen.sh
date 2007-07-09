@@ -49,17 +49,12 @@ if automake-1.9 --version < /dev/null > /dev/null 2>&1 ; then
     AUTOMAKE=automake-1.9
     ACLOCAL=aclocal-1.9
 else
-    if automake-1.7 --version < /dev/null > /dev/null 2>&1 ; then
-        AUTOMAKE=automake-1.7
-        ACLOCAL=aclocal-1.7
-    else
-	echo
-	echo "You must have at least automake 1.7.x installed to compile"
-        echo "$PROJECT.  Install the appropriate package for your"
-        echo "distribution, or get the source tarball at "
-        echo "http://ftp.gnu.org/gnu/automake/"
-	DIE=1
-    fi
+    echo
+    echo "You must have at least automake 1.9.x installed to compile"
+    echo "$PROJECT.  Install the appropriate package for your"
+    echo "distribution, or get the source tarball at "
+    echo "http://ftp.gnu.org/gnu/automake/"
+    DIE=1
 fi
 
 if test "$DIE" -eq 1; then
