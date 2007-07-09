@@ -90,20 +90,20 @@ AM_CONDITIONAL([HAVE_DBUS], [test x$have_dbus = xyes])
 if test "x$have_dbus" = "xyes"; then
   uniquebackend=dbus
 else
-  uniquebackend=xlibs
+  uniquebackend=bacon
 fi
 
 # backend
 AC_ARG_WITH(backend,
-            AC_HELP_STRING([--with-backend=@<:@xlibs/dbus/bacon@:>@],
+            AC_HELP_STRING([--with-backend=@<:@dbus/bacon@:>@],
                            [Select default Unique backend @<:@default=$uniquebackend@:>@]),
             uniquebackend=$with_backend)
 
 AC_SUBST(uniquebackend)
 
 case $uniquebackend in
-  bacon|dbus|xlibs) ;;
-  *) AC_MSG_ERROR([Invalid backend for Unique: use dbus, xlibs or bacon.]) ;;
+  bacon|dbus) ;;
+  *) AC_MSG_ERROR([Invalid backend for Unique: use dbus or bacon.]) ;;
 esac
 
 uniquebackendlib=libunique-$uniquebackend-$UNIQUE_API_VERSION.la
