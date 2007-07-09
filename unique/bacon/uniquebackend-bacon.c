@@ -385,7 +385,8 @@ unique_backend_send_message (UniqueBackend     *backend,
             }
         }
 
-      return UNIQUE_RESPONSE_FAIL;
+      if (!try_client (backend_bacon))
+        return UNIQUE_RESPONSE_FAIL;
     }
 
   packed = unique_message_data_pack (command_id, message, time_, &packed_len);

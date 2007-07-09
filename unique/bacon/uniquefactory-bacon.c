@@ -124,18 +124,14 @@ connection_cb (GIOChannel   *channel,
                                 &read_error);
   if (res == G_IO_STATUS_ERROR)
     {
-      g_warning ("Unable to receive the command: %s",
-                 read_error->message);
+      g_warning ("Unable to receive the command: %s", read_error->message);
       g_error_free (read_error);
       goto finished;
     }
 
   if (len == 0)
-    {
-      g_warning ("Received a zero-len message");
-      goto finished;
-    }
-
+    goto finished;
+  
   /* truncate the message at the line terminator */
   message[term] = '\0';
   message_data = unique_message_data_unpack (message,
@@ -162,8 +158,7 @@ connection_cb (GIOChannel   *channel,
                                   &write_error);
   if (res == G_IO_STATUS_ERROR)
     {
-      g_warning ("Unable to send response: %s",
-                 write_error->message);
+      g_warning ("Unable to send response: %s", write_error->message);
       g_error_free (write_error);
     }
   else

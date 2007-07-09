@@ -71,6 +71,10 @@ unique_message_data_pack (gint               command_id,
   len += strlen (escape);
   g_free (escape);
 
+  /* terminator */
+  g_string_append (buffer, "\r\n");
+  len += 2;
+
   if (length)
     *length = len;
 
