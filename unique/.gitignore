@@ -1,0 +1,17 @@
+.deps
+.libs
+Makefile
+Makefile.in
+libunique-dbus-1.0.la
+stamp-uniquemarshal.h
+uniqueapp.lo
+uniqueapp.o
+uniquebackend.lo
+uniquebackend.o
+uniquemarshal.c
+uniquemarshal.h
+uniquemarshal.lo
+uniquemarshal.o
+uniquemessage.lo
+uniquemessage.o
+uniqueversion.h

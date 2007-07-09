@@ -1,0 +1,7 @@
+libunique-bacon.la
+uniquebackend-bacon.lo
+uniquebackend-bacon.o
+uniquefactory-bacon.lo
+uniquefactory-bacon.o
+uniquemessage-bacon.lo
+uniquemessage-bacon.o

@@ -1,0 +1,7 @@
+libunique-dbus.la
+uniquebackend-bindings.h
+uniquebackend-dbus.lo
+uniquebackend-dbus.o
+uniquebackend-glue.h
+uniquefactory-dbus.lo
+uniquefactory-dbus.o
