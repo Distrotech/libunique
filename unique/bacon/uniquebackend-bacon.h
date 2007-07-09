@@ -1,7 +1,7 @@
 /* Unique - Single Instance Backendlication library
- * uniquebackend-bacon.h: Bacon implementation of UniqueBackend
+ * uniquebackend-bacon.h: Unix domain socket implementation of UniqueBackend
  *
- * Copyright (C) 2006, 2007  Emmanuele Bassi  <ebassi@gnome.com>
+ * Copyright (C) 2007  Emmanuele Bassi  <ebassi@gnome.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@
  * 02110-1301 USA
  *
  * Based on libbacon implementation in Totem
- *      Copyright (C)  Bastien Nocera
+ *      Copyright (C) 2003  Bastien Nocera
  */
 
 #ifndef __UNIQUE_BACKEND_BACON_H__

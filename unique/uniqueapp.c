@@ -1,7 +1,7 @@
-/* uniqueapp.c - Single instance application object
- * Unique - Single instance applications library
+/* Unique - Single Instance Backendlication library
+ * uniqueapp.h: Base class for single instance applications
  *
- * Copyright (C) 2007  Emmanuele Bassi, <ebassi@gnome.org>
+ * Copyright (C) 2007  Emmanuele Bassi  <ebassi@o-hand.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

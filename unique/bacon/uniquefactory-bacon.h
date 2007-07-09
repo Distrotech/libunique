@@ -1,7 +1,7 @@
-/* Unique - Single Instance Application library
- * gtkuniquefactory-bacon.h: Bacon factory
+/* Unique - Single Instance Backendlication library
+ * uniquefactory-bacon.h: Unix domain socket implementation of UniqueBackend
  *
- * Copyright (C) 2006, 2007  Emmanuele Bassi  <ebassi@o-hand.com>
+ * Copyright (C) 2007  Emmanuele Bassi  <ebassi@gnome.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- * Based on BaconMessageConnection
+ * Based on libbacon implementation in Totem
  *      Copyright (C) 2003  Bastien Nocera
  */
 

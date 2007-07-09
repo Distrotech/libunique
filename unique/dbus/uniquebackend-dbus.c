@@ -1,7 +1,7 @@
-/* GtkUnique - Single Instance Application library
- * gtkuniqueapp-dbus.c: D-Bus implementation of GtkUniqueApp
+/* Unique - Single Instance application library
+ * uniquebackend-dbus.c: D-Bus implementation of UniqueBackend
  *
- * Copyright (C) 2006  Emmanuele Bassi  <ebassi@o-hand.com>
+ * Copyright (C) 2007  Emmanuele Bassi  <ebassi@o-hand.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
