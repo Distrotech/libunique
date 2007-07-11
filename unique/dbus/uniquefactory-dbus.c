@@ -58,7 +58,7 @@ unique_factory_dbus_send_message (UniqueFactoryDBus  *factory,
   GdkDisplay *display;
   guint screen_n;
 
-  command = unique_command_from_string (command_IN);
+  command = unique_command_from_string (factory->parent, command_IN);
   if (command == 0)
     {
       g_warning ("Invalid command `%s' received", command_IN);

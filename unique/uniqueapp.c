@@ -25,7 +25,7 @@
  *
  * #UniqueApp is the base class for single instance applications. You
  * can either create an instance of #UniqueApp via unique_app_new()
- * and unique_app_new_with_startup_id(); or you can subclass #UniqueApp
+ * and unique_app_new_with_commands(); or you can subclass #UniqueApp
  * with your own application class.
  *
  * A #UniqueApp instance is guaranteed to either be the first running
@@ -44,7 +44,7 @@
  * continue; if it returns %TRUE you can either exit or send a message using
  * #UniqueMessageData and unique_app_send_message().
  *
- * You can define custom commands using unique_command_register(): you
+ * You can define custom commands using unique_app_add_command(): you
  * need to provide an arbitrary integer and a string for the command.
  */
 
@@ -124,6 +124,9 @@ struct _UniqueAppPrivate
   UniqueBackend *backend;
 
   guint is_running : 1;
+
+  GHashTable *commands_by_name;
+  GHashTable *commands_by_id;
 };
 
 enum
@@ -258,6 +261,21 @@ unique_app_dispose (GObject *gobject)
 }
 
 static void
+unique_app_finalize (GObject *gobject)
+{
+  UniqueApp *app = UNIQUE_APP (gobject);
+  UniqueAppPrivate *priv = app->priv;
+
+  if (priv->commands_by_name)
+    g_hash_table_destroy (priv->commands_by_name);
+
+  if (priv->commands_by_id)
+    g_hash_table_destroy (priv->commands_by_id);
+
+  G_OBJECT_CLASS (unique_app_parent_class)->finalize (gobject);
+}
+
+static void
 unique_app_class_init (UniqueAppClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -266,6 +284,7 @@ unique_app_class_init (UniqueAppClass *klass)
   gobject_class->set_property = unique_app_set_property;
   gobject_class->get_property = unique_app_get_property;
   gobject_class->dispose = unique_app_dispose;
+  gobject_class->finalize = unique_app_finalize;
 
   /**
    * UniqueApp:name:
@@ -368,38 +387,6 @@ unique_app_init (UniqueApp *app)
   priv->is_running = FALSE;
 }
 
-/**
- * unique_app_new_with_startup_id:
- * @name: the name of the application
- * @startup_id: the startup id or %NULL
- *
- * Creates a new #UniqueApp instance for @name passing a start-up notification
- * id @startup_id.  The name must be a unique identifier for the application,
- * and it must be in form of a domain name, like
- * <literal>org.gnome.YourApplication</literal>.
- *
- * Once you have created a #UniqueApp instance, you should check if
- * any other instance is running, using unique_app_is_running().
- * If another instance is running you can send a command to it, using
- * the unique_app_send_message() function; after that, the second instance
- * should quit. If no other instance is running, the usual logic for
- * creating the application can follow.
- * 
- * Return value: the newly created #UniqueApp instance. Use
- *   g_object_unref() when finished.
- */
-UniqueApp *
-unique_app_new_with_startup_id (const gchar *name,
-                                const gchar *startup_id)
-{
-  g_return_val_if_fail (name != NULL, NULL);
-
-  return g_object_new (UNIQUE_TYPE_APP,
-                       "name", name,
-                       "startup-id", startup_id,
-                       NULL);
-}
-
 /* taken from nautilus */
 static guint32
 slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
@@ -449,44 +436,127 @@ slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
 /**
  * unique_app_new:
  * @name: the name of the application's instance
+ * @startup_id: the startup notification id, or %NULL
  *
- * Creates a new #UniqueApp instance for @name. See
- * unique_app_new_with_startup_id() for more informations.
+ * Creates a new #UniqueApp instance for @name passing a start-up notification
+ * id @startup_id.  The name must be a unique identifier for the application,
+ * and it must be in form of a domain name, like
+ * <literal>org.gnome.YourApplication</literal>.
+ *
+ * If @startup_id is %NULL the <literal>DESKTOP_STARTUP_ID</literal>
+ * environment variable will be check, and if that fails a "fake" startup
+ * notification id will be created.
+ *
+ * Once you have created a #UniqueApp instance, you should check if
+ * any other instance is running, using unique_app_is_running().
+ * If another instance is running you can send a command to it, using
+ * the unique_app_send_message() function; after that, the second instance
+ * should quit. If no other instance is running, the usual logic for
+ * creating the application can follow.
  * 
  * Return value: the newly created #UniqueApp instance.
  */
 UniqueApp *
-unique_app_new (const gchar *name)
+unique_app_new (const gchar *name,
+                const gchar *startup_id)
 {
-  gchar *startup_id;
   UniqueApp *retval;
+  gchar *id;
 
   g_return_val_if_fail (name != NULL, NULL);
 
-  startup_id = g_strdup (g_getenv ("DESKTOP_STARTUP_ID"));
-  if (!startup_id)
+  if (startup_id && startup_id != '\0')
+    id = g_strdup (startup_id);
+  else
     {
-      GdkDisplay *display;
-      guint32 timestamp;
+      id = g_strdup (g_getenv ("DESKTOP_STARTUP_ID"));
+      if (!id)
+        {
+          GdkDisplay *display;
+          guint32 timestamp;
 
-      display = gdk_display_get_default ();
-      timestamp = slowly_and_stupidly_obtain_timestamp (display);
-      startup_id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
+          display = gdk_display_get_default ();
+          timestamp = slowly_and_stupidly_obtain_timestamp (display);
+          id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
+        }
     }
 
-  retval = unique_app_new_with_startup_id (name, startup_id);
-  g_free (startup_id);
+  retval = g_object_new (UNIQUE_TYPE_APP,
+                         "name", name,
+                         "startup-id", id,
+                         NULL); 
+
+  g_free (id);
 
   return retval;
 }
 
+static void
+unique_app_add_commands_valist (UniqueApp   *app,
+                                const gchar *first_command_name,
+                                va_list      args)
+{
+  const gchar *command;
+  gint command_id;
+
+  g_return_if_fail (UNIQUE_IS_APP (app));
+
+  command = first_command_name;
+  command_id = va_arg (args, gint);
+
+  while (command != NULL)
+    {
+      unique_app_add_command (app, command, command_id);
+
+      command = va_arg (args, gchar *);
+      if (command == NULL)
+        break;
+
+      command_id = va_arg (args, gint);
+    }
+}
+
+/**
+ * unique_app_new_with_commands:
+ * @name: the name of the application
+ * @startup_id: startup notification id, or %NULL
+ * @first_command_name: first custom command
+ * @Varargs: %NULL terminated list of command names and command ids
+ *
+ * Creates a new #UniqueApp instance, with @name and @startup_id,
+ * and registers a list of custom commands. See unique_app_new() and
+ * unique_app_add_command().
+ *
+ * Return value: the newly created #UniqueApp instance.
+ */
+UniqueApp *
+unique_app_new_with_commands (const gchar *name,
+                              const gchar *startup_id,
+                              const gchar *first_command_name,
+                              ...)
+{
+  UniqueApp *retval;
+  va_list args;
+
+  g_return_val_if_fail (name != NULL, NULL);
+
+  retval = unique_app_new (name, startup_id);
+
+  va_start (args, first_command_name);
+  unique_app_add_commands_valist (retval, first_command_name, args);
+  va_end (args);
+
+  return retval;
+}
+
+
 /**
  * unique_app_is_running:
- * @app: FIXME
+ * @app: a #UniqueApp
  *
- * FIXME
+ * Checks whether another instance of @app is running.
  *
- * Return value: FIXME
+ * Return value: %TRUE if there already is an instance running
  */
 gboolean
 unique_app_is_running (UniqueApp *app)
@@ -571,51 +641,57 @@ unique_app_emit_message (UniqueApp         *app,
   return response;
 }
 
-G_LOCK_DEFINE_STATIC (commands);
-static GHashTable *commands_by_name = NULL;
-static GHashTable *commands_by_id   = NULL;
-
 /**
- * unique_command_register:
- * @command_name: FIXME
- * @command_id: FIXME
+ * unique_app_add_command:
+ * @app: a #UniqueApp 
+ * @command_name: command name
+ * @command_id: command logical id
  *
- * FIXME
+ * Adds @command_name as a custom command that can be used by @app. You
+ * must call unique_app_add_command() before unique_app_send_message() in
+ * order to use the newly added command.
+ *
+ * The command name is used internally: you need to use the command's logical
+ * id in unique_app_send_message() and inside the UniqueApp::message-received
+ * signal.
  */
 void
-unique_command_register (const gchar *command_name,
-                         guint        command_id)
+unique_app_add_command (UniqueApp   *app,
+                        const gchar *command_name,
+                        gint         command_id)
 {
+  UniqueAppPrivate *priv;
   gchar *command_nick;
 
+  g_return_if_fail (UNIQUE_IS_APP (app));
   g_return_if_fail (command_name != NULL);
   g_return_if_fail (command_id > 0);
 
-  G_LOCK (commands);
+  priv = app->priv;
 
-  if (G_UNLIKELY (!commands_by_name))
+  if (G_UNLIKELY (!priv->commands_by_name))
     {
-      commands_by_name = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                g_free, NULL);
-      commands_by_id = g_hash_table_new (NULL, NULL);
+      priv->commands_by_name = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                      g_free, NULL);
+      priv->commands_by_id = g_hash_table_new (NULL, NULL);
     }
 
   command_nick = g_strdup (command_name);
-  g_hash_table_replace (commands_by_name,
+  g_hash_table_replace (priv->commands_by_name,
                         command_nick,
                         GUINT_TO_POINTER (command_id));
-  g_hash_table_replace (commands_by_id,
+  g_hash_table_replace (priv->commands_by_id,
                         GUINT_TO_POINTER (command_id),
                         command_nick);
-
-  G_UNLOCK (commands);
 }
 
 G_CONST_RETURN gchar *
-unique_command_to_string (gint command)
+unique_command_to_string (UniqueApp *app,
+                          gint       command)
 {
   const gchar *retval;
 
+  g_return_val_if_fail (UNIQUE_IS_APP (app), NULL);
   g_return_val_if_fail (command != 0, NULL);
 
   if (command < 0)
@@ -631,7 +707,11 @@ unique_command_to_string (gint command)
     }
   else
     {
-      if (!commands_by_id)
+      UniqueAppPrivate *priv;
+
+      priv = app->priv;
+
+      if (!priv->commands_by_id)
         {
           g_warning ("No user commands defined. You should add new commands "
                      "with unique_command_register() before creating the "
@@ -639,19 +719,22 @@ unique_command_to_string (gint command)
           return NULL;
         }
 
-      retval = g_hash_table_lookup (commands_by_id, GINT_TO_POINTER (command));
+      retval = g_hash_table_lookup (priv->commands_by_id,
+                                    GINT_TO_POINTER (command));
     }
 
   return retval;
 }
 
 gint
-unique_command_from_string (const gchar *command)
+unique_command_from_string (UniqueApp   *app,
+                            const gchar *command)
 {
   GEnumClass *enum_class;
   GEnumValue *enum_value;
   gint retval = 0;
 
+  g_return_val_if_fail (UNIQUE_IS_APP (app), 0);
   g_return_val_if_fail (command != NULL, 0);
 
   enum_class = g_type_class_ref (UNIQUE_TYPE_COMMAND);
@@ -663,7 +746,9 @@ unique_command_from_string (const gchar *command)
     }
   else
     {
-      if (!commands_by_name)
+      UniqueAppPrivate *priv = app->priv;
+
+      if (!priv->commands_by_name)
         {
           g_warning ("No user commands defined. You should add new commands "
                      "with unique_command_register() before creating the "
@@ -671,7 +756,7 @@ unique_command_from_string (const gchar *command)
           return 0;
         }
 
-      retval = GPOINTER_TO_UINT (g_hash_table_lookup (commands_by_name,
+      retval = GPOINTER_TO_UINT (g_hash_table_lookup (priv->commands_by_name,
                                                       command));
     }
 

@@ -192,7 +192,7 @@ unique_backend_dbus_send_message (UniqueBackend     *backend,
       return UNIQUE_RESPONSE_INVALID;
     }
 
-  cmd = g_strdup (unique_command_to_string (command));
+  cmd = g_strdup (unique_command_to_string (backend->parent, command));
   data = create_value_array (message_data);
   resp = NULL;
  

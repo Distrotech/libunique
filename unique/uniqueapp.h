@@ -58,10 +58,6 @@ typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_CLOSE    = -4
 } UniqueCommand;
 
-GType  unique_command_get_type (void) G_GNUC_CONST;
-void   unique_command_register (const gchar *command_name,
-                                guint        command_id);
-
 /**
  * UniqueResponse:
  * @UNIQUE_RESPONSE_INVALID: Internal error code, should never be used.
@@ -113,9 +109,16 @@ struct _UniqueAppClass
 
 GType           unique_app_get_type           (void) G_GNUC_CONST;
 
-UniqueApp *    unique_app_new                 (const gchar       *name);
-UniqueApp *    unique_app_new_with_startup_id (const gchar       *name,
+UniqueApp *    unique_app_new                 (const gchar       *name,
                                                const gchar       *startup_id);
+UniqueApp *    unique_app_new_with_commands   (const gchar       *name,
+                                               const gchar       *startup_id,
+                                               const gchar       *first_command_name,
+                                               ...);
+void           unique_app_add_command         (UniqueApp         *app,
+                                               const gchar       *command_name,
+                                               gint               command_id);
+
 gboolean       unique_app_is_running          (UniqueApp         *app);
 UniqueResponse unique_app_send_message        (UniqueApp         *app,
                                                gint               command_id,

@@ -52,8 +52,7 @@ IGNORE_HFILES=\
 	uniqueinternals.h \
 	stamp-uniquemarshal.h \
 	bacon \
-	dbus \
-	xlibs 
+	dbus 
 
 EXTRA_HFILES=
 
@@ -77,8 +76,8 @@ expand_content_files=
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 
-INCLUDES=-I$(top_srcdir) $(UNIQUE_CFLAGS)
-GTKDOC_LIBS=$(top_builddir)/unique/libunique-$(uniquebackend)-1.0.la $(UNIQUE_LIBS)
+INCLUDES=-I$(top_srcdir) $(UNIQUE_CFLAGS) $(DBUS_CFLAGS)
+GTKDOC_LIBS=$(top_builddir)/unique/libunique-1.0.la $(UNIQUE_LIBS) $(DBUS_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

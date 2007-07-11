@@ -27,11 +27,13 @@
 
 G_BEGIN_DECLS
 
-gchar *            unique_message_data_pack   (gint               command_id,
+gchar *            unique_message_data_pack   (UniqueApp         *app,
+                                               gint               command_id,
                                                UniqueMessageData *message_data,
                                                guint              time_,
                                                gsize             *length);
-UniqueMessageData *unique_message_data_unpack (const gchar       *data,
+UniqueMessageData *unique_message_data_unpack (UniqueApp         *app,
+                                               const gchar       *data,
                                                gint              *command_id,
                                                guint             *time_);
 

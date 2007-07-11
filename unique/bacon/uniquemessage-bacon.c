@@ -10,7 +10,8 @@
 #include "uniquemessage-bacon.h"
 
 gchar *
-unique_message_data_pack (gint               command_id,
+unique_message_data_pack (UniqueApp         *app,
+                          gint               command_id,
                           UniqueMessageData *message_data,
                           guint              time_,
                           gsize             *length)
@@ -26,7 +27,7 @@ unique_message_data_pack (gint               command_id,
     return NULL;
 
   /* command */
-  escape = g_strescape (unique_command_to_string (command_id), NULL);
+  escape = g_strescape (unique_command_to_string (app, command_id), NULL);
   g_string_append (buffer, escape);
   len += strlen (escape);
   g_string_append_c (buffer, '\t');
@@ -82,7 +83,8 @@ unique_message_data_pack (gint               command_id,
 }
 
 UniqueMessageData *
-unique_message_data_unpack (const gchar *data,
+unique_message_data_unpack (UniqueApp   *app,
+                            const gchar *data,
                             gint        *command_id,
                             guint       *time_)
 {
@@ -99,7 +101,7 @@ unique_message_data_unpack (const gchar *data,
   if (command_id)
     {
       buf = g_strcompress (blocks[0]);
-      *command_id = unique_command_from_string (buf);
+      *command_id = unique_command_from_string (app, buf);
       g_free (buf);
     }
 

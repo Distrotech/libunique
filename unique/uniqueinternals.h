@@ -42,8 +42,11 @@ UniqueResponse unique_app_emit_message      (UniqueApp         *app,
  */
 UniqueResponse        unique_response_from_string  (const gchar    *response);
 G_CONST_RETURN gchar *unique_response_to_string    (UniqueResponse  response);
-gint                  unique_command_from_string   (const gchar    *command);
-G_CONST_RETURN gchar *unique_command_to_string     (gint            command);
+
+gint                  unique_command_from_string   (UniqueApp      *app,
+                                                    const gchar    *command);
+G_CONST_RETURN gchar *unique_command_to_string     (UniqueApp      *app,
+                                                    gint            command);
 
 G_END_DECLS
 

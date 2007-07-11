@@ -380,7 +380,9 @@ unique_backend_bacon_send_message (UniqueBackend     *backend,
         return UNIQUE_RESPONSE_FAIL;
     }
 
-  packed = unique_message_data_pack (command_id, message, time_, &packed_len);
+  packed = unique_message_data_pack (backend->parent,
+                                     command_id, message, time_,
+                                     &packed_len);
   if (write (backend_bacon->socket_fd, packed, packed_len) == -1)
     {
       g_warning ("Unable to send message: %s", g_strerror (errno));

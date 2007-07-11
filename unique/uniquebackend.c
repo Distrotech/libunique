@@ -267,7 +267,5 @@ unique_backend_create (void)
 #endif /* UNIQUE_HAVE_DBUS */
     }
 
-  g_debug (G_STRLOC ": Backend: %s (type:%d)", backend_name, backend_gtype);
-
   return g_object_new (backend_gtype, NULL);
 }

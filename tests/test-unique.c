@@ -106,9 +106,9 @@ int
 main (int argc, char *argv[])
 {
   UniqueApp *app;
-  const gchar *startup_id;
   gboolean new = FALSE;
   gboolean activate = FALSE;
+  gboolean foo = FALSE;
   gchar **uris = NULL;
   GError *init_error = NULL;
   GOptionEntry entries[] = {
@@ -128,10 +128,14 @@ main (int argc, char *argv[])
       G_OPTION_ARG_NONE, &activate,
       "Send 'activate' command", NULL,
     },
+    {
+      "foo", 'f',
+      0,
+      G_OPTION_ARG_NONE, &foo,
+      "Send 'foo' command", NULL,
+    },
     { NULL },
   };
-
-  startup_id = g_getenv ("DESKTOP_STARTUP_ID");
 
   gtk_init_with_args (&argc, &argv,
                       "Test GtkUnique",
@@ -148,10 +152,10 @@ main (int argc, char *argv[])
       exit (1);
     }
 
-  unique_command_register ("foo", COMMAND_FOO);
-  unique_command_register ("bar", COMMAND_BAR);
-  
-  app = unique_app_new_with_startup_id ("org.gnome.TestUnique", startup_id);
+  app = unique_app_new_with_commands ("org.gnome.TestUnique", NULL,
+                                      "foo", COMMAND_FOO,
+                                      "bar", COMMAND_BAR,
+                                      NULL);
   if (unique_app_is_running (app))
     {
       UniqueMessageData *message;
@@ -175,7 +179,7 @@ main (int argc, char *argv[])
           command = UNIQUE_ACTIVATE;
           unique_message_data_set (message, NULL, NULL, 0);
         }
-      else
+      else if (foo)
         {
           command = COMMAND_FOO;
           unique_message_data_set (message, NULL, (const guchar *) "bar", 3);

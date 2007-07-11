@@ -137,7 +137,8 @@ connection_cb (GIOChannel   *channel,
   
   /* truncate the message at the line terminator */
   message[term] = '\0';
-  message_data = unique_message_data_unpack (message,
+  message_data = unique_message_data_unpack (factory->parent,
+                                             message,
                                              &command_id,
                                              &time_);
   if (!message_data)
