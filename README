@@ -1,0 +1,14 @@
+Unique is a library for writing single instance applications, that is
+applications that are run once and every further call to the same binary
+either exits immediately or sends a command to the running instance.
+
+Unique can be compiled against various backends, to allow the usage of
+different IPC mechanisms depending on the platform.
+
+Project page: http://log.emmanuelebassi.net/software/unique
+Main repository: http://www.gnome.org/~ebassi/git/unique.git
+
+Copyright (C) 2007  Emmanuele Bassi
+
+Part of the API and design is based on GUniqueApp, by Vytautas Liuolia.
+The "bacon" backend is based on BaconMessageConnection, by Bastien Nocera.
