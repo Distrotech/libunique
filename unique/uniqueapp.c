@@ -127,6 +127,8 @@ struct _UniqueAppPrivate
 
   GHashTable *commands_by_name;
   GHashTable *commands_by_id;
+
+  GSList *windows;
 };
 
 enum
@@ -272,7 +274,34 @@ unique_app_finalize (GObject *gobject)
   if (priv->commands_by_id)
     g_hash_table_destroy (priv->commands_by_id);
 
+  if (priv->windows)
+    g_slist_free (priv->windows);
+
   G_OBJECT_CLASS (unique_app_parent_class)->finalize (gobject);
+}
+
+static UniqueResponse
+unique_app_real_message_received (UniqueApp         *app,
+                                  gint               command_id,
+                                  UniqueMessageData *message_data,
+                                  guint              time_)
+{
+  UniqueAppPrivate *priv;
+  const gchar *startup_id;
+  GSList *l;
+
+  startup_id = unique_message_data_get_startup_id (message_data);
+  priv = app->priv;
+  
+  for (l = priv->windows; l; l = l->next)
+    {
+      GtkWindow *window = l->data;
+
+      if (window)
+        gtk_window_set_startup_id (window, startup_id);
+    }
+
+  return UNIQUE_RESPONSE_OK;
 }
 
 static void
@@ -368,6 +397,8 @@ unique_app_class_init (UniqueAppClass *klass)
                   G_TYPE_INT,               /* command */
                   UNIQUE_TYPE_MESSAGE_DATA, /* message_data */
                   G_TYPE_UINT               /* time_ */);
+
+  klass->message_received = unique_app_real_message_received;
 
   g_type_class_add_private (klass, sizeof (UniqueAppPrivate));
 }
@@ -685,6 +716,40 @@ unique_app_add_command (UniqueApp   *app,
                         GUINT_TO_POINTER (command_id),
                         command_nick);
 }
+
+static void
+window_weak_ref_cb (gpointer  user_data,
+                    GObject  *object)
+{
+  UniqueApp *app = user_data;
+  UniqueAppPrivate *priv = app->priv;
+
+  priv->windows = g_slist_remove (priv->windows, object);
+}
+
+/**
+ * unique_app_watch_window:
+ * @app: a #UniqueApp
+ * @window: the #GtkWindow to watch
+ *
+ * Makes @app "watch" a window. Every watched window will receive
+ * startup notification changes automatically.
+ */
+void
+unique_app_watch_window (UniqueApp *app,
+                         GtkWindow *window)
+{
+  UniqueAppPrivate *priv;
+
+  g_return_if_fail (UNIQUE_IS_APP (app));
+  g_return_if_fail (GTK_IS_WINDOW (window));
+
+  priv = app->priv;
+
+  priv->windows = g_slist_prepend (priv->windows, window);
+  g_object_weak_ref (G_OBJECT (window), window_weak_ref_cb, app);
+}
+
 
 G_CONST_RETURN gchar *
 unique_command_to_string (UniqueApp *app,

@@ -118,6 +118,8 @@ UniqueApp *    unique_app_new_with_commands   (const gchar       *name,
 void           unique_app_add_command         (UniqueApp         *app,
                                                const gchar       *command_name,
                                                gint               command_id);
+void           unique_app_watch_window        (UniqueApp         *app,
+                                               GtkWindow         *window);
 
 gboolean       unique_app_is_running          (UniqueApp         *app);
 UniqueResponse unique_app_send_message        (UniqueApp         *app,
