@@ -37,16 +37,13 @@ UniqueMessageData *   unique_message_data_copy           (UniqueMessageData *mes
 void                  unique_message_data_free           (UniqueMessageData *message_data);
 
 void                  unique_message_data_set            (UniqueMessageData *message_data,
-                                                          GdkScreen         *screen,
                                                           const guchar      *data,
                                                           gsize              length);
 gboolean              unique_message_data_set_text       (UniqueMessageData *message_data,
-                                                          GdkScreen         *screen,
                                                           const gchar       *str,
                                                           gsize              length);
 gchar *               unique_message_data_get_text       (UniqueMessageData *message_data);
 gboolean              unique_message_data_set_uris       (UniqueMessageData *message_data,
-                                                          GdkScreen         *screen,
                                                           gchar            **uris);
 gchar **              unique_message_data_get_uris       (UniqueMessageData *message_data);
 

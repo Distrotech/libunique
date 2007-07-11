@@ -596,16 +596,17 @@ unique_app_send_message (UniqueApp         *app,
   if (message_data)
     message = unique_message_data_copy (message_data);
   else
-    {
-      message = unique_message_data_new ();
-      message->screen = unique_backend_get_screen (backend);
-      message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
-    }
+    message = unique_message_data_new ();
 
+  message->screen = unique_backend_get_screen (backend);
+  message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
   now = (guint) time (NULL);
+  
   response = unique_backend_send_message (backend,
                                           command_id, message,
                                           now);
+
+  unique_message_data_free (message);
 
   return response;
 }

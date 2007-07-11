@@ -121,7 +121,6 @@ unique_message_data_free (UniqueMessageData *message_data)
   if (G_LIKELY (message_data))
     {
       g_free (message_data->data);
-      g_free (message_data->startup_id);
 
       g_slice_free (UniqueMessageData, message_data);
     }
@@ -130,7 +129,6 @@ unique_message_data_free (UniqueMessageData *message_data)
 /**
  * unique_message_data_set:
  * @message_data: FIXME
- * @screen: FIXME
  * @data: FIXME
  * @length: FIXME
  *
@@ -138,18 +136,12 @@ unique_message_data_free (UniqueMessageData *message_data)
  */
 void
 unique_message_data_set (UniqueMessageData *message_data,
-                         GdkScreen         *screen,
                          const guchar      *data,
                          gsize              length)
 {
   g_return_if_fail (message_data != NULL);
-  g_return_if_fail (screen == NULL || GDK_IS_SCREEN (screen));
 
   g_free (message_data->data);
-
-  message_data->screen = screen;
-  if (!message_data->screen)
-    message_data->screen = gdk_screen_get_default ();
 
   if (data)
     {
@@ -232,7 +224,6 @@ normalize_to_lf (gchar *str,
 
 static gboolean
 message_data_set_text_plain (UniqueMessageData *message_data,
-                             GdkScreen         *screen,
                              const gchar       *str,
                              gsize              length)
 {
@@ -262,7 +253,6 @@ message_data_set_text_plain (UniqueMessageData *message_data,
     }
 
   unique_message_data_set (message_data,
-                           screen,
                            (guchar *) result, strlen (result));
   
   return TRUE;
@@ -316,7 +306,6 @@ message_data_get_text_plain (UniqueMessageData *message_data)
 /**
  * unique_message_data_set_text:
  * @message_data: a #UniqueMessageData
- * @screen: a #GdkScreen, or %NULL
  * @str: FIXME
  * @length: FIXME
  *
@@ -326,7 +315,6 @@ message_data_get_text_plain (UniqueMessageData *message_data)
  */
 gboolean
 unique_message_data_set_text (UniqueMessageData *message_data,
-                              GdkScreen         *screen,
                               const gchar       *str,
                               gsize              length)
 {
@@ -335,13 +323,11 @@ unique_message_data_set_text (UniqueMessageData *message_data,
 
   if (g_utf8_validate (str, length, NULL))
     {
-      unique_message_data_set (message_data,
-                               screen,
-                               (guchar *) str, length);
+      unique_message_data_set (message_data, (guchar *) str, length);
       return TRUE;
     }
 
-  return message_data_set_text_plain (message_data, screen, str, length);
+  return message_data_set_text_plain (message_data, str, length);
 }
 
 /**
@@ -361,7 +347,6 @@ unique_message_data_get_text (UniqueMessageData *message_data)
 /**
  * unique_message_data_set_uris:
  * @message_data: a #UniqueMessageData
- * @screen: a #GdkScreen or %NULL
  * @uris: FIXME
  *
  * FIXME
@@ -370,7 +355,6 @@ unique_message_data_get_text (UniqueMessageData *message_data)
  */
 gboolean
 unique_message_data_set_uris (UniqueMessageData  *message_data,
-                              GdkScreen          *screen,
                               gchar             **uris)
 {
   GString *list;
@@ -392,9 +376,7 @@ unique_message_data_set_uris (UniqueMessageData  *message_data,
 
   if (result)
     {
-      unique_message_data_set (message_data,
-                               screen,
-                               (guchar *) result, length);
+      unique_message_data_set (message_data, (guchar *) result, length);
       g_free (result);
 
       return TRUE;

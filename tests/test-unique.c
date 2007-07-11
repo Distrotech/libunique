@@ -41,7 +41,11 @@ app_message_cb (UniqueApp         *app,
   GtkWidget *dialog;
   gchar *message, *title;
   GdkScreen *screen;
+  const gchar *startup_id;
 
+  screen = unique_message_data_get_screen (message_data);
+  startup_id = unique_message_data_get_startup_id (message_data);
+  
   switch (command)
     {
     case UNIQUE_NEW:
@@ -87,11 +91,11 @@ app_message_cb (UniqueApp         *app,
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               message);
 
-  screen = unique_message_data_get_screen (message_data);
   gtk_window_set_screen (GTK_WINDOW (dialog), screen);
   
-  if (command == UNIQUE_ACTIVATE)
-    gtk_window_present (GTK_WINDOW (main_window));
+  gtk_window_present (GTK_WINDOW (main_window));
+  gtk_window_set_screen (GTK_WINDOW (main_window), screen);
+  gtk_window_set_startup_id (GTK_WINDOW (main_window), startup_id);
   
   gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
@@ -158,34 +162,38 @@ main (int argc, char *argv[])
                                       NULL);
   if (unique_app_is_running (app))
     {
-      UniqueMessageData *message;
+      UniqueMessageData *message = NULL;
       UniqueResponse response;
       gint command;
 
-      message = unique_message_data_new ();
 
       if (new)
-        {
-          command = UNIQUE_NEW;
-          unique_message_data_set (message, NULL, NULL, 0);
-        }
+        command = UNIQUE_NEW;
       else if (uris && uris[0])
         {
           command = UNIQUE_OPEN;
-          unique_message_data_set_uris (message, NULL, uris); 
+      
+          message = unique_message_data_new ();
+          unique_message_data_set_uris (message, uris); 
         }
       else if (activate)
-        {
-          command = UNIQUE_ACTIVATE;
-          unique_message_data_set (message, NULL, NULL, 0);
-        }
+        command = UNIQUE_ACTIVATE;
       else if (foo)
         {
           command = COMMAND_FOO;
-          unique_message_data_set (message, NULL, (const guchar *) "bar", 3);
+          
+          message = unique_message_data_new ();
+          unique_message_data_set (message, (const guchar *) "bar", 3);
         }
       
-      response = unique_app_send_message (app, command, message);
+      if (message)
+        {
+          response = unique_app_send_message (app, command, message);
+          unique_message_data_free (message);
+        }
+      else
+        response = unique_app_send_message (app, command, NULL);
+
       g_print ("Response code: %d\n", response);
 
       gdk_notify_startup_complete ();
