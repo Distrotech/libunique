@@ -21,6 +21,14 @@
 #ifndef __UNIQUE_VERSION_H__
 #define __UNIQUE_VERSION_H__
 
+/**
+ * SECTION:unique-version
+ * @short_description: Version utilities
+ *
+ * Unique provides a set of macros to check the version of the library
+ * and allow compile-time guards around new features.
+ */
+
 #define UNIQUE_MAJOR_VERSION            @UNIQUE_MAJOR_VERSION@
 #define UNIQUE_MINOR_VERSION            @UNIQUE_MINOR_VERSION@
 #define UNIQUE_MICRO_VERSION            @UNIQUE_MICRO_VERSION@

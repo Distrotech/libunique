@@ -3,6 +3,7 @@
 <TITLE>UniqueBackend</TITLE>
 UniqueBackend
 UniqueBackendClass
+unique_backend_create
 unique_backend_get_name
 unique_backend_set_name
 unique_backend_get_startup_id
@@ -23,18 +24,15 @@ UNIQUE_BACKEND_GET_CLASS
 
 <SECTION>
 <FILE>unique-app</FILE>
-UNIQUE_TYPE_COMMAND
-UNIQUE_TYPE_RESPONSE
-UniqueCommand
-unique_command_register
-UniqueResponse
-UniqueAppPrivate
 <TITLE>UniqueApp</TITLE>
+UniqueCommand
 UniqueApp
 UniqueAppClass
 unique_app_new
-unique_app_new_with_startup_id
+unique_app_new_with_commands
+unique_app_add_command
 unique_app_is_running
+UniqueResponse
 unique_app_send_message
 <SUBSECTION Standard>
 UNIQUE_APP
@@ -44,6 +42,8 @@ UNIQUE_APP_CLASS
 UNIQUE_IS_APP_CLASS
 UNIQUE_APP_GET_CLASS
 <SUBSECTION Private>
+UNIQUE_TYPE_COMMAND
+UNIQUE_TYPE_RESPONSE
 UniqueAppPrivate
 unique_app_get_type
 unique_command_get_type
@@ -56,7 +56,6 @@ unique_response_get_type
 
 <SECTION>
 <FILE>unique-message</FILE>
-UNIQUE_TYPE_MESSAGE_DATA
 UniqueMessageData
 unique_message_data_new
 unique_message_data_copy
@@ -69,6 +68,7 @@ unique_message_data_get_uris
 unique_message_data_get_screen
 unique_message_data_get_startup_id
 <SUBSECTION Private>
+UNIQUE_TYPE_MESSAGE_DATA
 unique_message_data_get_type
 </SECTION>
 
@@ -77,12 +77,13 @@ unique_message_data_get_type
 UNIQUE_MAJOR_VERSION
 UNIQUE_MINOR_VERSION
 UNIQUE_MICRO_VERSION
+UNIQUE_CHECK_VERSION
 UNIQUE_VERSION_S
 UNIQUE_VERSION_HEX
 UNIQUE_API_VERSION
 UNIQUE_API_VERSION_S
 UNIQUE_PROTOCOL_VERSION
 UNIQUE_PROTOCOL_VERSION_S
-UNIQUE_CHECK_VERSION
+UNIQUE_DEFAULT_BACKEND_S
 </SECTION>
 

@@ -50,6 +50,7 @@ CFILE_GLOB=$(top_srcdir)/unique/*.c
 IGNORE_HFILES=\
 	unique.h \
 	uniqueinternals.h \
+	uniquemarshal.h \
 	stamp-uniquemarshal.h \
 	bacon \
 	dbus 

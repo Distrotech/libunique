@@ -246,6 +246,16 @@ unique_backend_send_message (UniqueBackend     *backend,
 #include "dbus/uniquebackend-dbus.h"
 #endif
 
+/**
+ * unique_backend_create:
+ * 
+ * Creates a #UniqueBackend using the default backend defined at
+ * compile time. You can override the default backend by setting the
+ * <literal>UNIQUE_BACKEND</literal> environment variable with the
+ * name of the desired backend.
+ *
+ * Return value: the newly created #UniqueBackend instance
+ */
 UniqueBackend *
 unique_backend_create (void)
 {

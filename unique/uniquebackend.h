@@ -88,7 +88,7 @@ void                  unique_backend_set_screen     (UniqueBackend     *backend,
 gboolean              unique_backend_request_name   (UniqueBackend     *backend);
 UniqueResponse        unique_backend_send_message   (UniqueBackend     *backend,
                                                      gint               command_id,
-                                                     UniqueMessageData *message,
+                                                     UniqueMessageData *message_data,
                                                      guint              time_);
 
 G_END_DECLS

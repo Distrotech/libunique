@@ -67,6 +67,15 @@ unique_message_data_get_type (void)
   return data_type;
 }
 
+/**
+ * unique_message_data_new:
+ *
+ * Creates a new #UniqueMessageData structure. This structure holds the
+ * message data passed between running instances with
+ * unique_app_send_message().
+ *
+ * Return value: the newly created #UniqueMessageData
+ */
 UniqueMessageData *
 unique_message_data_new (void)
 {
@@ -75,11 +84,11 @@ unique_message_data_new (void)
 
 /**
  * unique_message_data_copy:
- * @message_data: FIXME
+ * @message_data: a #UniqueMessageData
  *
- * FIXME
+ * Copies @message_data.
  *
- * Return value: FIXME
+ * Return value: a copy of the passed #UniqueMessageData
  */
 UniqueMessageData *
 unique_message_data_copy (UniqueMessageData *message_data)
@@ -102,9 +111,9 @@ unique_message_data_copy (UniqueMessageData *message_data)
 
 /**
  * unique_message_data_free:
- * @message_data: FIXME
+ * @message_data: a #UniqueMessageData
  *
- * FIXME
+ * Frees all the resources allocated by @message_data.
  */
 void
 unique_message_data_free (UniqueMessageData *message_data)
@@ -112,6 +121,8 @@ unique_message_data_free (UniqueMessageData *message_data)
   if (G_LIKELY (message_data))
     {
       g_free (message_data->data);
+      g_free (message_data->startup_id);
+
       g_slice_free (UniqueMessageData, message_data);
     }
 }
@@ -304,6 +315,8 @@ message_data_get_text_plain (UniqueMessageData *message_data)
 
 /**
  * unique_message_data_set_text:
+ * @message_data: a #UniqueMessageData
+ * @screen: a #GdkScreen, or %NULL
  * @str: FIXME
  * @length: FIXME
  *
@@ -347,7 +360,8 @@ unique_message_data_get_text (UniqueMessageData *message_data)
 
 /**
  * unique_message_data_set_uris:
- * @message_data: FIXME
+ * @message_data: a #UniqueMessageData
+ * @screen: a #GdkScreen or %NULL
  * @uris: FIXME
  *
  * FIXME
