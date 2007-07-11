@@ -1,17 +1,21 @@
 NULL =
 
-SUBDIRS = $(uniquebackend)
+SUBDIRS = bacon
+
+if HAVE_DBUS
+SUBDIRS += dbus
+endif
+
 DIST_SUBDIRS = bacon dbus
 
-target = $(uniquebackend)
-
 INCLUDES = \
-	-DG_LOG_DOMAIN=\"Unique\"	\
-	-DPREFIX=\""$(prefix)"\"	\
-	-I$(top_srcdir)			\
-	$(UNIQUE_CFLAGS)		\
-	$(UNIQUE_DEBUG_FLAGS)		\
-	$(DISABLE_DEPRECATED_FLAGS)	\
+	-DG_LOG_DOMAIN=\"Unique\"				\
+	-DPREFIX=\""$(prefix)"\"				\
+	-I$(top_srcdir)						\
+	$(UNIQUE_CFLAGS)					\
+	$(UNIQUE_DEBUG_FLAGS)					\
+	$(DBUS_CFLAGS)						\
+	$(DISABLE_DEPRECATED_FLAGS)				\
 	$(NULL)
 
 LDADD = \
@@ -29,13 +33,18 @@ unique_sources_h = \
 unique_sources_c = \
 	uniqueapp.c		\
 	uniquebackend.c		\
-	uniqueinternals.h	\
-	uniquemarshal.c		\
-	uniquemarshal.h		\
 	uniquemessage.c		\
 	$(NULL)
 
+unique_sources_priv_h = uniqueinternals.h
+
 BUILT_SOURCES = uniquemarshal.h uniquemarshal.c
+
+unique_backend_libs = $(top_builddir)/unique/bacon/libunique-bacon.la
+
+if HAVE_DBUS
+unique_backend_libs += $(top_builddir)/unique/dbus/libunique-dbus.la
+endif
 
 uniquedir = $(includedir)/unique-1.0/unique
 unique_HEADERS = \
@@ -44,33 +53,23 @@ unique_HEADERS = \
 	unique.h		\
 	$(NULL)
 
-libunique_bacon_1_0_la_SOURCES = $(unique_sources_c)
-libunique_bacon_1_0_la_LIBADD = $(UNIQUE_LIBS) bacon/libunique-bacon.la
-libunique_bacon_1_0_la_LDFLAGS = $(LDADD)
+lib_LTLIBRARIES = libunique-1.0.la
 
-if HAVE_DBUS
-libunique_dbus_1_0_la_SOURCES = $(unique_sources_c)
-libunique_dbus_1_0_la_LIBADD = $(UNIQUE_LIBS) $(DBUS_LIBS) dbus/libunique-dbus.la
-libunique_dbus_1_0_la_LDFLAGS = $(LDADD)
-endif
+libunique_1_0_la_SOURCES = 		\
+	$(unique_sources_c) 		\
+	$(unique_sources_priv_h) 	\
+	$(BUILT_SOURCES)
 
-libunique_xlibs_1_0_la_SOURCES = $(unique_sources_c)
-libunique_xlibs_1_0_la_LIBADD = $(UNIQUE_LIBS) xlibs/libunique-xlibs.la
-libunique_xlibs_1_0_la_LDFLAGS = $(LDADD)
-
-lib_LTLIBRARIES = $(uniquebackendlib)
-
-EXTRA_LTLIBRARIES = libunique-bacon-1.0.la libunique-xlibs-1.0.la
-
-if HAVE_DBUS
-EXTRA_LTLIBRARIES += libunique-dbus-1.0.la
-endif
+libunique_1_0_la_LIBADD = 		\
+	$(unique_backend_libs) 		\
+	$(UNIQUE_LIBS)			\
+	$(DBUS_LIBS)
 
 uniquemarshal.h: stamp-uniquemarshal.h
 	@true
 stamp-uniquemarshal.h: uniquemarshal.list Makefile
 	$(GLIB_GENMARSHAL) --header \
-		--prefix=_unique_marshal \
+		--prefix=unique_marshal \
 	$(top_srcdir)/unique/uniquemarshal.list >> xgen-umh && \
 	(cmp -s xgen-umh uniquemarshal.h || cp xgen-umh uniquemarshal.h) && \
 	rm -f xgen-umh && \
@@ -79,7 +78,7 @@ stamp-uniquemarshal.h: uniquemarshal.list Makefile
 uniquemarshal.c: uniquemarshal.list Makefile
 	( echo "#include \"uniquemarshal.h\"" ; \
 	$(GLIB_GENMARSHAL) --body \
-		--prefix=_unique_marshal \
+		--prefix=unique_marshal \
 	$(top_srcdir)/unique/uniquemarshal.list >> xgen-umc ) && \
 	cp xgen-umc uniquemarshal.c && \
 	rm -f xgen-umc

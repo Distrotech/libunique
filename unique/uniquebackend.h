@@ -55,6 +55,14 @@ struct _UniqueBackendClass
 {
   GObjectClass parent_instance;
 
+  /* vtable, not signals */
+  gboolean       (* request_name) (UniqueBackend     *backend);
+  UniqueResponse (* send_message) (UniqueBackend     *backend,
+                                   gint               command_id,
+                                   UniqueMessageData *message_data,
+                                   guint              time_);
+
+  /*< private >*/
   /* padding for future expansion */
   void (*_unique_reserved1) (void);
   void (*_unique_reserved2) (void);
@@ -66,15 +74,22 @@ struct _UniqueBackendClass
 
 GType                 unique_backend_get_type       (void) G_GNUC_CONST;
 
-G_CONST_RETURN gchar *unique_backend_get_name       (UniqueBackend *backend);
-void                  unique_backend_set_name       (UniqueBackend *backend,
-                                                     const gchar   *name);
-G_CONST_RETURN gchar *unique_backend_get_startup_id (UniqueBackend *backend);
-void                  unique_backend_set_startup_id (UniqueBackend *backend,
-                                                     const gchar   *startup_id);
-GdkScreen *           unique_backend_get_screen     (UniqueBackend *backend);
-void                  unique_backend_set_screen     (UniqueBackend *backend,
-                                                     GdkScreen     *screen);
+UniqueBackend *       unique_backend_create         (void);
+
+G_CONST_RETURN gchar *unique_backend_get_name       (UniqueBackend     *backend);
+void                  unique_backend_set_name       (UniqueBackend     *backend,
+                                                     const gchar       *name);
+G_CONST_RETURN gchar *unique_backend_get_startup_id (UniqueBackend     *backend);
+void                  unique_backend_set_startup_id (UniqueBackend     *backend,
+                                                     const gchar       *startup_id);
+GdkScreen *           unique_backend_get_screen     (UniqueBackend     *backend);
+void                  unique_backend_set_screen     (UniqueBackend     *backend,
+                                                     GdkScreen         *screen);
+gboolean              unique_backend_request_name   (UniqueBackend     *backend);
+UniqueResponse        unique_backend_send_message   (UniqueBackend     *backend,
+                                                     gint               command_id,
+                                                     UniqueMessageData *message,
+                                                     guint              time_);
 
 G_END_DECLS
 

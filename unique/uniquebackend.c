@@ -194,3 +194,80 @@ unique_backend_get_screen (UniqueBackend *backend)
 
   return backend->screen;
 }
+
+/**
+ * unique_backend_request_name:
+ * @backend: a #UniqueBackend
+ *
+ * Requests the name set using unique_backend_set_name() using @backend.
+ *
+ * Return value: %TRUE if the name was assigned to us, %FALSE if there
+ *   already is a registered name
+ */
+gboolean
+unique_backend_request_name (UniqueBackend *backend)
+{
+  g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), FALSE);
+
+  return UNIQUE_BACKEND_GET_CLASS (backend)->request_name (backend);
+}
+
+/**
+ * unique_backend_send_message:
+ * @backend: a #UniqueBackend
+ * @command_id: command to send
+ * @message_data: message to send, or %NULL
+ * @time_: time of the command emission, or 0 for the current time
+ *
+ * Sends @command_id, and optionally @message_data, to a running instance
+ * using @backend.
+ *
+ * Return value: a #UniqueResponse value sent by the running instance
+ */
+UniqueResponse
+unique_backend_send_message (UniqueBackend     *backend,
+                             gint               command_id,
+                             UniqueMessageData *message_data,
+                             guint              time_)
+{
+  g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), UNIQUE_RESPONSE_INVALID);
+  g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
+  
+  if (time_ == 0)
+    time_ = (guint) time (NULL);
+
+  return UNIQUE_BACKEND_GET_CLASS (backend)->send_message (backend, command_id,
+                                                           message_data,
+                                                           time_);
+}
+
+#include "bacon/uniquebackend-bacon.h"
+#ifdef UNIQUE_HAVE_DBUS
+#include "dbus/uniquebackend-dbus.h"
+#endif
+
+UniqueBackend *
+unique_backend_create (void)
+{
+  const gchar *backend_name;
+  GType backend_gtype = G_TYPE_INVALID;
+
+  backend_name = g_getenv ("UNIQUE_BACKEND");
+  if (!backend_name)
+    backend_name = UNIQUE_DEFAULT_BACKEND_S;
+
+  if (backend_name && backend_name[0] != '\0')
+    {
+      if (strcmp (backend_name, "bacon") == 0)
+        backend_gtype = unique_backend_bacon_get_type ();
+
+#ifdef UNIQUE_HAVE_DBUS
+      if (strcmp (backend_name, "dbus") == 0)
+        backend_gtype = unique_backend_dbus_get_type ();
+#endif /* UNIQUE_HAVE_DBUS */
+    }
+
+  g_debug (G_STRLOC ": Backend: %s (type:%d)", backend_name, backend_gtype);
+
+  return g_object_new (backend_gtype, NULL);
+}

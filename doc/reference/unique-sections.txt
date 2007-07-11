@@ -9,6 +9,8 @@ unique_backend_get_startup_id
 unique_backend_set_startup_id
 unique_backend_get_screen
 unique_backend_set_screen
+unique_backend_request_name
+unique_backend_send_message
 <SUBSECTION Standard>
 UNIQUE_BACKEND
 UNIQUE_IS_BACKEND

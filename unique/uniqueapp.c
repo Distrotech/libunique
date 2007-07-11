@@ -343,7 +343,7 @@ unique_app_class_init (UniqueAppClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
                   G_STRUCT_OFFSET (UniqueAppClass, message_received),
                   message_accumulator, NULL,
-                  _unique_marshal_ENUM__INT_BOXED_UINT,
+                  unique_marshal_ENUM__INT_BOXED_UINT,
                   UNIQUE_TYPE_RESPONSE,
                   3,
                   G_TYPE_INT,               /* command */
@@ -361,11 +361,10 @@ unique_app_init (UniqueApp *app)
 
   priv = app->priv = UNIQUE_APP_GET_PRIVATE (app);
 
-  backend = g_object_new (unique_backend_impl_get_type (), NULL);
+  backend = unique_backend_create ();
   backend->parent = app;
 
   priv->backend = backend;
-
   priv->is_running = FALSE;
 }
 
@@ -513,6 +512,8 @@ unique_app_send_message (UniqueApp         *app,
                          UniqueMessageData *message_data)
 {
   UniqueAppPrivate *priv;
+  UniqueBackend *backend;
+  UniqueMessageData *message;
   UniqueResponse response = UNIQUE_RESPONSE_INVALID;
   guint now;
 
@@ -520,11 +521,20 @@ unique_app_send_message (UniqueApp         *app,
   g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
   priv = app->priv;
+  backend = priv->backend;
+
+  if (message_data)
+    message = unique_message_data_copy (message_data);
+  else
+    {
+      message = unique_message_data_new ();
+      message->screen = unique_backend_get_screen (backend);
+      message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
+    }
 
   now = (guint) time (NULL);
-  response = unique_backend_send_message (priv->backend,
-                                          command_id,
-                                          message_data,
+  response = unique_backend_send_message (backend,
+                                          command_id, message,
                                           now);
 
   return response;

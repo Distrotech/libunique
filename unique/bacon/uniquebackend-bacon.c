@@ -345,23 +345,11 @@ unique_backend_bacon_finalize (GObject *gobject)
   G_OBJECT_CLASS (unique_backend_bacon_parent_class)->finalize (gobject);
 }
 
-/**
- * unique_backend_send_message:
- * @backend: a #UniqueBackend
- * @command_id: the command to send
- * @message: #UniqueMessageData containing the message
- * @time_: the time of the message
- *
- * Sends @command_id and @message to a running instance of the
- * @backend parent #UniqueApp.
- *
- * Return value: the #UniqueResponse returned by the running instance
- */
-UniqueResponse
-unique_backend_send_message (UniqueBackend     *backend,
-                             gint               command_id,
-                             UniqueMessageData *message,
-                             guint              time_)
+static UniqueResponse
+unique_backend_bacon_send_message (UniqueBackend     *backend,
+                                   gint               command_id,
+                                   UniqueMessageData *message,
+                                   guint              time_)
 {
   UniqueBackendBacon *backend_bacon;
   UniqueResponse response_id;
@@ -438,20 +426,8 @@ unique_backend_send_message (UniqueBackend     *backend,
   return response_id;
 }
 
-/**
- * unique_backend_request_name:
- * @backend: a #UniqueBackend
- *
- * Requests the name defined on @backend by the parent #UniqueApp.
- * The #UniqueBackend must return %TRUE if the requested name was
- * taken by this instance, or %FALSE if the name was already taken
- * by another running instance.
- *
- * Return value: %TRUE if the backend was assigned the requested
- *   name, %FALSE otherwise.
- */
-gboolean
-unique_backend_request_name (UniqueBackend *backend)
+static gboolean
+unique_backend_bacon_request_name (UniqueBackend *backend)
 {
   UniqueBackendBacon *backend_bacon;
   const gchar *name;
@@ -495,8 +471,12 @@ static void
 unique_backend_bacon_class_init (UniqueBackendBaconClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  UniqueBackendClass *backend_class = UNIQUE_BACKEND_CLASS (klass);
 
   gobject_class->finalize = unique_backend_bacon_finalize;
+
+  backend_class->request_name = unique_backend_bacon_request_name;
+  backend_class->send_message = unique_backend_bacon_send_message;
 }
 
 static void

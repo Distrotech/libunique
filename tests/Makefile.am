@@ -1,13 +1,12 @@
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Test-Unique\" 	\
 	-I$(top_srcdir) 		\
-	-I$(top_builddir)/unique 	\
+	-I$(top_builddir)	 	\
 	$(UNIQUE_CFLAGS) 		\
 	$(UNIQUE_DEBUG_FLAGS)
 
-DEPS = $(top_builddir)/unique/$(uniquebackendlib)
-
-LDADD = $(top_builddir)/unique/$(uniquebackendlib)
+DEPS = $(top_builddir)/unique/libunique-1.0.la
+LDADD = $(top_builddir)/unique/libunique-1.0.la $(UNIQUE_LIBS)
 
 noinst_PROGRAMS = 	\
 	test-unique

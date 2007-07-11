@@ -81,16 +81,8 @@ unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
   return (backend_dbus->proxy != NULL);
 }
 
-/*
- * unique_backend_request_name:
- * @backend: a #UniqueBackend
- *
- * Requests a name to the backend used by Unique.
- *
- * Return value: %TRUE if the requested name was assigned to us.
- */
-gboolean
-unique_backend_request_name (UniqueBackend *backend)
+static gboolean
+unique_backend_dbus_request_name (UniqueBackend *backend)
 {
   UniqueBackendDBus *backend_dbus;
   const gchar *name;
@@ -178,11 +170,11 @@ create_value_array (UniqueMessageData *message_data)
   return retval;
 }
 
-UniqueResponse
-unique_backend_send_message (UniqueBackend     *backend,
-                             gint               command,
-                             UniqueMessageData *message_data,
-                             guint              time_)
+static UniqueResponse
+unique_backend_dbus_send_message (UniqueBackend     *backend,
+                                  gint               command,
+                                  UniqueMessageData *message_data,
+                                  guint              time_)
 {
   UniqueBackendDBus *backend_dbus;
   GValueArray *data;
@@ -244,18 +236,16 @@ static void
 unique_backend_dbus_class_init (UniqueBackendDBusClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  UniqueBackendClass *backend_class = UNIQUE_BACKEND_CLASS (klass);
 
   gobject_class->dispose = unique_backend_dbus_dispose;
+
+  backend_class->request_name = unique_backend_dbus_request_name;
+  backend_class->send_message = unique_backend_dbus_send_message;
 }
 
 static void
 unique_backend_dbus_init (UniqueBackendDBus *backend)
 {
 
-}
-
-GType
-unique_backend_impl_get_type (void)
-{
-  return unique_backend_dbus_get_type ();
 }

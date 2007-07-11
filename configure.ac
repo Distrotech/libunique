@@ -1,7 +1,7 @@
 # versioning
 m4_define([unique_major_version], [0])
 m4_define([unique_minor_version], [9])
-m4_define([unique_micro_version], [1])
+m4_define([unique_micro_version], [2])
 m4_define([unique_version],
           [unique_major_version.unique_minor_version.unique_micro_version])
 m4_define([unique_api_version],
@@ -87,27 +87,13 @@ fi
 
 AM_CONDITIONAL([HAVE_DBUS], [test x$have_dbus = xyes])
 
-if test "x$have_dbus" = "xyes"; then
-  uniquebackend=dbus
+if test x$have_dbus = xyes; then
+  UNIQUE_DEFAULT_BACKEND=dbus
 else
-  uniquebackend=bacon
+  UNIQUE_DEFAULT_BACKEND=bacon
 fi
 
-# backend
-AC_ARG_WITH(backend,
-            AC_HELP_STRING([--with-backend=@<:@dbus/bacon@:>@],
-                           [Select default Unique backend @<:@default=$uniquebackend@:>@]),
-            uniquebackend=$with_backend)
-
-AC_SUBST(uniquebackend)
-
-case $uniquebackend in
-  bacon|dbus) ;;
-  *) AC_MSG_ERROR([Invalid backend for Unique: use dbus or bacon.]) ;;
-esac
-
-uniquebackendlib=libunique-$uniquebackend-$UNIQUE_API_VERSION.la
-AC_SUBST(uniquebackendlib)
+AC_SUBST(UNIQUE_DEFAULT_BACKEND)
 
 # use strict compiler flags only on development releases
 m4_define([maintainer_flags_default],
@@ -170,7 +156,6 @@ AC_CONFIG_FILES([
 AC_OUTPUT
 
 echo "Configuration:
-        * Backend: $uniquebackend
         * Maintainer flags: $enable_maintainer_flags
         * Debug level: $enable_debug
         * Build documentation: $enable_gtk_doc"

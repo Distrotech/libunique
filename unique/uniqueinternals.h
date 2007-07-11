@@ -6,6 +6,7 @@
 #include "uniqueapp.h"
 #include "uniquebackend.h"
 #include "uniquemessage.h"
+#include "uniqueversion.h"
 
 G_BEGIN_DECLS
 
@@ -27,14 +28,6 @@ struct _UniqueMessageData
                                  G_PARAM_STATIC_NAME | \
                                  G_PARAM_STATIC_NICK | \
                                  G_PARAM_STATIC_BLURB)
-
-/* these methods _must_ be implemented by the backends */
-GType          unique_backend_impl_get_type (void) G_GNUC_CONST;
-gboolean       unique_backend_request_name  (UniqueBackend     *backend);
-UniqueResponse unique_backend_send_message  (UniqueBackend     *backend,
-                                             gint               command_id,
-                                             UniqueMessageData *message,
-                                             guint              time_);
 
 /* this method emits the UniqueApp::message-received signal on app; it
  * should be called by the backend on its parent UniqueApp instance.
