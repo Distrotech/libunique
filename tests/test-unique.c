@@ -78,6 +78,10 @@ app_message_cb (UniqueApp         *app,
       title = g_strdup ("Received the FOO command");
       message = unique_message_data_get_text (message_data);
       break;
+    case COMMAND_BAR:
+      title = g_strdup ("Received the BAR command");
+      message = g_strdup ("Thid command doesn't do anything special");
+      break;
     default:
       break;
     }
@@ -185,6 +189,8 @@ main (int argc, char *argv[])
           message = unique_message_data_new ();
           unique_message_data_set (message, (const guchar *) "bar", 3);
         }
+      else
+        command = COMMAND_BAR;
       
       if (message)
         {
