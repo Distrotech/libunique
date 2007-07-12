@@ -54,6 +54,14 @@ unique_message_data_pack (UniqueApp         *app,
   len += 1;
   g_free (escape);
 
+  /* message_data: workspace */
+  escape = g_strdup_printf ("%u", message_data->workspace);
+  g_string_append (buffer, escape);
+  len += strlen (escape);
+  g_string_append_c (buffer, '\t');
+  len += 1;
+  g_free (escape);
+
   /* message_data: startup_id */
   if (message_data->startup_id)
     escape = g_strescape (message_data->startup_id, NULL);
@@ -94,8 +102,8 @@ unique_message_data_unpack (UniqueApp   *app,
   gint screen_n;
   UniqueMessageData *message_data;
 
-  blocks = g_strsplit (data, "\t", 5);
-  if (g_strv_length (blocks) != 5)
+  blocks = g_strsplit (data, "\t", 6);
+  if (g_strv_length (blocks) != 6)
     goto error;
 
   if (command_id)
@@ -120,13 +128,15 @@ unique_message_data_unpack (UniqueApp   *app,
       message_data->length = 0;
     }
 
-  screen_n = g_ascii_strtoll (blocks[3], NULL, 10);
+  screen_n = g_ascii_strtoll (blocks[2], NULL, 10);
   display = gdk_display_get_default ();
   message_data->screen = gdk_display_get_screen (display, screen_n);
 
-  if (strcmp (blocks[3], "none") != 0)
+  message_data->workspace = g_ascii_strtoll (blocks[3], NULL, 10);
+
+  if (strcmp (blocks[4], "none") != 0)
     {
-      buf = g_strcompress (blocks[3]);
+      buf = g_strcompress (blocks[4]);
       message_data->startup_id = g_strdup (buf);
       g_free (buf);
     }
@@ -134,7 +144,7 @@ unique_message_data_unpack (UniqueApp   *app,
     message_data->startup_id = NULL;
 
   if (time_)
-    *time_ = (guint) g_ascii_strtoll (blocks[4], NULL, 10);
+    *time_ = (guint) g_ascii_strtoll (blocks[5], NULL, 10);
 
 error:
   g_strfreev (blocks);

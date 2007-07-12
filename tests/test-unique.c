@@ -46,9 +46,10 @@ app_message_cb (UniqueApp         *app,
   screen = unique_message_data_get_screen (message_data);
   startup_id = unique_message_data_get_startup_id (message_data);
 
-  g_print ("Message received from screen: %d, startup-id: %s\n",
+  g_print ("Message received from screen: %d, startup-id: %s, workspace: %d\n",
            gdk_screen_get_number (screen),
-           startup_id);
+           startup_id,
+           unique_message_data_get_workspace (message_data));
   
   switch (command)
     {
