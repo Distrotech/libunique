@@ -469,8 +469,10 @@ unique_app_new (const gchar *name,
     id = g_strdup (startup_id);
   else
     {
-      id = g_strdup (g_getenv ("DESKTOP_STARTUP_ID"));
-      if (!id)
+      startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+      if (startup_id && startup_id[0] != '\0')
+        id = g_strdup (startup_id);
+      else
         {
           GdkDisplay *display;
           guint32 timestamp;
@@ -599,6 +601,7 @@ unique_app_send_message (UniqueApp         *app,
   g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
   priv = app->priv;
+  backend = priv->backend;
   
   if (message_data)
     message = unique_message_data_copy (message_data);
@@ -613,7 +616,7 @@ unique_app_send_message (UniqueApp         *app,
    * either testing or you are doing something very wrong, so there's
    * no need to run around screaming bloody murder.
    */
-  if (G_UNLIKELY (!app->is_running))
+  if (G_UNLIKELY (!priv->is_running))
     return UNIQUE_RESPONSE_INVALID;
   else
     response = unique_backend_send_message (backend, command_id, message, now);
