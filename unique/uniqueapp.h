@@ -80,6 +80,13 @@ typedef struct _UniqueApp               UniqueApp;
 typedef struct _UniqueAppPrivate        UniqueAppPrivate;
 typedef struct _UniqueAppClass          UniqueAppClass;
 
+/**
+ * UniqueApp:
+ *
+ * The base class for every single instance application. The #UniqueApp
+ * structure contains only private data and should be manipulated only
+ * with the provided functions.
+ */
 struct _UniqueApp
 {
   /*< private >*/
@@ -88,17 +95,25 @@ struct _UniqueApp
   UniqueAppPrivate *priv;
 };
 
+/**
+ * UniqueAppClass:
+ * @message_received: Signal class closure for the UniqueApp::message_received
+ *   signal.
+ *
+ * Base class for every single instance application.
+ */
 struct _UniqueAppClass
 {
+  /*< private >*/
   GObjectClass parent_class;
 
+  /*< public >*/
   UniqueResponse (* message_received) (UniqueApp         *app,
                                        gint               command,
                                        UniqueMessageData *message_data,
                                        guint              time_);
   
   /*< private >*/
-
   /* padding */
   void (*_unique_reserved1) (void);
   void (*_unique_reserved2) (void);

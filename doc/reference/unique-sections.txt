@@ -51,10 +51,6 @@ unique_response_get_type
 </SECTION>
 
 <SECTION>
-<FILE>unique</FILE>
-</SECTION>
-
-<SECTION>
 <FILE>unique-message</FILE>
 UniqueMessageData
 unique_message_data_new
@@ -67,6 +63,7 @@ unique_message_data_set_uris
 unique_message_data_get_uris
 unique_message_data_get_screen
 unique_message_data_get_startup_id
+unique_message_data_get_workspace
 <SUBSECTION Private>
 UNIQUE_TYPE_MESSAGE_DATA
 unique_message_data_get_type
