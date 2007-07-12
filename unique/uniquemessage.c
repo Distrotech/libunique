@@ -128,11 +128,14 @@ unique_message_data_free (UniqueMessageData *message_data)
 
 /**
  * unique_message_data_set:
- * @message_data: FIXME
- * @data: FIXME
- * @length: FIXME
+ * @message_data: a #UniqueMessageData
+ * @data: binary blob to set, or %NULL
+ * @length: length of @data
  *
- * FIXME
+ * Sets @data as the payload of @message_data. Any other data is removed
+ * from the message data. If @data is %NULL, a @length of -1 will unset
+ * the payload, while a @length of 0 will set the payload to an empty
+ * string.
  */
 void
 unique_message_data_set (UniqueMessageData *message_data,
@@ -252,8 +255,7 @@ message_data_set_text_plain (UniqueMessageData *message_data,
       return FALSE;
     }
 
-  unique_message_data_set (message_data,
-                           (guchar *) result, strlen (result));
+  unique_message_data_set (message_data, (guchar *) result, strlen (result));
   
   return TRUE;
 }
@@ -306,12 +308,14 @@ message_data_get_text_plain (UniqueMessageData *message_data)
 /**
  * unique_message_data_set_text:
  * @message_data: a #UniqueMessageData
- * @str: FIXME
- * @length: FIXME
+ * @str: plain text to be set as payload
+ * @length: length of the text, or -1
  *
- * FIXME
+ * Sets @str as the plain text payload of @message_data, converting it
+ * to UTF-8 if needed. If @length is -1, the length of the string will
+ * be used.
  *
- * Return value: FIXME
+ * Return value: %TRUE if the text was successfully converted to UTF-8
  */
 gboolean
 unique_message_data_set_text (UniqueMessageData *message_data,
@@ -332,11 +336,11 @@ unique_message_data_set_text (UniqueMessageData *message_data,
 
 /**
  * unique_message_data_get_text:
- * @message_data: FIXME
+ * @message_data: a #UniqueMessageData
  *
- * FIXME
+ * Returns the text set using unique_message_data_set_text().
  *
- * Return value: FIXME
+ * Return value: an allocated string.
  */
 gchar *
 unique_message_data_get_text (UniqueMessageData *message_data)
@@ -347,11 +351,11 @@ unique_message_data_get_text (UniqueMessageData *message_data)
 /**
  * unique_message_data_set_uris:
  * @message_data: a #UniqueMessageData
- * @uris: FIXME
+ * @uris: a list of URIs in a string vector
  *
- * FIXME
+ * Converts @uris to a valid URI list and sets it as payload of @message_data.
  *
- * Return value: FIXME
+ * Return value: %TRUE if the URIs were successfully converted
  */
 gboolean
 unique_message_data_set_uris (UniqueMessageData  *message_data,
@@ -387,11 +391,12 @@ unique_message_data_set_uris (UniqueMessageData  *message_data,
 
 /**
  * unique_message_data_get_uris:
- * @message_data: FIXME
+ * @message_data: a #UniqueMessageData
  *
- * FIXME
+ * Returns a string vector containing the URIs set with
+ * unique_message_data_set_uris().
  *
- * Return value: FIXME
+ * Return value: an allocated list of URIs. Use g_strfreev() to free it.
  */
 gchar **
 unique_message_data_get_uris (UniqueMessageData *message_data)
@@ -417,7 +422,9 @@ unique_message_data_get_uris (UniqueMessageData *message_data)
  * unique_message_data_get_screen:
  * @message_data: a #UniqueMessageData
  *
- * FIXME
+ * Returns a pointer to the screen from where the message came. You
+ * can use gtk_widget_set_screen() to move windows or dialogs to the
+ * right screen.
  *
  * Return value: a #GdkScreen
  */
