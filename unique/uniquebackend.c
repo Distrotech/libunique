@@ -242,7 +242,7 @@ unique_backend_send_message (UniqueBackend     *backend,
 }
 
 #include "bacon/uniquebackend-bacon.h"
-#ifdef UNIQUE_HAVE_DBUS
+#ifdef HAVE_DBUS
 #include "dbus/uniquebackend-dbus.h"
 #endif
 
@@ -271,10 +271,10 @@ unique_backend_create (void)
       if (strcmp (backend_name, "bacon") == 0)
         backend_gtype = unique_backend_bacon_get_type ();
 
-#ifdef UNIQUE_HAVE_DBUS
+#ifdef HAVE_DBUS
       if (strcmp (backend_name, "dbus") == 0)
         backend_gtype = unique_backend_dbus_get_type ();
-#endif /* UNIQUE_HAVE_DBUS */
+#endif /* HAVE_DBUS */
     }
 
   return g_object_new (backend_gtype, NULL);

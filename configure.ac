@@ -67,19 +67,19 @@ AM_PROG_CC_STDC
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 GLIB_REQUIRED=2.12.0
-GTK_REQUIRED=2.11.0
+GTK_REQUIRED=2.6.0
 DBUS_GLIB_REQUIRED=0.70
 
 PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= $GLIB_REQUIRED dnl
                           gtk+-2.0 >= $GTK_REQUIRED)
 
-# check if we are compiling with D-Bus support
+dnl D-Bus backend dependencies
 if $PKG_CONFIG --atleast-version $DBUS_GLIB_REQUIRED dbus-glib-1; then
   have_dbus=yes
   PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED)
   AC_SUBST(DBUS_CFLAGS)
   AC_SUBST(DBUS_LIBS)
-  AC_DEFINE([UNIQUE_HAVE_DBUS], [1], [Building with D-Bus support]) 
+  AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support]) 
   AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
 else
   have_dbus=no
@@ -87,6 +87,12 @@ fi
 
 AM_CONDITIONAL([HAVE_DBUS], [test x$have_dbus = xyes])
 
+dnl Bacon backend
+dnl This is the fallback backend, so we *need* these headers and functions
+dnl even if we end up using D-Bus
+AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h])
+
+dnl Choose the default backend
 if test x$have_dbus = xyes; then
   UNIQUE_DEFAULT_BACKEND=dbus
 else
