@@ -17,6 +17,7 @@ struct _UniqueMessageData
 
   GdkScreen *screen;
   gchar *startup_id;
+  guint workspace;
 };
 
 /* GObject ought to export symbols like these */

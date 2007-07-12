@@ -453,3 +453,19 @@ unique_message_data_get_startup_id (UniqueMessageData *message_data)
 
   return message_data->startup_id;
 }
+
+/**
+ * unique_message_data_get_workspace:
+ * @message_data: a #UniqueMessageData
+ *
+ * Retrieves the workspace number from where the message came.
+ *
+ * Return value: the workspace number
+ */
+guint
+unique_message_data_get_workspace (UniqueMessageData *message_data)
+{
+  g_return_val_if_fail (message_data != NULL, 0);
+
+  return message_data->workspace;
+}

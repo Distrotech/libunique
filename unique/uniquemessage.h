@@ -49,6 +49,7 @@ gchar **              unique_message_data_get_uris       (UniqueMessageData *mes
 
 GdkScreen *           unique_message_data_get_screen     (UniqueMessageData *message_data);
 G_CONST_RETURN gchar *unique_message_data_get_startup_id (UniqueMessageData *message_data);
+guint                 unique_message_data_get_workspace  (UniqueMessageData *message_data);
 
 G_END_DECLS
 
