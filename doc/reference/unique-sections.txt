@@ -10,6 +10,7 @@ unique_backend_get_startup_id
 unique_backend_set_startup_id
 unique_backend_get_screen
 unique_backend_set_screen
+unique_backend_get_workspace
 unique_backend_request_name
 unique_backend_send_message
 <SUBSECTION Standard>
@@ -31,6 +32,7 @@ UniqueAppClass
 unique_app_new
 unique_app_new_with_commands
 unique_app_add_command
+unique_app_watch_window
 unique_app_is_running
 UniqueResponse
 unique_app_send_message

@@ -213,7 +213,7 @@ main (int argc, char *argv[])
       
       g_object_unref (app);
 
-      exit ((response == UNIQUE_RESPONSE_OK));
+      return (response == UNIQUE_RESPONSE_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
     }
   else
     {
@@ -223,6 +223,7 @@ main (int argc, char *argv[])
       gtk_window_set_default_size (GTK_WINDOW (main_window), 400, 300);
       gtk_container_set_border_width (GTK_CONTAINER (main_window), 12);
 
+      unique_app_watch_window (app, GTK_WINDOW (main_window));
       g_signal_connect (app, "message-received",
                         G_CALLBACK (app_message_cb), NULL);
 

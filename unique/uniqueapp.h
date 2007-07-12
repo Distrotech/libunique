@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 #include <unique/uniquemessage.h>
+#include <gtk/gtkwindow.h>
 
 G_BEGIN_DECLS
 
@@ -68,7 +69,7 @@ typedef enum { /*< prefix=UNIQUE >*/
  * return to the caller which sent a command.
  */
 typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
-  UNIQUE_RESPONSE_INVALID,
+  UNIQUE_RESPONSE_INVALID = 0,
   UNIQUE_RESPONSE_OK,
   UNIQUE_RESPONSE_CANCEL,
   UNIQUE_RESPONSE_FAIL
@@ -128,7 +129,7 @@ UniqueApp *    unique_app_new                 (const gchar       *name,
 UniqueApp *    unique_app_new_with_commands   (const gchar       *name,
                                                const gchar       *startup_id,
                                                const gchar       *first_command_name,
-                                               ...);
+                                               ...) G_GNUC_NULL_TERMINATED;
 void           unique_app_add_command         (UniqueApp         *app,
                                                const gchar       *command_name,
                                                gint               command_id);

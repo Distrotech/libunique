@@ -55,6 +55,7 @@ struct _UniqueBackend
   gchar *startup_id;
 
   GdkScreen *screen;
+  guint workspace;
 };
 
 /**
@@ -102,6 +103,8 @@ void                  unique_backend_set_startup_id (UniqueBackend     *backend,
 GdkScreen *           unique_backend_get_screen     (UniqueBackend     *backend);
 void                  unique_backend_set_screen     (UniqueBackend     *backend,
                                                      GdkScreen         *screen);
+guint                 unique_backend_get_workspace  (UniqueBackend     *backend);
+
 gboolean              unique_backend_request_name   (UniqueBackend     *backend);
 UniqueResponse        unique_backend_send_message   (UniqueBackend     *backend,
                                                      gint               command_id,

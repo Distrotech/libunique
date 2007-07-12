@@ -59,8 +59,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
-#include <X11/Xatom.h>
-
 #include "uniquebackend.h"
 #include "uniqueapp.h"
 #include "uniquemarshal.h"
@@ -418,40 +416,6 @@ unique_app_init (UniqueApp *app)
   priv->is_running = FALSE;
 }
 
-static guint
-get_current_workspace (GdkScreen *screen)
-{
-  GdkDisplay *display;
-  GdkWindow *root_win;
-  Atom _net_current_desktop, type;
-  int format;
-  unsigned long n_items, bytes_after;
-  unsigned char *data_return = 0;
-  guint ret = 0;
-
-  display = gdk_screen_get_display (screen);
-  root_win = gdk_screen_get_root_window (screen);
-
-  _net_current_desktop =
-    gdk_x11_get_xatom_by_name_for_display (display, "_NET_CURRENT_DESKTOP");
-
-  XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display),
-                      GDK_WINDOW_XID (root_win),
-                      _net_current_desktop,
-                      0, G_MAXLONG,
-                      False, XA_CARDINAL,
-                      &type, &format, &n_items, &bytes_after,
-                      &data_return);
-
-  if (type == XA_CARDINAL && format == 32 && n_items > 0)
-    {
-      ret = (guint) data_return[0];
-      XFree (data_return);
-    }
-
-  return ret;
-}
-
 /* taken from nautilus */
 static guint32
 slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
@@ -675,7 +639,8 @@ unique_app_send_message (UniqueApp         *app,
 
   message->screen = unique_backend_get_screen (backend);
   message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
-  message->workspace = get_current_workspace (message->screen);
+  message->workspace = unique_backend_get_workspace (backend);
+  
   now = (guint) time (NULL);
 
   /* This is a pathological case, and if you're doing this you're
@@ -713,6 +678,7 @@ unique_app_emit_message (UniqueApp         *app,
   UniqueResponse response;
 
   g_return_val_if_fail (UNIQUE_IS_APP (app), UNIQUE_RESPONSE_INVALID);
+  g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
   g_signal_emit (app, unique_app_signals[MESSAGE_RECEIVED], 0,
                  command_id,
