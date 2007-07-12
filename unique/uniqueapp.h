@@ -23,7 +23,6 @@
 #define __UNIQUE_APP_H__
 
 #include <glib-object.h>
-#include <gtk/gtkwindow.h>
 #include <unique/uniquemessage.h>
 
 G_BEGIN_DECLS
@@ -107,7 +106,7 @@ struct _UniqueAppClass
   void (*_unique_reserved4) (void);
 };
 
-GType           unique_app_get_type           (void) G_GNUC_CONST;
+GType          unique_app_get_type            (void) G_GNUC_CONST;
 
 UniqueApp *    unique_app_new                 (const gchar       *name,
                                                const gchar       *startup_id);

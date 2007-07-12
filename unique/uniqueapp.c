@@ -568,13 +568,21 @@ unique_app_is_running (UniqueApp *app)
 
 /**
  * unique_app_send_message:
- * @app: FIXME
- * @command_id: FIXME
- * @message_data: FIXME
+ * @app: a #UniqueApp
+ * @command_id: command to send
+ * @message_data: #UniqueMessageData, or %NULL
  *
- * FIXME
+ * Sends @command to a running instance of @app. If you need to pass data
+ * to the instance, you should create a #UniqueMessageData object using
+ * unique_message_data_new() and then fill it with the data you intend to
+ * pass.
  *
- * Return value: FIXME
+ * The running application will receive a UniqueApp::message-received signal
+ * and will call the various signal handlers attach to it. If any handler
+ * returns a #UniqueResponse different than %UNIQUE_RESPONSE_OK, the emission
+ * will stop.
+ *
+ * Return value: The #UniqueResponse returned by the running instance
  */
 UniqueResponse
 unique_app_send_message (UniqueApp         *app,
@@ -591,8 +599,7 @@ unique_app_send_message (UniqueApp         *app,
   g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
   priv = app->priv;
-  backend = priv->backend;
-
+  
   if (message_data)
     message = unique_message_data_copy (message_data);
   else
@@ -601,10 +608,15 @@ unique_app_send_message (UniqueApp         *app,
   message->screen = unique_backend_get_screen (backend);
   message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
   now = (guint) time (NULL);
-  
-  response = unique_backend_send_message (backend,
-                                          command_id, message,
-                                          now);
+
+  /* This is a pathological case, and if you're doing this you're
+   * either testing or you are doing something very wrong, so there's
+   * no need to run around screaming bloody murder.
+   */
+  if (G_UNLIKELY (!app->is_running))
+    return UNIQUE_RESPONSE_INVALID;
+  else
+    response = unique_backend_send_message (backend, command_id, message, now);
 
   unique_message_data_free (message);
 
