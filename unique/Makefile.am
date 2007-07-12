@@ -65,6 +65,8 @@ libunique_1_0_la_LIBADD = 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
 
+libunique_1_0_la_LDFLAGS = $(LDADD)
+
 uniquemarshal.h: stamp-uniquemarshal.h
 	@true
 stamp-uniquemarshal.h: uniquemarshal.list Makefile

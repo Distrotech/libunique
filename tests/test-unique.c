@@ -45,6 +45,11 @@ app_message_cb (UniqueApp         *app,
 
   screen = unique_message_data_get_screen (message_data);
   startup_id = unique_message_data_get_startup_id (message_data);
+
+  g_print ("Message received from screen: %d, startup-id: %s, workspace: %d\n",
+           gdk_screen_get_number (screen),
+           startup_id,
+           unique_message_data_get_workspace (message_data));
   
   switch (command)
     {
@@ -78,6 +83,10 @@ app_message_cb (UniqueApp         *app,
       title = g_strdup ("Received the FOO command");
       message = unique_message_data_get_text (message_data);
       break;
+    case COMMAND_BAR:
+      title = g_strdup ("Received the BAR command");
+      message = g_strdup ("Thid command doesn't do anything special");
+      break;
     default:
       break;
     }
@@ -95,8 +104,10 @@ app_message_cb (UniqueApp         *app,
   
   gtk_window_present (GTK_WINDOW (main_window));
   gtk_window_set_screen (GTK_WINDOW (main_window), screen);
+#if GTK_CHECK_VERSION (2, 12, 0)
   gtk_window_set_startup_id (GTK_WINDOW (main_window), startup_id);
-  
+#endif
+
   gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
 
@@ -185,6 +196,8 @@ main (int argc, char *argv[])
           message = unique_message_data_new ();
           unique_message_data_set (message, (const guchar *) "bar", 3);
         }
+      else
+        command = COMMAND_BAR;
       
       if (message)
         {

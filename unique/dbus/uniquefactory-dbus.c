@@ -72,7 +72,8 @@ unique_factory_dbus_send_message (UniqueFactoryDBus  *factory,
   data->length = g_value_get_uint (g_value_array_get_nth (message_IN, 1));
   screen_n = g_value_get_uint (g_value_array_get_nth (message_IN, 2));
   data->screen = gdk_display_get_screen (display, screen_n);
-  data->startup_id = g_value_dup_string (g_value_array_get_nth (message_IN, 3));
+  data->workspace = g_value_get_uint (g_value_array_get_nth (message_IN, 3));
+  data->startup_id = g_value_dup_string (g_value_array_get_nth (message_IN, 4));
 
   response = unique_app_emit_message (factory->parent, command, data, time_IN);
   unique_message_data_free (data);

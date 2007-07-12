@@ -1,7 +1,7 @@
 # versioning
 m4_define([unique_major_version], [0])
 m4_define([unique_minor_version], [9])
-m4_define([unique_micro_version], [2])
+m4_define([unique_micro_version], [3])
 m4_define([unique_version],
           [unique_major_version.unique_minor_version.unique_micro_version])
 m4_define([unique_api_version],
@@ -9,7 +9,7 @@ m4_define([unique_api_version],
 
 # if functions have been added, set to 0; otherwise, increment
 # with every release
-m4_define([unique_interface_age], [1])
+m4_define([unique_interface_age], [0])
 m4_define([unique_binary_age],
           [m4_eval(100 * unique_minor_version + unique_micro_version)])
 # This is the X.Y used in -lunique-FOO-X.Y
@@ -67,19 +67,19 @@ AM_PROG_CC_STDC
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 GLIB_REQUIRED=2.12.0
-GTK_REQUIRED=2.11.0
+GTK_REQUIRED=2.6.0
 DBUS_GLIB_REQUIRED=0.70
 
 PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= $GLIB_REQUIRED dnl
                           gtk+-2.0 >= $GTK_REQUIRED)
 
-# check if we are compiling with D-Bus support
+dnl D-Bus backend dependencies
 if $PKG_CONFIG --atleast-version $DBUS_GLIB_REQUIRED dbus-glib-1; then
   have_dbus=yes
   PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED)
   AC_SUBST(DBUS_CFLAGS)
   AC_SUBST(DBUS_LIBS)
-  AC_DEFINE([UNIQUE_HAVE_DBUS], [1], [Building with D-Bus support]) 
+  AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support]) 
   AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
 else
   have_dbus=no
@@ -87,6 +87,12 @@ fi
 
 AM_CONDITIONAL([HAVE_DBUS], [test x$have_dbus = xyes])
 
+dnl Bacon backend
+dnl This is the fallback backend, so we *need* these headers and functions
+dnl even if we end up using D-Bus
+AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h])
+
+dnl Choose the default backend
 if test x$have_dbus = xyes; then
   UNIQUE_DEFAULT_BACKEND=dbus
 else

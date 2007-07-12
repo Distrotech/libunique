@@ -161,6 +161,12 @@ create_value_array (UniqueMessageData *message_data)
   g_value_array_append (retval, &item);
   g_value_unset (&item);
 
+  /* workspace */
+  g_value_init (&item, G_TYPE_UINT);
+  g_value_set_uint (&item, message_data->workspace);
+  g_value_array_append (retval, &item);
+  g_value_unset (&item);
+
   /* startup-id */
   g_value_init (&item, G_TYPE_STRING);
   g_value_set_string (&item, message_data->startup_id);

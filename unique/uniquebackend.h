@@ -38,6 +38,12 @@ G_BEGIN_DECLS
 typedef struct _UniqueBackend           UniqueBackend;
 typedef struct _UniqueBackendClass      UniqueBackendClass;
 
+/**
+ * UniqueBackend:
+ *
+ * The #UniqueBackend structure contains only private data and should only
+ * be accessed using the provided functions.
+ */
 struct _UniqueBackend
 {
   GObject parent_instance;
@@ -51,10 +57,21 @@ struct _UniqueBackend
   GdkScreen *screen;
 };
 
+/**
+ * UniqueBackendClass:
+ * @request_name: This method should be used to request the name for the
+ *   instance set using unique_backend_set_name()
+ * @send_message: This method should be used to send a message to a running
+ *   instance
+ *
+ * The class that should be implemented by every backend for #UniqueApp.
+ */
 struct _UniqueBackendClass
 {
+  /*< private >*/
   GObjectClass parent_instance;
 
+  /*< public >*/
   /* vtable, not signals */
   gboolean       (* request_name) (UniqueBackend     *backend);
   UniqueResponse (* send_message) (UniqueBackend     *backend,

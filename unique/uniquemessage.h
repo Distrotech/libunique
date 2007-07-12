@@ -29,6 +29,15 @@ G_BEGIN_DECLS
 
 #define UNIQUE_TYPE_MESSAGE_DATA        (unique_message_data_get_type ())
 
+/**
+ * UniqueMessageData:
+ *
+ * #UniqueMessageData contains the data passed between instances of
+ * a #UniqueApp. The #UniqueMessageData structure received inside
+ * the signal handlers for UniqueApp::message-received is guaranteed
+ * to contain the #GdkScreen, the workspace and the startup notification
+ * id of the instance sending the message.
+ */
 typedef struct _UniqueMessageData       UniqueMessageData;
 
 GType                 unique_message_data_get_type       (void) G_GNUC_CONST;
@@ -49,6 +58,7 @@ gchar **              unique_message_data_get_uris       (UniqueMessageData *mes
 
 GdkScreen *           unique_message_data_get_screen     (UniqueMessageData *message_data);
 G_CONST_RETURN gchar *unique_message_data_get_startup_id (UniqueMessageData *message_data);
+guint                 unique_message_data_get_workspace  (UniqueMessageData *message_data);
 
 G_END_DECLS
 
