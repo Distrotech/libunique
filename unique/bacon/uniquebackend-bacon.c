@@ -489,9 +489,3 @@ unique_backend_bacon_init (UniqueBackendBacon *backend_bacon)
   backend_bacon->socket_fd = -1;
   backend_bacon->socket_path = NULL;
 }
-
-GType
-unique_backend_impl_get_type (void)
-{
-  return unique_backend_bacon_get_type ();
-}
