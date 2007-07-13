@@ -198,9 +198,14 @@ unique_backend_x11_request_name (UniqueBackend *backend)
 {
   UniqueBackendX11 *backend_x11 = UNIQUE_BACKEND_X11 (backend);
   GdkDisplay *display;
+  GdkScreen *screen;
+  GdkWindow *root_window;
   gboolean retval;
 
+  /* the selection is per display, on the default screen */
   display = gdk_screen_get_display (backend->screen);
+  screen = gdk_display_get_default_screen (display);
+  root_window = gdk_screen_get_root_window (screen);
 
   if (!backend_x11->xdisplay)
     backend_x11->xdisplay = GDK_DISPLAY_XDISPLAY (display);
@@ -210,22 +215,22 @@ unique_backend_x11_request_name (UniqueBackend *backend)
                                                backend->name,
                                                False);
 
+  if (!backend_x11->root_xwindow)
+    backend_x11->root_xwindow = GDK_WINDOW_XID (root_window);
+
   XGrabServer (GDK_DISPLAY_XDISPLAY (display));
 
   if (XGetSelectionOwner (backend_x11->xdisplay, backend_x11->selection_atom))
     retval = FALSE;
   else
     {
-      GdkWindow *root_window;
       gint err;
-      
-      root_window = gdk_screen_get_root_window (backend->screen);
 
       gdk_error_trap_push ();
 
       XSetSelectionOwner (backend_x11->xdisplay,
                           backend_x11->selection_atom,
-                          GDK_WINDOW_XID (root_window),
+                          backend_x11->root_xwindow,
                           GDK_CURRENT_TIME);
 
       err = gdk_error_trap_pop ();
@@ -248,6 +253,12 @@ unique_backend_x11_send_message (UniqueBackend     *backend,
                                  UniqueMessageData *message_data,
                                  guint              time_)
 {
+  UniqueBackendX11 *backend_x11;
+
+  backend_x11 = UNIQUE_BACKEND_X11 (backend);
+
+
+
   return UNIQUE_RESPONSE_OK;
 }
 
