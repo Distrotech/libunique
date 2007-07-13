@@ -1,12 +1,12 @@
 NULL =
 
-SUBDIRS = bacon
+SUBDIRS = bacon x11
 
 if HAVE_DBUS
 SUBDIRS += dbus
 endif
 
-DIST_SUBDIRS = bacon dbus
+DIST_SUBDIRS = bacon dbus x11
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique\"				\
@@ -40,7 +40,9 @@ unique_sources_priv_h = uniqueinternals.h
 
 BUILT_SOURCES = uniquemarshal.h uniquemarshal.c
 
-unique_backend_libs = $(top_builddir)/unique/bacon/libunique-bacon.la
+unique_backend_libs = \
+	$(top_builddir)/unique/bacon/libunique-bacon.la \
+	$(top_builddir)/unique/x11/libunique-x11.la
 
 if HAVE_DBUS
 unique_backend_libs += $(top_builddir)/unique/dbus/libunique-dbus.la

@@ -155,6 +155,7 @@ AC_CONFIG_FILES([
         unique/uniqueversion.h
         unique/bacon/Makefile
         unique/dbus/Makefile
+        unique/x11/Makefile
         tests/Makefile
         po/Makefile.in
 ])
