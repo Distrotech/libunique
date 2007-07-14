@@ -68,7 +68,7 @@ typedef enum { /*< prefix=UNIQUE >*/
  * return to the caller which sent a command.
  */
 typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
-  UNIQUE_RESPONSE_INVALID,
+  UNIQUE_RESPONSE_INVALID = 0,
   UNIQUE_RESPONSE_OK,
   UNIQUE_RESPONSE_CANCEL,
   UNIQUE_RESPONSE_FAIL
