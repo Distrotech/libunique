@@ -142,14 +142,23 @@ find_file_with_pattern (const gchar *path,
 static gchar *
 find_socket_file (const gchar *name)
 {
+  const gchar *token;
   gchar *basename, *path;
   gchar *tmpdir;
   
   /* socket file name template:
-   *   /tmp/unique/org.gnome.YourApplication.hostname.process-id
+   *   /tmp/unique/org.gnome.YourApplication.token.process-id
    */
+  token = g_getenv ("DISPLAY");
+  if (!token || *token == '\0')
+    {
+      g_warning ("The $DISPLAY environment variable is not set. You must "
+                 "set it in order for the application '%s' to run correctly.",
+                 g_get_prgname ());
+      return NULL;
+    }
 
-  basename = g_strconcat (name, ".", g_get_host_name (), ".*", NULL);
+  basename = g_strconcat (name, ".", token, ".*", NULL);
   tmpdir = g_build_path (G_DIR_SEPARATOR_S,
                          g_get_tmp_dir (),
                          "unique",
@@ -177,10 +186,7 @@ find_socket_file (const gchar *name)
 
   g_free (basename);
 
-  basename = g_strdup_printf ("%s.%s.%d",
-                              name,
-                              g_get_host_name (),
-                              getpid ());
+  basename = g_strdup_printf ("%s.%s.%d", name, token, getpid ());
   
   path = g_build_filename (tmpdir, basename, NULL);
 
@@ -488,10 +494,4 @@ unique_backend_bacon_init (UniqueBackendBacon *backend_bacon)
 
   backend_bacon->socket_fd = -1;
   backend_bacon->socket_path = NULL;
-}
-
-GType
-unique_backend_impl_get_type (void)
-{
-  return unique_backend_bacon_get_type ();
 }
