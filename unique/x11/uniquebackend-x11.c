@@ -188,6 +188,29 @@ fail:
 #endif
 
 static void
+set_win_property (Display      *display,
+                  Window        win,
+                  Atom          property,
+                  const guchar *value,
+                  gint          length)
+{
+  gint err;
+
+  gdk_error_trap_push ();
+
+  XChangeProperty (display, win, property,
+                   XA_STRING, 8,
+                   PropModeReplace,
+                   value, length);
+
+  err = gdk_error_trap_pop ();
+
+  if (err != Success)
+    g_warning ("X error: %d", err);
+}
+
+
+static void
 unique_backend_x11_finalize (GObject *gobject)
 {
   G_OBJECT_CLASS (unique_backend_x11_parent_class)->finalize (gobject); 
@@ -200,6 +223,7 @@ unique_backend_x11_request_name (UniqueBackend *backend)
   GdkDisplay *display;
   GdkScreen *screen;
   GdkWindow *root_window;
+  Window owner;
   gboolean retval;
 
   /* the selection is per display, on the default screen */
@@ -220,8 +244,15 @@ unique_backend_x11_request_name (UniqueBackend *backend)
 
   XGrabServer (GDK_DISPLAY_XDISPLAY (display));
 
-  if (XGetSelectionOwner (backend_x11->xdisplay, backend_x11->selection_atom))
-    retval = FALSE;
+  /* XGetSelectionOwner will return None if this is the first instance
+   * requesting the selection name, otherwise it will return the root
+   * window of the default display.
+   */
+  owner = XGetSelectionOwner (backend_x11->xdisplay, backend_x11->selection_atom);
+  if (owner)
+    {
+      retval = FALSE;
+    }
   else
     {
       gint err;
@@ -254,10 +285,17 @@ unique_backend_x11_send_message (UniqueBackend     *backend,
                                  guint              time_)
 {
   UniqueBackendX11 *backend_x11;
+  Window owner;
 
   backend_x11 = UNIQUE_BACKEND_X11 (backend);
 
+  owner = XGetSelectionOwner (backend_x11->xdisplay, backend_x11->selection_atom);
+  if (!owner || owner != backend_x11->root_xwindow)
+    return UNIQUE_RESPONSE_INVALID;
 
+  /* we need to grab the server so we can prevent other single instance
+   * applications to overwrite our properties with their own.
+   */
 
   return UNIQUE_RESPONSE_OK;
 }
