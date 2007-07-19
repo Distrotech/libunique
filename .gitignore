@@ -22,3 +22,4 @@ stamp-h1
 unique-1.0.pc
 unique-dbus-1.0.pc
 unique.pc
+config.h.in~

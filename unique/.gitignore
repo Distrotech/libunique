@@ -15,3 +15,4 @@ uniquemarshal.o
 uniquemessage.lo
 uniquemessage.o
 uniqueversion.h
+libunique-1.0.la
