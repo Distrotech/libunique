@@ -165,15 +165,6 @@ message_accumulator (GSignalInvocationHint *ihint,
   return continue_emission;
 }
 
-static UniqueResponse
-unique_app_real_message_received (UniqueApp         *app,
-                                  gint               command_id,
-                                  UniqueMessageData *message_data,
-                                  guint              time_)
-{
-  return UNIQUE_RESPONSE_OK;
-}
-
 static GObject *
 unique_app_constructor (GType                  gtype,
                         guint                  n_params,
