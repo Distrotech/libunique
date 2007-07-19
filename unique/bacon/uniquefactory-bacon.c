@@ -152,9 +152,8 @@ connection_cb (GIOChannel   *channel,
                                          command_id, message_data,
                                          time_);
   
-  response = g_strconcat (unique_response_to_string (response_id),
-                          "\r\n", NULL);
-
+  response = g_strconcat (unique_response_to_string (response_id), "\r\n", NULL);
+  
   write_error = NULL;
   res = g_io_channel_write_chars (factory->channel,
                                   response, -1,
