@@ -498,18 +498,25 @@ unique_app_new (const gchar *name,
     id = g_strdup (startup_id);
   else
     {
-      startup_id = g_getenv ("DESKTOP_STARTUP_ID");
-      if (startup_id && startup_id[0] != '\0')
-        id = g_strdup (startup_id);
-      else
+      GdkDisplay *display = gdk_display_get_default ();
+
+      /* try and get the startup notification id from GDK, the environment
+       * or, if everything else failed, fake one.
+      */
+      startup_id = gdk_x11_display_get_startup_notification_id (display);
+
+      if (!startup_id || startup_id[0] == '\0')
+        startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+
+      if (!startup_id || startup_id[0] == '\0')
         {
-          GdkDisplay *display;
           guint32 timestamp;
 
-          display = gdk_display_get_default ();
           timestamp = slowly_and_stupidly_obtain_timestamp (display);
           id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
         }
+
+      id = g_strdup (startup_id);
     }
 
   retval = g_object_new (UNIQUE_TYPE_APP,
