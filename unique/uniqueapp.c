@@ -673,7 +673,7 @@ unique_app_send_message (UniqueApp         *app,
 }
 
 /*
- * unique_app_emit_message:
+ * unique_app_emit_message_received:
  * @app: a #UniqueApp
  * @command_id: a command
  * @message_data: a #UniqueMessageData
@@ -685,10 +685,10 @@ unique_app_send_message (UniqueApp         *app,
  * Return value: the response accumulated from the signal
  */
 UniqueResponse
-unique_app_emit_message (UniqueApp         *app,
-                         gint               command_id,
-                         UniqueMessageData *message_data,
-                         guint              time_)
+unique_app_emit_message_received (UniqueApp         *app,
+                                  gint               command_id,
+                                  UniqueMessageData *message_data,
+                                  guint              time_)
 {
   UniqueResponse response;
 

@@ -33,10 +33,10 @@ struct _UniqueMessageData
 /* this method emits the UniqueApp::message-received signal on app; it
  * should be called by the backend on its parent UniqueApp instance.
  */
-UniqueResponse unique_app_emit_message      (UniqueApp         *app,
-                                             gint               command_id,
-                                             UniqueMessageData *message,
-                                             guint              time_);
+UniqueResponse unique_app_emit_message_received (UniqueApp         *app,
+                                                 gint               command_id,
+                                                 UniqueMessageData *message,
+                                                 guint              time_);
 
 /* transform a command or a response id to something more readable,
  * and then back into an id

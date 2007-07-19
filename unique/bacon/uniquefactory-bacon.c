@@ -148,9 +148,9 @@ connection_cb (GIOChannel   *channel,
       goto finished;
     }
 
-  response_id = unique_app_emit_message (factory->parent,
-                                         command_id, message_data,
-                                         time_);
+  response_id = unique_app_emit_message_received (factory->parent,
+                                                  command_id, message_data,
+                                                  time_);
   
   response = g_strconcat (unique_response_to_string (response_id), "\r\n", NULL);
   

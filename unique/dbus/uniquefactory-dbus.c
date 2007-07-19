@@ -75,7 +75,7 @@ unique_factory_dbus_send_message (UniqueFactoryDBus  *factory,
   data->workspace = g_value_get_uint (g_value_array_get_nth (message_IN, 3));
   data->startup_id = g_value_dup_string (g_value_array_get_nth (message_IN, 4));
 
-  response = unique_app_emit_message (factory->parent, command, data, time_IN);
+  response = unique_app_emit_message_received (factory->parent, command, data, time_IN);
   unique_message_data_free (data);
 
   *response_OUT = g_strdup (unique_response_to_string (response));
