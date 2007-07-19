@@ -71,6 +71,7 @@ unique_backend_init (UniqueBackend *backend)
   backend->name = NULL;
   backend->startup_id = NULL;
   backend->screen = gdk_screen_get_default ();
+  backend->workspace = -1;
 }
 
 /**
@@ -193,6 +194,52 @@ unique_backend_get_screen (UniqueBackend *backend)
   g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), NULL);
 
   return backend->screen;
+}
+
+/**
+ * unique_backend_get_workspace:
+ * @backedn: a #UniqueBackend
+ *
+ * Retrieves the current workspace.
+ *
+ * Return value: a workspace number
+ */
+guint
+unique_backend_get_workspace (UniqueBackend *backend)
+{
+  GdkDisplay *display;
+  GdkWindow *root_win;
+  Atom _net_current_desktop, type;
+  int format;
+  unsigned long n_items, bytes_after;
+  unsigned char *data_return = 0;
+
+  g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), 0);
+
+  if (backend->workspace != -1)
+    return backend->workspace;
+
+  display = gdk_screen_get_display (backend->screen);
+  root_win = gdk_screen_get_root_window (backend->screen);
+
+  _net_current_desktop =
+    gdk_x11_get_xatom_by_name_for_display (display, "_NET_CURRENT_DESKTOP");
+
+  XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display),
+                      GDK_WINDOW_XID (root_win),
+                      _net_current_desktop,
+                      0, G_MAXLONG,
+                      False, XA_CARDINAL,
+                      &type, &format, &n_items, &bytes_after,
+                      &data_return);
+
+  if (type == XA_CARDINAL && format == 32 && n_items > 0)
+    {
+      backend->workspace = (guint) data_return[0];
+      XFree (data_return);
+    }
+
+  return backend->workspace;
 }
 
 /**

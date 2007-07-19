@@ -59,8 +59,6 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
-#include <X11/Xatom.h>
-
 #include "uniquebackend.h"
 #include "uniqueapp.h"
 #include "uniquemarshal.h"
@@ -127,6 +125,8 @@ struct _UniqueAppPrivate
 
   GHashTable *commands_by_name;
   GHashTable *commands_by_id;
+
+  GSList *windows;
 };
 
 enum
@@ -281,7 +281,34 @@ unique_app_finalize (GObject *gobject)
   if (priv->commands_by_id)
     g_hash_table_destroy (priv->commands_by_id);
 
+  if (priv->windows)
+    g_slist_free (priv->windows);
+
   G_OBJECT_CLASS (unique_app_parent_class)->finalize (gobject);
+}
+
+static UniqueResponse
+unique_app_real_message_received (UniqueApp         *app,
+                                  gint               command_id,
+                                  UniqueMessageData *message_data,
+                                  guint              time_)
+{
+  UniqueAppPrivate *priv;
+  const gchar *startup_id;
+  GSList *l;
+
+  startup_id = unique_message_data_get_startup_id (message_data);
+  priv = app->priv;
+  
+  for (l = priv->windows; l; l = l->next)
+    {
+      GtkWindow *window = l->data;
+
+      if (window)
+        gtk_window_set_startup_id (window, startup_id);
+    }
+
+  return UNIQUE_RESPONSE_OK;
 }
 
 static void
@@ -398,40 +425,6 @@ unique_app_init (UniqueApp *app)
   priv->is_running = FALSE;
 }
 
-static guint
-get_current_workspace (GdkScreen *screen)
-{
-  GdkDisplay *display;
-  GdkWindow *root_win;
-  Atom _net_current_desktop, type;
-  int format;
-  unsigned long n_items, bytes_after;
-  unsigned char *data_return = 0;
-  guint ret = 0;
-
-  display = gdk_screen_get_display (screen);
-  root_win = gdk_screen_get_root_window (screen);
-
-  _net_current_desktop =
-    gdk_x11_get_xatom_by_name_for_display (display, "_NET_CURRENT_DESKTOP");
-
-  XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display),
-                      GDK_WINDOW_XID (root_win),
-                      _net_current_desktop,
-                      0, G_MAXLONG,
-                      False, XA_CARDINAL,
-                      &type, &format, &n_items, &bytes_after,
-                      &data_return);
-
-  if (type == XA_CARDINAL && format == 32 && n_items > 0)
-    {
-      ret = (guint) data_return[0];
-      XFree (data_return);
-    }
-
-  return ret;
-}
-
 /* taken from nautilus */
 static guint32
 slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
@@ -514,18 +507,25 @@ unique_app_new (const gchar *name,
     id = g_strdup (startup_id);
   else
     {
-      startup_id = g_getenv ("DESKTOP_STARTUP_ID");
-      if (startup_id && startup_id[0] != '\0')
-        id = g_strdup (startup_id);
-      else
+      GdkDisplay *display = gdk_display_get_default ();
+
+      /* try and get the startup notification id from GDK, the environment
+       * or, if everything else failed, fake one.
+      */
+      startup_id = gdk_x11_display_get_startup_notification_id (display);
+
+      if (!startup_id || startup_id[0] == '\0')
+        startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+
+      if (!startup_id || startup_id[0] == '\0')
         {
-          GdkDisplay *display;
           guint32 timestamp;
 
-          display = gdk_display_get_default ();
           timestamp = slowly_and_stupidly_obtain_timestamp (display);
           id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
         }
+
+      id = g_strdup (startup_id);
     }
 
   retval = g_object_new (UNIQUE_TYPE_APP,
@@ -655,7 +655,8 @@ unique_app_send_message (UniqueApp         *app,
 
   message->screen = unique_backend_get_screen (backend);
   message->startup_id = g_strdup (unique_backend_get_startup_id (backend));
-  message->workspace = get_current_workspace (message->screen);
+  message->workspace = unique_backend_get_workspace (backend);
+  
   now = (guint) time (NULL);
 
   /* This is a pathological case, and if you're doing this you're
@@ -693,6 +694,7 @@ unique_app_emit_message_received (UniqueApp         *app,
   UniqueResponse response;
 
   g_return_val_if_fail (UNIQUE_IS_APP (app), UNIQUE_RESPONSE_INVALID);
+  g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
   response = UNIQUE_RESPONSE_INVALID;
   g_signal_emit (app, unique_app_signals[MESSAGE_RECEIVED], 0,
@@ -747,6 +749,40 @@ unique_app_add_command (UniqueApp   *app,
                         GUINT_TO_POINTER (command_id),
                         command_nick);
 }
+
+static void
+window_weak_ref_cb (gpointer  user_data,
+                    GObject  *object)
+{
+  UniqueApp *app = user_data;
+  UniqueAppPrivate *priv = app->priv;
+
+  priv->windows = g_slist_remove (priv->windows, object);
+}
+
+/**
+ * unique_app_watch_window:
+ * @app: a #UniqueApp
+ * @window: the #GtkWindow to watch
+ *
+ * Makes @app "watch" a window. Every watched window will receive
+ * startup notification changes automatically.
+ */
+void
+unique_app_watch_window (UniqueApp *app,
+                         GtkWindow *window)
+{
+  UniqueAppPrivate *priv;
+
+  g_return_if_fail (UNIQUE_IS_APP (app));
+  g_return_if_fail (GTK_IS_WINDOW (window));
+
+  priv = app->priv;
+
+  priv->windows = g_slist_prepend (priv->windows, window);
+  g_object_weak_ref (G_OBJECT (window), window_weak_ref_cb, app);
+}
+
 
 G_CONST_RETURN gchar *
 unique_command_to_string (UniqueApp *app,

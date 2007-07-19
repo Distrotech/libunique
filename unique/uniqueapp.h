@@ -24,6 +24,7 @@
 
 #include <glib-object.h>
 #include <unique/uniquemessage.h>
+#include <gtk/gtkwindow.h>
 
 G_BEGIN_DECLS
 
@@ -128,10 +129,12 @@ UniqueApp *    unique_app_new                 (const gchar       *name,
 UniqueApp *    unique_app_new_with_commands   (const gchar       *name,
                                                const gchar       *startup_id,
                                                const gchar       *first_command_name,
-                                               ...);
+                                               ...) G_GNUC_NULL_TERMINATED;
 void           unique_app_add_command         (UniqueApp         *app,
                                                const gchar       *command_name,
                                                gint               command_id);
+void           unique_app_watch_window        (UniqueApp         *app,
+                                               GtkWindow         *window);
 
 gboolean       unique_app_is_running          (UniqueApp         *app);
 UniqueResponse unique_app_send_message        (UniqueApp         *app,
