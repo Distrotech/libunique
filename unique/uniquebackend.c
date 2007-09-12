@@ -198,7 +198,7 @@ unique_backend_get_screen (UniqueBackend *backend)
 
 /**
  * unique_backend_get_workspace:
- * @backedn: a #UniqueBackend
+ * @backend: a #UniqueBackend
  *
  * Retrieves the current workspace.
  *
