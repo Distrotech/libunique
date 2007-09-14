@@ -21,6 +21,10 @@
 #ifndef __UNIQUE_VERSION_H__
 #define __UNIQUE_VERSION_H__
 
+#include <glib.h>
+
+G_BEGIN_DECLS
+
 /**
  * SECTION:unique-version
  * @short_description: Version utilities
@@ -107,6 +111,16 @@
 #define UNIQUE_CHECK_VERSION(major,minor,micro) \
         ((UNIQUE_MAJOR_VERSION > (major)) || \
          (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION > (minor)) || \
-         (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION == (minor) && UNIQUE_MICRO > (micro)))
+         (UNIQUE_MAJOR_VERSION == (major) && UNIQUE_MICRO_VERSION == (minor) && UNIQUE_MICRO >= (micro)))
+
+extern guint unique_major_version;
+extern guint unique_minor_version;
+extern guint unique_micro_version;
+
+gboolean unique_check_version (guint required_major,
+                               guint required_minor,
+                               guint required_micro);
+
+G_END_DECLS
 
 #endif /* __UNIQUE_VERSION_H__ */
