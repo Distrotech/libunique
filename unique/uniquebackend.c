@@ -245,6 +245,7 @@ unique_backend_get_workspace (UniqueBackend *backend)
 /**
  * unique_backend_request_name:
  * @backend: a #UniqueBackend
+ * @replace: whether the new instance should replace the current one
  *
  * Requests the name set using unique_backend_set_name() using @backend.
  *
@@ -252,11 +253,12 @@ unique_backend_get_workspace (UniqueBackend *backend)
  *   already is a registered name
  */
 gboolean
-unique_backend_request_name (UniqueBackend *backend)
+unique_backend_request_name (UniqueBackend *backend,
+                             gboolean       replace)
 {
   g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), FALSE);
 
-  return UNIQUE_BACKEND_GET_CLASS (backend)->request_name (backend);
+  return UNIQUE_BACKEND_GET_CLASS (backend)->request_name (backend, replace);
 }
 
 /**

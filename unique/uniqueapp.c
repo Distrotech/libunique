@@ -64,6 +64,54 @@
 #include "uniquemarshal.h"
 #include "uniqueinternals.h"
 
+guint unique_major_version = UNIQUE_MAJOR_VERSION;
+guint unique_minor_version = UNIQUE_MINOR_VERSION;
+guint unique_micro_version = UNIQUE_MICRO_VERSION;
+
+guint unique_debug_flags = 0; /* global debug flags */
+
+#ifdef UNIQUE_ENABLE_DEBUG
+static const GDebugKey unique_debug_keys[] = {
+  { "misc", UNIQUE_DEBUG_MISC },
+  { "backend", UNIQUE_DEBUG_BACKEND },
+  { "app", UNIQUE_DEBUG_APP },
+  { "message", UNIQUE_DEBUG_MESSAGE },
+};
+#endif /* UNIQUE_ENABLE_DEBUG */
+
+static gboolean unique_is_initialized = FALSE;
+static gboolean unique_replace = FALSE;
+
+/**
+ * unique_check_version:
+ * @required_major: required major version
+ * @required_minor: required minor version
+ * @required_micro: required micro version
+ *
+ * Run-time variant of the %UNIQUE_CHECK_VERSION macro.
+ *
+ * Return value: %TRUE if the current version of Unique satisfies the
+ *   required version
+ */
+gboolean
+unique_check_version (guint required_major,
+                      guint required_minor,
+                      guint required_micro)
+{
+  gint unique_effective_micro = 100 * UNIQUE_MINOR_VERSION + UNIQUE_MINOR_VERSION;
+  gint required_effective_micro = 100 * required_minor + required_micro;
+
+  if (required_major > UNIQUE_MAJOR_VERSION ||
+      required_major < UNIQUE_MAJOR_VERSION)
+    return FALSE;
+
+  if (required_effective_micro < unique_effective_micro ||
+      required_effective_micro > unique_effective_micro)
+    return FALSE;
+
+  return TRUE;
+}
+
 
 
 GType
@@ -146,6 +194,7 @@ enum
   LAST_SIGNAL
 };
 
+
 static guint unique_app_signals[LAST_SIGNAL] = { 0, };
 
 static gboolean
@@ -185,7 +234,8 @@ unique_app_constructor (GType                  gtype,
    * this is the first instance.
    */
   g_assert (UNIQUE_IS_BACKEND (priv->backend));
-  priv->is_running = (unique_backend_request_name (priv->backend) == FALSE);
+  priv->is_running =
+    (unique_backend_request_name (priv->backend, unique_replace) == FALSE);
 
   return retval;
 }
@@ -587,6 +637,177 @@ unique_app_new_with_commands (const gchar *name,
   return retval;
 }
 
+#ifdef UNIQUE_ENABLE_DEBUG
+static gboolean
+unique_arg_debug_cb (const char *key,
+                     const char *value,
+                     gpointer    user_data)
+{
+  unique_debug_flags |=
+    g_parse_debug_string (value,
+                          unique_debug_keys,
+                          G_N_ELEMENTS (unique_debug_keys));
+  return TRUE;
+}
+
+static gboolean
+unique_arg_no_debug_cb (const char *key,
+                        const char *value,
+                        gpointer    user_data)
+{
+  unique_debug_flags &=
+    ~g_parse_debug_string (value,
+                           unique_debug_keys,
+                           G_N_ELEMENTS (unique_debug_keys));
+  return TRUE;
+}
+#endif /* UNIQUE_ENABLE_DEBUG */
+
+
+static GOptionEntry unique_args[] = {
+#ifdef UNIQUE_ENABLE_DEBUG
+  { "unique-debug", 0, 0, G_OPTION_ARG_CALLBACK, unique_arg_debug_cb,
+    N_("Unique debugging flags to set"), "FLAGS" },
+  { "unique-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, unique_arg_no_debug_cb,
+    N_("Unique debugging flags to unset"), "FLAGS" },
+#endif /* GDICT_ENABLE_DEBUG */
+  { "replace", 0, 0, G_OPTION_ARG_NONE, &unique_replace,
+    N_("Whether the new instance should replace the current one"), NULL },
+  { NULL, },
+};
+
+static gboolean
+pre_parse_hook (GOptionContext  *context,
+                GOptionGroup    *group,
+                gpointer         data,
+                GError         **error)
+{
+  const char *env_string;
+
+  if (unique_is_initialized)
+    return TRUE;
+
+#ifdef UNIQUE_ENABLE_DEBUG
+  env_string = g_getenv ("UNIQUE_DEBUG");
+  if (env_string != NULL)
+    {
+      unique_debug_flags =
+        g_parse_debug_string (env_string,
+                              unique_debug_keys,
+                              G_N_ELEMENTS (unique_debug_keys));
+    }
+#else
+  env_string = NULL;
+#endif /* UNIQUE_ENABLE_DEBUG */
+
+  return TRUE;
+}
+
+static gboolean
+post_parse_hook (GOptionContext  *context,
+                 GOptionGroup    *group,
+                 gpointer         data,
+                 GError         **error)
+{
+  unique_is_initialized = TRUE;
+
+  return TRUE;
+}
+
+/**
+ * unique_get_option_group:
+ *
+ * Returns a #GOptionGroup for the commandline arguments recognized
+ * by Unique. You should add this group to your #GOptionContext 
+ * with g_option_context_add_group(), if you are using 
+ * g_option_context_parse() to parse your commandline arguments.
+ *
+ * Returns a #GOptionGroup for the commandline arguments recognized
+ *   by Unique
+ */
+GOptionGroup *
+unique_get_option_group (void)
+{
+  GOptionGroup *group;
+
+  group = g_option_group_new ("unique",
+                              _("Unique Options"),
+                              _("Show Unique Options"),
+                              NULL, NULL);
+  
+  g_option_group_set_parse_hooks (group, pre_parse_hook, post_parse_hook);
+
+  g_option_group_add_entries (group, unique_args);
+  g_option_group_set_translation_domain (group, GETTEXT_PACKAGE);
+
+  return group;
+}
+
+/**
+ * unique_app_new_full:
+ * @name: the name of the application's instance
+ * @startup_id: the startup notification id, or %NULL
+ * @argc: pointer to the number of command line arguments
+ * @argv: pointer to the array of command line arguments
+ * @first_command_name: first custom command
+ * @Varargs: %NULL terminated list of command names and command ids
+ *
+ * Creates a new #UniqueApp instance, with @name and @startup_id,
+ * and registers a list of custom commands. Parses the command line
+ * arguments for the <literal>--replace</literal> argument, and if
+ * it has been found the newly created instance will replace the
+ * currently running one. The <literal>--replace</literal> command line
+ * argument will be stripped from the @argc and @argv arguments.
+ *
+ * See unique_app_new(), unique_app_new_with_commands() and
+ * unique_app_add_command().
+ *
+ * Return value: the newly created #UniqueApp instance.
+ */
+UniqueApp *
+unique_app_new_full (const gchar   *name,
+                     const gchar   *startup_id,
+                     gint          *argc,
+                     gchar       ***argv,
+                     const gchar   *first_command_name,
+                     ...)
+{
+  UniqueApp *retval;
+  va_list args;
+
+  g_return_val_if_fail (name != NULL, NULL);
+
+  if (!unique_is_initialized)
+    {
+      GOptionContext *option_context;
+      GOptionGroup *unique_group;
+      GError *error;
+
+      option_context = g_option_context_new (NULL);
+      g_option_context_set_ignore_unknown_options (option_context, TRUE);
+      g_option_context_set_help_enabled (option_context, FALSE);
+
+      unique_group = unique_get_option_group ();
+      g_option_context_set_main_group (option_context, unique_group);
+
+      error = NULL;
+      if (!g_option_context_parse (option_context, argc, argv, &error))
+        {
+          g_warning ("%s", error->message);
+          g_error_free (error);
+        }
+
+      g_option_context_free (option_context);
+    }
+
+  retval = unique_app_new (name, startup_id);
+
+  va_start (args, first_command_name);
+  unique_app_add_commands_valist (retval, first_command_name, args);
+  va_end (args);
+
+  return retval;
+}
 
 /**
  * unique_app_is_running:

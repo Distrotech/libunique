@@ -10,6 +10,28 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  UNIQUE_DEBUG_MISC    = 1 << 0,
+  UNIQUE_DEBUG_BACKEND = 1 << 1,
+  UNIQUE_DEBUG_APP     = 1 << 2,
+  UNIQUE_DEBUG_MESSAGE = 1 << 3
+} UniqueDebugFlags;
+
+#ifdef UNIQUE_ENABLE_DEBUG
+
+#define UNIQUE_NOTE(type,x,a...)                G_STMT_START {  \
+        if (unique_debug_flags & UNIQUE_DEBUG_##type) {         \
+          g_message ("[" #type "]: " G_STRLOC ": " x, ##a);     \
+        }                                       } G_STMT_END
+
+#else
+
+#define UNIQUE_NOTE(type,x,a...)
+
+#endif /* UNIQUE_ENABLE_DEBUG */
+
+extern guint unique_debug_flags;
+
 struct _UniqueMessageData
 {
   guchar *data;

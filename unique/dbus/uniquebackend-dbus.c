@@ -82,7 +82,8 @@ unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
 }
 
 static gboolean
-unique_backend_dbus_request_name (UniqueBackend *backend)
+unique_backend_dbus_request_name (UniqueBackend *backend,
+                                  gboolean       replace)
 {
   UniqueBackendDBus *backend_dbus;
   const gchar *name;

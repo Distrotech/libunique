@@ -74,7 +74,8 @@ struct _UniqueBackendClass
 
   /*< public >*/
   /* vtable, not signals */
-  gboolean       (* request_name) (UniqueBackend     *backend);
+  gboolean       (* request_name) (UniqueBackend     *backend,
+                                   gboolean           replace);
   UniqueResponse (* send_message) (UniqueBackend     *backend,
                                    gint               command_id,
                                    UniqueMessageData *message_data,
@@ -105,7 +106,8 @@ void                  unique_backend_set_screen     (UniqueBackend     *backend,
                                                      GdkScreen         *screen);
 guint                 unique_backend_get_workspace  (UniqueBackend     *backend);
 
-gboolean              unique_backend_request_name   (UniqueBackend     *backend);
+gboolean              unique_backend_request_name   (UniqueBackend     *backend,
+                                                     gboolean           replace);
 UniqueResponse        unique_backend_send_message   (UniqueBackend     *backend,
                                                      gint               command_id,
                                                      UniqueMessageData *message_data,

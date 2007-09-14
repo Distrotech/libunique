@@ -435,7 +435,8 @@ unique_backend_bacon_send_message (UniqueBackend     *backend,
 }
 
 static gboolean
-unique_backend_bacon_request_name (UniqueBackend *backend)
+unique_backend_bacon_request_name (UniqueBackend *backend,
+                                   gboolean       replace)
 {
   UniqueBackendBacon *backend_bacon;
   const gchar *name;
@@ -449,6 +450,7 @@ unique_backend_bacon_request_name (UniqueBackend *backend)
 
   g_assert (backend_bacon->socket_path == NULL);
   backend_bacon->socket_path = find_socket_file (name);
+
   if (!is_socket (backend_bacon->socket_path))
     {
       create_server (backend_bacon);
@@ -456,7 +458,7 @@ unique_backend_bacon_request_name (UniqueBackend *backend)
     }
   else
     {
-      if (!try_client (backend_bacon))
+      if (replace || !try_client (backend_bacon))
         {
           if (g_unlink (backend_bacon->socket_path) == -1)
             {
@@ -464,7 +466,7 @@ unique_backend_bacon_request_name (UniqueBackend *backend)
                 g_warning ("Unable to remove stale pipe: %s",
                            g_strerror (errno));
             }
-
+          
           create_server (backend_bacon);
           backend_bacon->is_server = TRUE;
         }

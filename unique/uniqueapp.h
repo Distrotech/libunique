@@ -41,14 +41,14 @@ G_BEGIN_DECLS
  * UniqueCommand:
  * @UNIQUE_INVALID: used internally
  * @UNIQUE_ACTIVATE: request to activate a currently active instance; this
- *   usually means calling gtk_window_present() on the application window.
- * @UNIQUE_NEW: request to create a new file.
- * @UNIQUE_OPEN: request to open a file.
- * @UNIQUE_CLOSE: requests to close the currently running instance.
+ *   usually means calling gtk_window_present() on the application window
+ * @UNIQUE_NEW: request to create a new file
+ * @UNIQUE_OPEN: request to open a file
+ * @UNIQUE_CLOSE: requests to close the currently running instance
  *
  * Command to send to a currently active instance. User defined commands
  * should be positive integers, and should be added using
- * unique_command_register() before creating the UniqueApp instance.
+ * unique_app_add_command() or unique_app_new_with_commands().
  */
 typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_INVALID  = 0,
@@ -130,6 +130,12 @@ UniqueApp *    unique_app_new_with_commands   (const gchar       *name,
                                                const gchar       *startup_id,
                                                const gchar       *first_command_name,
                                                ...) G_GNUC_NULL_TERMINATED;
+UniqueApp *    unique_app_new_full            (const gchar       *name,
+                                               const gchar       *startup_id,
+                                               gint              *argc,
+                                               gchar           ***argv,
+                                               const gchar       *first_command_name,
+                                               ...) G_GNUC_NULL_TERMINATED;
 void           unique_app_add_command         (UniqueApp         *app,
                                                const gchar       *command_name,
                                                gint               command_id);
@@ -140,6 +146,8 @@ gboolean       unique_app_is_running          (UniqueApp         *app);
 UniqueResponse unique_app_send_message        (UniqueApp         *app,
                                                gint               command_id,
                                                UniqueMessageData *message_data);
+
+GOptionGroup * unique_get_option_group        (void);
 
 G_END_DECLS
 
