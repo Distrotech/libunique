@@ -13,7 +13,7 @@ INCLUDES = \
 	-DPREFIX=\""$(prefix)"\"				\
 	-I$(top_srcdir)						\
 	$(UNIQUE_CFLAGS)					\
-	$(UNIQUE_DEBUG_FLAGS)					\
+	$(UNIQUE_DEBUG_CFLAGS)					\
 	$(DBUS_CFLAGS)						\
 	$(DISABLE_DEPRECATED_FLAGS)				\
 	$(NULL)

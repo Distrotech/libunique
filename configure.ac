@@ -111,6 +111,8 @@ AC_ARG_ENABLE([maintainer-flags],
 
 if test "x$enable_maintainer_flags" = "xyes"; then
   CPPFLAGS="$CPPFLAGS -Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized"
+else
+  CPPFLAGS="-g -Wall"
 fi
 
 # enable debug flags and symbols
@@ -121,16 +123,17 @@ AC_ARG_ENABLE([debug],
                              [Turn on debugging @<:@default=debug_default@:>@]),,
               enable_debug=debug_default)
 if test "x$enable_debug" = "xmaximum"; then
-  test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
-  UNIQUE_DEBUG_FLAGS="-DG_ENABLE_DEBUG"
+  UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
 else
   if test "x$enable_debug" = "xno"; then
-    UNIQUE_DEBUG_FLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
+    UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
   else
     # test x$enable_debug = xminimum
-    UNIQUE_DEBUG_FLAGS="-DG_DISABLE_CAST_CHECKS"
+    UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
   fi
 fi
+
+AC_SUBST(UNIQUE_DEBUG_CFLAGS)
 
 # i18n stuff
 ALL_LINGUAS=""
