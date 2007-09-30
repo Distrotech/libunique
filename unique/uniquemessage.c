@@ -313,7 +313,7 @@ message_data_get_text_plain (UniqueMessageData *message_data)
  *
  * Sets @str as the plain text payload of @message_data, converting it
  * to UTF-8 if needed. If @length is -1, the length of the string will
- * be used.
+ * be used. Use unique_message_data_get_text() to retrieve the text.
  *
  * Return value: %TRUE if the text was successfully converted to UTF-8
  */
@@ -338,7 +338,7 @@ unique_message_data_set_text (UniqueMessageData *message_data,
  * unique_message_data_get_text:
  * @message_data: a #UniqueMessageData
  *
- * Returns the text set using unique_message_data_set_text().
+ * Retrieves the text set using unique_message_data_set_text().
  *
  * Return value: an allocated string.
  */
@@ -353,7 +353,9 @@ unique_message_data_get_text (UniqueMessageData *message_data)
  * @message_data: a #UniqueMessageData
  * @uris: a list of URIs in a string vector
  *
- * Converts @uris to a valid URI list and sets it as payload of @message_data.
+ * Converts @uris to a valid URI list and sets it as payload of
+ * @message_data. You can use unique_message_data_get_uris() to
+ * retrieve the list from a #UniqueMessageData.
  *
  * Return value: %TRUE if the URIs were successfully converted
  */
@@ -393,7 +395,7 @@ unique_message_data_set_uris (UniqueMessageData  *message_data,
  * unique_message_data_get_uris:
  * @message_data: a #UniqueMessageData
  *
- * Returns a string vector containing the URIs set with
+ * Retrieves a string vector containing the URIs set with
  * unique_message_data_set_uris().
  *
  * Return value: an allocated list of URIs. Use g_strfreev() to free it.
@@ -422,9 +424,9 @@ unique_message_data_get_uris (UniqueMessageData *message_data)
  * unique_message_data_get_screen:
  * @message_data: a #UniqueMessageData
  *
- * Returns a pointer to the screen from where the message came. You
+ * Retrieves the pointer to the screen from where the message came. You
  * can use gtk_widget_set_screen() to move windows or dialogs to the
- * right screen.
+ * right screen. This field is always set by the Unique library.
  *
  * Return value: a #GdkScreen
  */
@@ -440,7 +442,8 @@ unique_message_data_get_screen (UniqueMessageData *message_data)
  * unique_message_data_get_startup_id:
  * @message_data: a #UniqueMessageData
  *
- * Retrieves the startup notification id set inside @message_data.
+ * Retrieves the startup notification id set inside @message_data. This
+ * field is always set by the Unique library.
  *
  * Return value: the startup notification id. The returned string is
  *   owned by the #UniqueMessageData structure and should not be
@@ -458,7 +461,8 @@ unique_message_data_get_startup_id (UniqueMessageData *message_data)
  * unique_message_data_get_workspace:
  * @message_data: a #UniqueMessageData
  *
- * Retrieves the workspace number from where the message came.
+ * Retrieves the workspace number from where the message came. This
+ * field is always set by the Unique library.
  *
  * Return value: the workspace number
  */
