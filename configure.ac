@@ -117,12 +117,12 @@ fi
 
 # enable debug flags and symbols
 m4_define([debug_default],
-          m4_if(m4_eval(unique_minor_version % 2), [1], [maximum], [minimum]))
+          m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [minimum]))
 AC_ARG_ENABLE([debug],
-              AC_HELP_STRING([--enable-debug=@<:@no/minimum/maximum@:>@],
+              AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
                              [Turn on debugging @<:@default=debug_default@:>@]),,
               enable_debug=debug_default)
-if test "x$enable_debug" = "xmaximum"; then
+if test "x$enable_debug" = "xyes"; then
   UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
 else
   if test "x$enable_debug" = "xno"; then
