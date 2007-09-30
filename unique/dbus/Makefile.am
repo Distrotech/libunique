@@ -4,7 +4,7 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique-DBus\"	\
 	-I$(top_srcdir)			\
 	$(UNIQUE_CFLAGS)		\
-	$(UNIQUE_DEBUG_FLAGS)		\
+	$(UNIQUE_DEBUG_CFLAGS)		\
 	$(DBUS_CFLAGS)
 
 LDADD = $(UNIQUE_LIBS) $(DBUS_LIBS)
