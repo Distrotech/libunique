@@ -1,4 +1,4 @@
-SUBDIRS = unique doc tests po
+SUBDIRS = unique tests doc po
 
 AUTOMAKE_OPTIONS = 1.7
 
@@ -15,7 +15,7 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 DISTCLEANFILES = unique-1.0.pc
 
 release:
-	git-log --pretty=full > ChangeLog && \
+	@git-changelog > ChangeLog && \
 	$(MAKE) distcheck && \
 	echo "For a full change log see git-log" > ChangeLog
 
