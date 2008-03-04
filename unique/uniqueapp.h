@@ -58,6 +58,8 @@ typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_CLOSE    = -4
 } UniqueCommand;
 
+GType unique_command_get_type (void) G_GNUC_CONST;
+
 /**
  * UniqueResponse:
  * @UNIQUE_RESPONSE_INVALID: Internal error code, should never be used.
@@ -66,7 +68,7 @@ typedef enum { /*< prefix=UNIQUE >*/
  * @UNIQUE_RESPONSE_FAIL: The command failed due to a IPC failure.
  *
  * Response that a currently active instance of the application should
- * return to the caller which sent a command.
+ * return to the sender of a command.
  */
 typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
   UNIQUE_RESPONSE_INVALID = 0,
@@ -113,10 +115,10 @@ struct _UniqueAppClass
                                        gint               command,
                                        UniqueMessageData *message_data,
                                        guint              time_);
-  
+  void           (* replaced)         (UniqueApp         *app);
+
   /*< private >*/
   /* padding */
-  void (*_unique_reserved1) (void);
   void (*_unique_reserved2) (void);
   void (*_unique_reserved3) (void);
   void (*_unique_reserved4) (void);

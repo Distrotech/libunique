@@ -117,6 +117,19 @@ app_message_cb (UniqueApp         *app,
   return UNIQUE_RESPONSE_OK;
 }
 
+static void
+app_replaced_cb (UniqueApp *app,
+                 gpointer   user_data)
+{
+  if (main_window)
+    {
+      gtk_widget_destroy (main_window);
+      main_window = NULL;
+    }
+
+  gtk_main_quit ();
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -126,7 +139,9 @@ main (int argc, char *argv[])
   gboolean foo = FALSE;
   gchar **uris = NULL;
   GError *init_error = NULL;
-  GOptionEntry entries[] = {
+  GOptionContext *context;
+  GOptionGroup *gtk_group, *unique_group;
+  const GOptionEntry entries[] = {
     { "new", 'n',
       0,
       G_OPTION_ARG_NONE, &new,
@@ -152,12 +167,16 @@ main (int argc, char *argv[])
     { NULL },
   };
 
-  gtk_init_with_args (&argc, &argv,
-                      "Test GtkUnique",
-                      entries,
-                      NULL,
-                      &init_error);
-  if (init_error)
+  context = g_option_context_new ("Unique test");
+
+  gtk_group = gtk_get_option_group (FALSE);
+  unique_group = unique_get_option_group ();
+
+  g_option_context_add_main_entries (context, entries, NULL);
+  g_option_context_add_group (context, gtk_group);
+  g_option_context_add_group (context, unique_group);
+
+  if (!g_option_context_parse (context, &argc, &argv, &init_error))
     {
       g_print ("*** Error: %s\n"
                "Usage: test-unique [COMMAND]\n",
@@ -166,6 +185,8 @@ main (int argc, char *argv[])
 
       exit (1);
     }
+
+  gtk_init (&argc, &argv);
 
   app = unique_app_new_with_commands ("org.gnome.TestUnique", NULL,
                                       "foo", COMMAND_FOO,
@@ -224,8 +245,9 @@ main (int argc, char *argv[])
       gtk_container_set_border_width (GTK_CONTAINER (main_window), 12);
 
       unique_app_watch_window (app, GTK_WINDOW (main_window));
-      g_signal_connect (app, "message-received",
-                        G_CALLBACK (app_message_cb), NULL);
+
+      g_signal_connect (app, "message-received", G_CALLBACK (app_message_cb), NULL);
+      g_signal_connect (app, "replaced", G_CALLBACK (app_replaced_cb), NULL);
 
       gtk_widget_show (main_window);
     }

@@ -52,6 +52,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -190,6 +191,7 @@ enum
 enum
 {
   MESSAGE_RECEIVED,
+  REPLACED,
 
   LAST_SIGNAL
 };
@@ -353,6 +355,12 @@ unique_app_real_message_received (UniqueApp         *app,
 }
 
 static void
+unique_app_real_replaced (UniqueApp *app)
+{
+
+}
+
+static void
 unique_app_class_init (UniqueAppClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -445,8 +453,26 @@ unique_app_class_init (UniqueAppClass *klass)
                   G_TYPE_INT,               /* command */
                   UNIQUE_TYPE_MESSAGE_DATA, /* message_data */
                   G_TYPE_UINT               /* time_ */);
+  /**
+   * UniqueApp::replaced:
+   * @app: the application instance that received the signal
+   *
+   * The ::replaced signal is emitted if another instance has replaced
+   * the currently running instance. The running instance will be
+   * terminated at the end of the signal emission chain and replaced
+   * by the newly launched instance.
+   */
+  unique_app_signals[REPLACED] =
+    g_signal_new ("replaced",
+                  G_TYPE_FROM_CLASS (gobject_class),
+                  G_SIGNAL_RUN_LAST | G_SIGNAL_NO_HOOKS,
+                  G_STRUCT_OFFSET (UniqueAppClass, replaced),
+                  NULL, NULL,
+                  unique_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
 
   klass->message_received = unique_app_real_message_received;
+  klass->replaced = unique_app_real_replaced;
 
   g_type_class_add_private (klass, sizeof (UniqueAppPrivate));
 }
@@ -916,6 +942,20 @@ unique_app_emit_message_received (UniqueApp         *app,
                  &response);
 
   return response;
+}
+
+/*
+ * unique_app_emit_replaced:
+ * @app: a #UniqueApp
+ *
+ * Emits the UniqueApp::replaced signal on the @app instance.
+ */
+void
+unique_app_emit_replaced (UniqueApp *app)
+{
+  g_return_if_fail (UNIQUE_IS_APP (app));
+
+  g_signal_emit (app, unique_app_signals[REPLACED], 0);
 }
 
 /**

@@ -59,6 +59,7 @@ UniqueResponse unique_app_emit_message_received (UniqueApp         *app,
                                                  gint               command_id,
                                                  UniqueMessageData *message,
                                                  guint              time_);
+void           unique_app_emit_replaced         (UniqueApp         *app);
 
 /* transform a command or a response id to something more readable,
  * and then back into an id

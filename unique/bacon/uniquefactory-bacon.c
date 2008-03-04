@@ -114,12 +114,6 @@ connection_cb (GIOChannel   *channel,
       return FALSE;
     }
 
-  if (condition & G_IO_ERR)
-    {
-      g_warning ("Connection to the sender failed");
-      goto finished;
-    }
-
   read_error = NULL;
   res = g_io_channel_read_line (factory->channel,
                                 &message, &len,
@@ -132,11 +126,37 @@ connection_cb (GIOChannel   *channel,
       goto finished;
     }
 
+  if (condition & G_IO_ERR)
+    {
+      g_warning ("Connection to the sender failed");
+      goto finished;
+    }
+
   if (len == 0)
     goto finished;
   
   /* truncate the message at the line terminator */
   message[term] = '\0';
+
+  if (condition & G_IO_HUP)
+    {
+      if (message && *message != '\0' && strcmp (message, "replace") == 0)
+        {
+          UNIQUE_NOTE (BACKEND, "Received the replace command");
+
+          unique_app_emit_replaced (factory->parent);
+          
+          g_free (message);
+          
+          goto finished;
+        }
+      else
+        {
+          UNIQUE_NOTE (BACKEND, "HUP received");
+          return FALSE;
+        }
+    }
+
   message_data = unique_message_data_unpack (factory->parent,
                                              message,
                                              &command_id,
@@ -198,7 +218,7 @@ unique_factory_bacon_accept (UniqueFactoryBacon *factory,
 
   factory->source_id = g_io_add_watch_full (factory->channel,
                                             G_PRIORITY_DEFAULT,
-                                            G_IO_IN | G_IO_ERR,
+                                            G_IO_IN | G_IO_ERR | G_IO_HUP,
                                             connection_cb,
                                             factory,
                                             cleanup_connection);

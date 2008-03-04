@@ -49,6 +49,8 @@
 #define UNIX_PATH_MAX 108
 #endif
 
+#define REPLACE_CMD     "replace\r\n"
+
 struct _UniqueBackendBacon
 {
   UniqueBackend parent_instance;
@@ -144,7 +146,7 @@ find_socket_file (const gchar *name)
 {
   const gchar *token;
   gchar *basename, *path;
-  gchar *tmpdir;
+  gchar *basedir, *tmpdir;
   
   /* socket file name template:
    *   /tmp/unique/org.gnome.YourApplication.token.process-id
@@ -158,16 +160,22 @@ find_socket_file (const gchar *name)
       return NULL;
     }
 
+  basedir = g_strconcat ("unique", "-", g_get_user_name (), NULL);
   basename = g_strconcat (name, ".", token, ".*", NULL);
   tmpdir = g_build_path (G_DIR_SEPARATOR_S,
                          g_get_tmp_dir (),
-                         "unique",
+                         basedir,
                          NULL);
 
+  g_free (basedir);
+  
   if (g_mkdir_with_parents (tmpdir, 0777) == -1)
     {
       if (errno != EEXIST)
         {
+          g_free (basename);
+          g_free (tmpdir);
+
           g_warning ("Unable to create socket path `%s': %s",
                      tmpdir,
                      g_strerror (errno));
@@ -178,8 +186,8 @@ find_socket_file (const gchar *name)
   path = find_file_with_pattern (tmpdir, basename);
   if (path)
     {
-      g_free (tmpdir);
       g_free (basename);
+      g_free (tmpdir);
 
       return path;
     }
@@ -190,8 +198,8 @@ find_socket_file (const gchar *name)
   
   path = g_build_filename (tmpdir, basename, NULL);
 
-  g_free (tmpdir);
   g_free (basename);
+  g_free (tmpdir);
 
   return path;
 }
@@ -250,7 +258,8 @@ setup_connection (UniqueBackendBacon *backend_bacon)
 }
 
 static gboolean
-try_client (UniqueBackendBacon *backend)
+try_client (UniqueBackendBacon *backend,
+            gboolean            replace)
 {
   struct sockaddr_un uaddr;
   size_t path_len;
@@ -273,6 +282,24 @@ try_client (UniqueBackendBacon *backend)
     {
       backend->socket_fd = -1;
       return FALSE;
+    }
+
+  if (replace)
+    {
+      if (write (backend->socket_fd, REPLACE_CMD, strlen (REPLACE_CMD)) == -1)
+        {
+          g_warning ("Unable to send the replace command: %s",
+                     g_strerror (errno));
+          return TRUE;
+        }
+      else
+        {
+          fsync (backend->socket_fd);
+          close (backend->socket_fd);
+
+          backend->socket_fd = -1;
+          return FALSE;
+        }
     }
 
   return TRUE;
@@ -367,7 +394,7 @@ unique_backend_bacon_send_message (UniqueBackend     *backend,
 
   backend_bacon = UNIQUE_BACKEND_BACON (backend);
 
-  if (!try_client (backend_bacon))
+  if (!try_client (backend_bacon, FALSE))
     {
       g_warning ("Unable to send message: no connection to the "
                  "running instance found (stale named pipe)");
@@ -382,7 +409,7 @@ unique_backend_bacon_send_message (UniqueBackend     *backend,
             }
         }
 
-      if (!try_client (backend_bacon))
+      if (!try_client (backend_bacon, FALSE))
         return UNIQUE_RESPONSE_FAIL;
     }
 
@@ -446,6 +473,10 @@ unique_backend_bacon_request_name (UniqueBackend *backend,
   name = unique_backend_get_name (backend);
   g_assert (name != NULL);
 
+  UNIQUE_NOTE (BACKEND, "Requesting name `%s' (replace:%s)",
+               name,
+               replace ? "<true>" : "<false>");
+
   backend_bacon = UNIQUE_BACKEND_BACON (backend);
 
   g_assert (backend_bacon->socket_path == NULL);
@@ -453,13 +484,20 @@ unique_backend_bacon_request_name (UniqueBackend *backend,
 
   if (!is_socket (backend_bacon->socket_path))
     {
+      UNIQUE_NOTE (BACKEND, "Creating server socket at `%s'",
+                   backend_bacon->socket_path);
+
       create_server (backend_bacon);
       backend_bacon->is_server = TRUE;
     }
   else
     {
-      if (replace || !try_client (backend_bacon))
+      if (!try_client (backend_bacon, replace))
         {
+          UNIQUE_NOTE (BACKEND, "Removing %s server socket at `%s'",
+                       replace ? "running" : "stale",
+                       backend_bacon->socket_path);
+
           if (g_unlink (backend_bacon->socket_path) == -1)
             {
               if (errno != ENOENT)
@@ -467,6 +505,9 @@ unique_backend_bacon_request_name (UniqueBackend *backend,
                            g_strerror (errno));
             }
           
+          UNIQUE_NOTE (BACKEND, "Creating new server socket at `%s'",
+                       backend_bacon->socket_path);
+
           create_server (backend_bacon);
           backend_bacon->is_server = TRUE;
         }
