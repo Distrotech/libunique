@@ -50,7 +50,7 @@ void                  unique_message_data_set            (UniqueMessageData *mes
                                                           gsize              length);
 gboolean              unique_message_data_set_text       (UniqueMessageData *message_data,
                                                           const gchar       *str,
-                                                          gsize              length);
+                                                          gssize             length);
 gchar *               unique_message_data_get_text       (UniqueMessageData *message_data);
 gboolean              unique_message_data_set_uris       (UniqueMessageData *message_data,
                                                           gchar            **uris);
