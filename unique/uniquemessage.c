@@ -320,7 +320,7 @@ message_data_get_text_plain (UniqueMessageData *message_data)
 gboolean
 unique_message_data_set_text (UniqueMessageData *message_data,
                               const gchar       *str,
-                              gsize              length)
+                              gssize             length)
 {
   if (length < 0)
     length = strlen (str);
