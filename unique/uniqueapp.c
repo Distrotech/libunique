@@ -513,7 +513,7 @@ unique_app_new (const gchar *name,
           guint32 timestamp;
 
           timestamp = slowly_and_stupidly_obtain_timestamp (display);
-          id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
+          startup_id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
         }
 
       id = g_strdup (startup_id);
