@@ -423,7 +423,7 @@ unique_message_data_get_uris (UniqueMessageData *message_data)
  * @message_data: a #UniqueMessageData
  *
  * Returns a pointer to the screen from where the message came. You
- * can use gtk_widget_set_screen() to move windows or dialogs to the
+ * can use gtk_window_set_screen() to move windows or dialogs to the
  * right screen.
  *
  * Return value: a #GdkScreen
