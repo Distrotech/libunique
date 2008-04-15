@@ -515,8 +515,8 @@ unique_app_new (const gchar *name,
           timestamp = slowly_and_stupidly_obtain_timestamp (display);
           id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
         }
-
-      id = g_strdup (startup_id);
+      else
+        id = g_strdup (startup_id);
     }
 
   retval = g_object_new (UNIQUE_TYPE_APP,
