@@ -101,15 +101,17 @@ app_message_cb (UniqueApp         *app,
                                               message);
 
   gtk_window_set_screen (GTK_WINDOW (dialog), screen);
-  
-  gtk_window_present (GTK_WINDOW (main_window));
-  gtk_window_set_screen (GTK_WINDOW (main_window), screen);
+  gtk_window_present_with_time (GTK_WINDOW (dialog), time_);
+  gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
 #if GTK_CHECK_VERSION (2, 12, 0)
-  gtk_window_set_startup_id (GTK_WINDOW (main_window), startup_id);
+  gtk_window_set_startup_id (GTK_WINDOW (dialog), startup_id);
 #endif
 
   gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
+
+  gtk_window_set_startup_id (GTK_WINDOW (main_window), startup_id);
+  gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
 
   g_free (message);
   g_free (title);
