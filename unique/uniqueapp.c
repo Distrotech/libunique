@@ -664,13 +664,13 @@ unique_app_emit_message_received (UniqueApp         *app,
   g_return_val_if_fail (UNIQUE_IS_APP (app), UNIQUE_RESPONSE_INVALID);
   g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
 
+  priv = app->priv;
+
   /* we need to set the startup notification id, so that the
    * ::message-received handlers can take advantage of it and
    * call gtk_window_present()
    */
   startup_id = unique_message_data_get_startup_id (message_data);
-  priv = app->priv;
-  
   for (l = priv->windows; l; l = l->next)
     {
       GtkWindow *window = l->data;
@@ -679,7 +679,8 @@ unique_app_emit_message_received (UniqueApp         *app,
         gtk_window_set_startup_id (window, startup_id);
     }
 
-  response = UNIQUE_RESPONSE_INVALID;
+  /* this is the default response if no handler is present */
+  response = UNIQUE_RESPONSE_OK;
   g_signal_emit (app, unique_app_signals[MESSAGE_RECEIVED], 0,
                  command_id,
                  message_data,
