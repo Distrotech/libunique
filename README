@@ -5,8 +5,8 @@ either exits immediately or sends a command to the running instance.
 Unique can be compiled against various backends, to allow the usage of
 different IPC mechanisms depending on the platform.
 
-Project page: http://log.emmanuelebassi.net/software/unique
-Main repository: http://www.gnome.org/~ebassi/git/unique.git
+Project page: http://live.gnome.org/LibUnique
+Main repository: git://github.com/ebassi/unique.git
 
 Copyright (C) 2007  Emmanuele Bassi
 
