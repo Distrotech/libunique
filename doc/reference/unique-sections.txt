@@ -54,15 +54,18 @@ unique_response_get_type
 
 <SECTION>
 <FILE>unique-message</FILE>
+<TITLE>Message Data</TITLE>
 UniqueMessageData
 unique_message_data_new
 unique_message_data_copy
 unique_message_data_free
+<SUBSECTION>
 unique_message_data_set
 unique_message_data_set_text
 unique_message_data_get_text
 unique_message_data_set_uris
 unique_message_data_get_uris
+<SUBSECTION>
 unique_message_data_get_screen
 unique_message_data_get_startup_id
 unique_message_data_get_workspace
@@ -73,6 +76,7 @@ unique_message_data_get_type
 
 <SECTION>
 <FILE>unique-version</FILE>
+<TITLE>Versioning Information</TITLE>
 UNIQUE_MAJOR_VERSION
 UNIQUE_MINOR_VERSION
 UNIQUE_MICRO_VERSION
