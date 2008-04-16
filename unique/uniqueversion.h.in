@@ -34,25 +34,29 @@
  *
  * Major version of Unique
  */
-#define UNIQUE_MAJOR_VERSION            @UNIQUE_MAJOR_VERSION@
+#define UNIQUE_MAJOR_VERSION            (@UNIQUE_MAJOR_VERSION@)
+
 /**
  * UNIQUE_MINOR_VERSION:
  *
  * Minor version of Unique
  */
-#define UNIQUE_MINOR_VERSION            @UNIQUE_MINOR_VERSION@
+#define UNIQUE_MINOR_VERSION            (@UNIQUE_MINOR_VERSION@)
+
 /**
  * UNIQUE_MICRO_VERSION:
  *
  * Micro version of Unique
  */
-#define UNIQUE_MICRO_VERSION            @UNIQUE_MICRO_VERSION@
+#define UNIQUE_MICRO_VERSION            (@UNIQUE_MICRO_VERSION@)
+
 /**
  * UNIQUE_VERSION_S:
  *
  * Unique version as a string
  */
 #define UNIQUE_VERSION_S                "@UNIQUE_VERSION@"
+
 /**
  * UNIQUE_VERSION_HEX:
  *
@@ -67,7 +71,8 @@
  *
  * API version
  */
-#define UNIQUE_API_VERSION              @UNIQUE_API_VERSION@
+#define UNIQUE_API_VERSION              (@UNIQUE_API_VERSION@)
+
 /**
  * UNIQUE_API_VERSION_S:
  *
@@ -80,7 +85,8 @@
  *
  * Protocol version
  */
-#define UNIQUE_PROTOCOL_VERSION         @UNIQUE_PROTOCOL_VERSION@
+#define UNIQUE_PROTOCOL_VERSION         (@UNIQUE_PROTOCOL_VERSION@)
+
 /**
  * UNIQUE_PROTOCOL_VERSION_S:
  *
