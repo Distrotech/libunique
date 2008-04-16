@@ -50,7 +50,10 @@ app_message_cb (UniqueApp         *app,
            gdk_screen_get_number (screen),
            startup_id,
            unique_message_data_get_workspace (message_data));
-  
+
+  /* raise the window */
+  gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
+
   switch (command)
     {
     case UNIQUE_NEW:
@@ -100,18 +103,10 @@ app_message_cb (UniqueApp         *app,
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               message);
 
-  gtk_window_set_screen (GTK_WINDOW (dialog), screen);
-  gtk_window_present_with_time (GTK_WINDOW (dialog), time_);
   gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
-#if GTK_CHECK_VERSION (2, 12, 0)
-  gtk_window_set_startup_id (GTK_WINDOW (dialog), startup_id);
-#endif
 
   gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
-
-  gtk_window_set_startup_id (GTK_WINDOW (main_window), startup_id);
-  gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
 
   g_free (message);
   g_free (title);
