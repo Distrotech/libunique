@@ -278,30 +278,6 @@ unique_app_finalize (GObject *gobject)
   G_OBJECT_CLASS (unique_app_parent_class)->finalize (gobject);
 }
 
-static UniqueResponse
-unique_app_real_message_received (UniqueApp         *app,
-                                  gint               command_id,
-                                  UniqueMessageData *message_data,
-                                  guint              time_)
-{
-  UniqueAppPrivate *priv;
-  const gchar *startup_id;
-  GSList *l;
-
-  startup_id = unique_message_data_get_startup_id (message_data);
-  priv = app->priv;
-  
-  for (l = priv->windows; l; l = l->next)
-    {
-      GtkWindow *window = l->data;
-
-      if (window)
-        gtk_window_set_startup_id (window, startup_id);
-    }
-
-  return UNIQUE_RESPONSE_OK;
-}
-
 static void
 unique_app_class_init (UniqueAppClass *klass)
 {
@@ -395,8 +371,6 @@ unique_app_class_init (UniqueAppClass *klass)
                   G_TYPE_INT,               /* command */
                   UNIQUE_TYPE_MESSAGE_DATA, /* message_data */
                   G_TYPE_UINT               /* time_ */);
-
-  klass->message_received = unique_app_real_message_received;
 
   g_type_class_add_private (klass, sizeof (UniqueAppPrivate));
 }
@@ -682,10 +656,28 @@ unique_app_emit_message_received (UniqueApp         *app,
                                   UniqueMessageData *message_data,
                                   guint              time_)
 {
+  UniqueAppPrivate *priv;
   UniqueResponse response;
+  const gchar *startup_id;
+  GSList *l;
 
   g_return_val_if_fail (UNIQUE_IS_APP (app), UNIQUE_RESPONSE_INVALID);
   g_return_val_if_fail (command_id != 0, UNIQUE_RESPONSE_INVALID);
+
+  /* we need to set the startup notification id, so that the
+   * ::message-received handlers can take advantage of it and
+   * call gtk_window_present()
+   */
+  startup_id = unique_message_data_get_startup_id (message_data);
+  priv = app->priv;
+  
+  for (l = priv->windows; l; l = l->next)
+    {
+      GtkWindow *window = l->data;
+
+      if (window)
+        gtk_window_set_startup_id (window, startup_id);
+    }
 
   response = UNIQUE_RESPONSE_INVALID;
   g_signal_emit (app, unique_app_signals[MESSAGE_RECEIVED], 0,
