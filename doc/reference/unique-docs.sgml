@@ -50,6 +50,7 @@
     <xi:include href="xml/unique-app.xml"/>
     <xi:include href="xml/unique-message.xml"/>
     <xi:include href="xml/unique-backend.xml"/>
+    <xi:include href="xml/unique-version.xml"/>
   </chapter>
 
   <index>
