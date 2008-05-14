@@ -164,7 +164,9 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT
 
-echo "Configuration:
-        * Maintainer flags: $enable_maintainer_flags
-        * Debug level: $enable_debug
-        * Build documentation: $enable_gtk_doc"
+echo "
+Configuration:
+            Maintainer flags: $enable_maintainer_flags
+                 Debug level: $enable_debug
+         Build documentation: $enable_gtk_doc
+"
