@@ -39,7 +39,8 @@ app_message_cb (UniqueApp         *app,
                 gpointer           user_data)
 {
   GtkWidget *dialog;
-  gchar *message, *title;
+  gchar *message = NULL;
+  gchar *title = NULL;
   GdkScreen *screen;
   const gchar *startup_id;
 
@@ -58,7 +59,6 @@ app_message_cb (UniqueApp         *app,
     {
     case UNIQUE_NEW:
       title = g_strdup ("Received the NEW command");
-      message = NULL;
       break;
     case UNIQUE_OPEN:
       {
@@ -80,7 +80,6 @@ app_message_cb (UniqueApp         *app,
       break;
     case UNIQUE_ACTIVATE:
       title = g_strdup ("Received the ACTIVATE command");
-      message = NULL;
       break;
     case COMMAND_FOO:
       title = g_strdup ("Received the FOO command");
