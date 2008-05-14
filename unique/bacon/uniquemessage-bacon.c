@@ -100,7 +100,7 @@ unique_message_data_unpack (UniqueApp   *app,
   gchar *buf;
   GdkDisplay *display;
   gint screen_n;
-  UniqueMessageData *message_data;
+  UniqueMessageData *message_data = NULL;
 
   blocks = g_strsplit (data, "\t", 6);
   if (g_strv_length (blocks) != 6)
