@@ -1,0 +1,5 @@
+Changes for Unique 1.0.0
+========================
+* First stable release
+* API is frozen
+* D-Bus and socket backends

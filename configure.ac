@@ -1,7 +1,7 @@
 # versioning
-m4_define([unique_major_version], [0])
-m4_define([unique_minor_version], [9])
-m4_define([unique_micro_version], [5])
+m4_define([unique_major_version], [1])
+m4_define([unique_minor_version], [0])
+m4_define([unique_micro_version], [0])
 m4_define([unique_version],
           [unique_major_version.unique_minor_version.unique_micro_version])
 m4_define([unique_api_version],
