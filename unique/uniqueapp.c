@@ -163,10 +163,6 @@ message_accumulator (GSignalInvocationHint *ihint,
 
   continue_emission = (response == UNIQUE_RESPONSE_PASSTHROUGH);
 
-  g_print ("response id: %d, continue emission: %s\n",
-           response,
-           continue_emission ? "true" : "false");
-
   return continue_emission;
 }
 
