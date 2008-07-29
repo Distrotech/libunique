@@ -64,6 +64,7 @@ typedef enum { /*< prefix=UNIQUE >*/
  * @UNIQUE_RESPONSE_OK: The command was successfully executed.
  * @UNIQUE_RESPONSE_CANCEL: The command was cancelled by the user.
  * @UNIQUE_RESPONSE_FAIL: The command failed due to a IPC failure.
+ * @UNIQUE_RESPONSE_PASSTHROUGH: The command was not handled
  *
  * Response that a currently active instance of the application should
  * return to the caller which sent a command.
@@ -72,7 +73,8 @@ typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
   UNIQUE_RESPONSE_INVALID = 0,
   UNIQUE_RESPONSE_OK,
   UNIQUE_RESPONSE_CANCEL,
-  UNIQUE_RESPONSE_FAIL
+  UNIQUE_RESPONSE_FAIL,
+  UNIQUE_RESPONSE_PASSTHROUGH
 } UniqueResponse;
 
 GType unique_response_get_type (void) G_GNUC_CONST;

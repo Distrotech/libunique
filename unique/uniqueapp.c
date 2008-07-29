@@ -100,6 +100,7 @@ unique_response_get_type (void)
         { UNIQUE_RESPONSE_OK, "UNIQUE_RESPONSE_OK", "ok" },
         { UNIQUE_RESPONSE_CANCEL, "UNIQUE_RESPONSE_CANCEL", "cancel" },
         { UNIQUE_RESPONSE_FAIL, "UNIQUE_RESPONSE_FAIL", "fail" },
+        { UNIQUE_RESPONSE_PASSTHROUGH, "UNIQUE_RESPONSE_PASSTHROUGH", "passthrough" },
         { 0, NULL, NULL }
       };
 
@@ -160,9 +161,31 @@ message_accumulator (GSignalInvocationHint *ihint,
   response = g_value_get_enum (handler_return);
   g_value_set_enum (return_accu, response);
 
-  continue_emission = (response == UNIQUE_RESPONSE_OK);
+  continue_emission = (response == UNIQUE_RESPONSE_PASSTHROUGH);
+
+  g_print ("response id: %d, continue emission: %s\n",
+           response,
+           continue_emission ? "true" : "false");
 
   return continue_emission;
+}
+
+static UniqueResponse
+unique_app_real_message_received (UniqueApp         *app,
+                                  gint               command,
+                                  UniqueMessageData *message,
+                                  guint              time_)
+{
+  UniqueAppPrivate *priv = app->priv;
+
+  /* if we get here it means that nothing handled the message;
+   * the default behaviour is to activate the first window in
+   * the watched windows list
+   */
+  if (priv->windows && priv->windows->data)
+    gtk_window_present (GTK_WINDOW (priv->windows->data));
+
+  return UNIQUE_RESPONSE_OK;
 }
 
 static GObject *
@@ -357,7 +380,10 @@ unique_app_class_init (UniqueAppClass *klass)
    * eventual other parameters (see #UniqueMessageData).
    *
    * The signal handler should return a #UniqueResponse value depending on
-   * whether the command was successfully completed or not.
+   * whether the command was successfully completed or not. If the
+   * %UNIQUE_RESPONSE_PASSTHROUGH return value is used, the signal
+   * emission chain will continue until another handler will return another
+   * response code.
    */
   unique_app_signals[MESSAGE_RECEIVED] =
     g_signal_new ("message-received",
@@ -371,6 +397,8 @@ unique_app_class_init (UniqueAppClass *klass)
                   G_TYPE_INT,               /* command */
                   UNIQUE_TYPE_MESSAGE_DATA, /* message_data */
                   G_TYPE_UINT               /* time_ */);
+
+  klass->message_received = unique_app_real_message_received;
 
   g_type_class_add_private (klass, sizeof (UniqueAppPrivate));
 }
