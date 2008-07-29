@@ -179,7 +179,12 @@ unique_app_real_message_received (UniqueApp         *app,
    * the watched windows list
    */
   if (priv->windows && priv->windows->data)
-    gtk_window_present (GTK_WINDOW (priv->windows->data));
+    {
+      GtkWindow *window = priv->windows->data;
+
+      gtk_window_set_screen (window, unique_message_data_get_screen (message));
+      gtk_window_present (window);
+    }
 
   return UNIQUE_RESPONSE_OK;
 }
