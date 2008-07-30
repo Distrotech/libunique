@@ -14,10 +14,10 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 
 DISTCLEANFILES = unique-1.0.pc
 
-release:
-	@git-changelog > ChangeLog && \
-	$(MAKE) distcheck && \
-	echo "For a full change log see git-log" > ChangeLog
+dist-hook:
+	@git-changelog > ChangeLog.in && \
+	cp -f ChangeLog.in $(distdir)/ChangeLog && \
+	rm -f ChangeLog.in
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-snap`date +"%Y%m%d"`
