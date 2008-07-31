@@ -21,6 +21,7 @@ INCLUDES = \
 LDADD = \
 	-version-info $(UNIQUE_LT_VERSION_INFO)	\
 	-export-dynamic				\
+	-export-symbols-regex "^unique.*"
 	-rpath $(libdir)			\
 	$(NULL)
 
