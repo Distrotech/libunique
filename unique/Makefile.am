@@ -19,7 +19,7 @@ INCLUDES = \
 	$(NULL)
 
 LDADD = \
-	-version-info $(LT_VERSION_INFO)	\
+	-version-info $(UNIQUE_LT_VERSION_INFO)	\
 	-export-dynamic				\
 	-rpath $(libdir)			\
 	$(NULL)

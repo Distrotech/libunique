@@ -45,10 +45,10 @@ m4_define([lt_current],
           [m4_eval(100 * unique_minor_version + unique_micro_version - unique_interface_age)])
 m4_define([lt_revision], [unique_interface_age])
 m4_define([lt_age], [m4_eval(unique_binary_age - unique_interface_age)])
-LT_VERSION_INFO="lt_current:lt_revision:lt_age"
-LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
-AC_SUBST(LT_VERSION_INFO)
-AC_SUBST(LT_CURRENT_MINUS_AGE)
+UNIQUE_LT_VERSION_INFO="lt_current:lt_revision:lt_age"
+UNIQUE_LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
+AC_SUBST(UNIQUE_LT_VERSION_INFO)
+AC_SUBST(UNIQUE_LT_CURRENT_MINUS_AGE)
 
 AC_ISC_POSIX
 AC_PROG_CC
