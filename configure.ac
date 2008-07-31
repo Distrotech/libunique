@@ -70,7 +70,8 @@ GLIB_REQUIRED=2.12.0
 GTK_REQUIRED=2.11.0
 DBUS_GLIB_REQUIRED=0.70
 
-PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= $GLIB_REQUIRED dnl
+PKG_CHECK_MODULES(UNIQUE, x11 dnl
+                          glib-2.0 >= $GLIB_REQUIRED dnl
                           gtk+-2.0 >= $GTK_REQUIRED)
 
 dnl D-Bus backend dependencies
