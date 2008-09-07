@@ -59,7 +59,7 @@ unique_message_data_get_type (void)
   if (G_UNLIKELY (data_type == 0))
     {
       data_type =
-        g_boxed_type_register_static ("UniqueMessageData",
+        g_boxed_type_register_static (I_("UniqueMessageData"),
                                       (GBoxedCopyFunc) unique_message_data_copy,
                                       (GBoxedFreeFunc) unique_message_data_free);
     }

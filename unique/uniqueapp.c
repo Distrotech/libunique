@@ -82,7 +82,7 @@ unique_command_get_type (void)
         { 0, NULL, NULL }
       };
 
-      etype = g_enum_register_static ("UniqueCommand", values);
+      etype = g_enum_register_static (I_("UniqueCommand"), values);
     }
 
   return etype;
@@ -104,7 +104,7 @@ unique_response_get_type (void)
         { 0, NULL, NULL }
       };
 
-      etype = g_enum_register_static ("UniqueResponse", values);
+      etype = g_enum_register_static (I_("UniqueResponse"), values);
     }
 
   return etype;
@@ -387,7 +387,7 @@ unique_app_class_init (UniqueAppClass *klass)
    * response code.
    */
   unique_app_signals[MESSAGE_RECEIVED] =
-    g_signal_new ("message-received",
+    g_signal_new (I_("message-received"),
                   G_TYPE_FROM_CLASS (gobject_class),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
                   G_STRUCT_OFFSET (UniqueAppClass, message_received),

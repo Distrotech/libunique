@@ -30,6 +30,8 @@ struct _UniqueMessageData
                                  G_PARAM_STATIC_NICK | \
                                  G_PARAM_STATIC_BLURB)
 
+#define I_(str) (g_intern_static_string ((str)))
+
 /* this method emits the UniqueApp::message-received signal on app; it
  * should be called by the backend on its parent UniqueApp instance.
  */
