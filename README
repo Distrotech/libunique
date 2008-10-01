@@ -1,8 +1,8 @@
-Unique is a library for writing single instance applications, that is
+LibUnique is a library for writing single instance applications, that is
 applications that are run once and every further call to the same binary
 either exits immediately or sends a command to the running instance.
 
-Unique can be compiled against various backends, to allow the usage of
+LibUnique can be compiled against various backends, to allow the usage of
 different IPC mechanisms depending on the platform.
 
 Project page: http://live.gnome.org/LibUnique
