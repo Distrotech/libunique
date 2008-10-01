@@ -136,6 +136,8 @@ unique_message_data_free (UniqueMessageData *message_data)
  * from the message data. If @data is %NULL, a @length of -1 will unset
  * the payload, while a @length of 0 will set the payload to an empty
  * string.
+ *
+ * You can use unique_message_data_get() to retrieve the data.
  */
 void
 unique_message_data_set (UniqueMessageData *message_data,
@@ -163,6 +165,32 @@ unique_message_data_set (UniqueMessageData *message_data,
     }
 
   message_data->length = length;
+}
+
+/**
+ * unique_message_data_get:
+ * @message_data: a #UniqueMessageData
+ * @length: return location for the length of the contents
+ *
+ * Retrieves the raw contents of @message_data set using
+ * unique_messaget_data_set().
+ *
+ * Return value: the contents of the message data or %NULL. The
+ *   returned string is owned by the #UniqueMessageData and should
+ *   never be modified or freed
+ *
+ * Since: 1.0.2
+ */
+G_CONST_RETURN guchar *
+unique_message_data_get (UniqueMessageData *message_data,
+                         gsize             *length)
+{
+  g_return_val_if_fail (message_data != NULL, NULL);
+
+  if (length)
+    *length = message_data->length;
+
+  return message_data->data;
 }
 
 /* taken from gtkselection.c */
