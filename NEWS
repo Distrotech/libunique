@@ -1,3 +1,12 @@
+Changes for Unique 1.0.2
+========================
+* Various compilation warnings fixed
+* Add raw data getter for UniqueMessageData
+* Add filename accessor pair for UniqueMessageData
+* Fix linking with --as-needed
+* Support libtool 2.2
+* Do not export private functions symbols
+
 Changes for Unique 1.0.0
 ========================
 * First stable release
