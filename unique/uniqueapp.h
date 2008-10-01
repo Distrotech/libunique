@@ -58,6 +58,8 @@ typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_CLOSE    = -4
 } UniqueCommand;
 
+GType unique_command_get_type (void) G_GNUC_CONST;
+
 /**
  * UniqueResponse:
  * @UNIQUE_RESPONSE_INVALID: Internal error code, should never be used.
