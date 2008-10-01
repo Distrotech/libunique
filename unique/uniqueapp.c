@@ -813,7 +813,10 @@ unique_command_to_string (UniqueApp *app,
 
       enum_class = g_type_class_ref (UNIQUE_TYPE_COMMAND);
       enum_value = g_enum_get_value (enum_class, command);
-      retval = enum_value->value_nick;
+      if (enum_value)
+        retval = enum_value->value_nick;
+      else
+        g_warning ("No nickname found for command value %d", command);
 
       g_type_class_unref (enum_class);
     }
