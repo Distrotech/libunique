@@ -69,6 +69,8 @@ unique_message_data_set_text
 unique_message_data_get_text
 unique_message_data_set_uris
 unique_message_data_get_uris
+unique_message_data_set_filename
+unique_message_data_get_filename
 
 <SUBSECTION>
 unique_message_data_get_screen
