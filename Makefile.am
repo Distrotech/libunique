@@ -15,7 +15,7 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 DISTCLEANFILES = unique-1.0.pc
 
 dist-hook:
-	@git-changelog > ChangeLog.in && \
+	@git log --stat > ChangeLog.in && \
 	cp -f ChangeLog.in $(distdir)/ChangeLog && \
 	rm -f ChangeLog.in
 
