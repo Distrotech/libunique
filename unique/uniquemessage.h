@@ -58,6 +58,9 @@ gchar *                unique_message_data_get_text       (UniqueMessageData *me
 gboolean               unique_message_data_set_uris       (UniqueMessageData *message_data,
                                                            gchar            **uris);
 gchar **               unique_message_data_get_uris       (UniqueMessageData *message_data);
+void                   unique_message_data_set_filename   (UniqueMessageData *message_data,
+                                                           const gchar       *filename);
+gchar *                unique_message_data_get_filename   (UniqueMessageData *message_data);
 
 GdkScreen *            unique_message_data_get_screen     (UniqueMessageData *message_data);
 G_CONST_RETURN gchar * unique_message_data_get_startup_id (UniqueMessageData *message_data);

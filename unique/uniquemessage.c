@@ -449,6 +449,46 @@ unique_message_data_get_uris (UniqueMessageData *message_data)
 }
 
 /**
+ * unique_message_data_set_filename:
+ * @message_data: a #UniqueMessageData
+ * @filename: a filename
+ *
+ * Sets @filename as the contents of @message_data.
+ *
+ * Since: 1.0.2
+ */
+void
+unique_message_data_set_filename (UniqueMessageData *message_data,
+                                  const gchar       *filename)
+{
+  g_return_if_fail (message_data != NULL);
+  g_return_if_fail (filename != NULL);
+
+  unique_message_data_set (message_data,
+                           (const guchar *) filename,
+                           strlen (filename));
+}
+
+/**
+ * unique_message_data_get_filename:
+ * @message_data: a #UniqueMessageData
+ *
+ * Retrieves the filename set with unique_message_data_set_filename().
+ *
+ * Return value: a newly allocated string containing the filename.
+ *   Use g_free() to free the resources used by the returned value.
+ *
+ * Since: 1.0.2
+ */
+gchar *
+unique_message_data_get_filename (UniqueMessageData *message_data)
+{
+  g_return_val_if_fail (message_data != NULL, NULL);
+
+  return g_strndup (message_data->data, message_data->length);
+}
+
+/**
  * unique_message_data_get_screen:
  * @message_data: a #UniqueMessageData
  *
