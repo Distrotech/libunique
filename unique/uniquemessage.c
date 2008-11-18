@@ -120,6 +120,7 @@ unique_message_data_free (UniqueMessageData *message_data)
 {
   if (G_LIKELY (message_data))
     {
+      g_free (message_data->startup_id);
       g_free (message_data->data);
 
       g_slice_free (UniqueMessageData, message_data);
