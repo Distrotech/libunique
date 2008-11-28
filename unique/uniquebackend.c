@@ -289,6 +289,7 @@ unique_backend_send_message (UniqueBackend     *backend,
 }
 
 #include "bacon/uniquebackend-bacon.h"
+#include "x11/uniquebackend-x11.h"
 #ifdef HAVE_DBUS
 #include "dbus/uniquebackend-dbus.h"
 #endif
@@ -317,6 +318,9 @@ unique_backend_create (void)
     {
       if (strcmp (backend_name, "bacon") == 0)
         backend_gtype = unique_backend_bacon_get_type ();
+
+      if (strcmp (backend_name, "x11") == 0)
+        backend_gtype = unique_backend_x11_get_type ();
 
 #ifdef HAVE_DBUS
       if (strcmp (backend_name, "dbus") == 0)
