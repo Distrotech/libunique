@@ -57,7 +57,7 @@ unique_backend_x11_finalize (GObject *gobject)
 }
 
 static UniqueResponse
-unique_backend_bacon_send_message (UniqueBackend     *backend,
+unique_backend_x11_send_message (UniqueBackend     *backend,
                                    gint               command_id,
                                    UniqueMessageData *message,
                                    guint              time_)
