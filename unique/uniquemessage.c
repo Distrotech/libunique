@@ -105,6 +105,7 @@ unique_message_data_copy (UniqueMessageData *message_data)
     }
 
   retval->screen = message_data->screen;
+  retval->startup_id = g_strdup (message_data->startup_id);
 
   return retval;
 }
