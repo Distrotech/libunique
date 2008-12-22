@@ -1,3 +1,7 @@
+Changes for Unique 1.0.6
+========================
+* Fix a double-free error [Matthias Clasen, Richard Hughes]
+
 Changes for Unique 1.0.4
 ========================
 * Plug a leak in UniqueMessageData [Cosimo Cecchi]
