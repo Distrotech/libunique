@@ -1,7 +1,7 @@
 # versioning
 m4_define([unique_major_version], [1])
 m4_define([unique_minor_version], [0])
-m4_define([unique_micro_version], [5])
+m4_define([unique_micro_version], [6])
 m4_define([unique_version],
           [unique_major_version.unique_minor_version.unique_micro_version])
 m4_define([unique_api_version],
@@ -9,7 +9,7 @@ m4_define([unique_api_version],
 
 # if functions have been added, set to 0; otherwise, increment
 # with every release
-m4_define([unique_interface_age], [2])
+m4_define([unique_interface_age], [4])
 m4_define([unique_binary_age],
           [m4_eval(100 * unique_minor_version + unique_micro_version)])
 # This is the X.Y used in -lunique-FOO-X.Y
