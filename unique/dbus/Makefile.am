@@ -2,10 +2,7 @@ libuniqueincludedir = $(includedir)/unique-1.0/unique
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique-DBus\"	\
-	-I$(top_srcdir)			\
-	$(UNIQUE_CFLAGS)		\
-	$(UNIQUE_DEBUG_CFLAGS)		\
-	$(DBUS_CFLAGS)
+	-I$(top_srcdir)
 
 LDADD = $(UNIQUE_LIBS) $(DBUS_LIBS)
 
@@ -19,6 +16,12 @@ libunique_dbus_la_SOURCES = 	\
 	uniquebackend-dbus.h	\
 	uniquebackend-dbus.c	\
 	$(BUILT_SOURCES)
+
+libunique_dbus_la_CFLAGS =	\
+	$(UNIQUE_CFLAGS)	\
+	$(UNIQUE_DEBUG_CFLAGS)	\
+	$(MAINTAINER_CFLAGS)	\
+	$(DBUS_CFLAGS)
 
 uniquebackend-bindings.h: uniquebackend-dbus.xml $(DBUS_BINDING_TOOL)
 	$(DBUS_BINDING_TOOL) \

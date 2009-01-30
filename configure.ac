@@ -111,9 +111,8 @@ AC_ARG_ENABLE([maintainer-flags],
               enable_maintainer_flags=maintainer_flags_default)
 
 if test "x$enable_maintainer_flags" = "xyes"; then
-  CPPFLAGS="$CPPFLAGS -Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized"
-else
-  CPPFLAGS="-g -Wall"
+  MAINTAINER_CFLAGS="-Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self"
+  AC_SUBST(MAINTAINER_CFLAGS)
 fi
 
 # enable debug flags and symbols
@@ -124,6 +123,7 @@ AC_ARG_ENABLE([debug],
                              [Turn on debugging @<:@default=debug_default@:>@]),,
               enable_debug=debug_default)
 if test "x$enable_debug" = "xyes"; then
+  test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
   UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
 else
   if test "x$enable_debug" = "xno"; then

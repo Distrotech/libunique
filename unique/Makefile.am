@@ -9,13 +9,9 @@ endif
 DIST_SUBDIRS = bacon dbus
 
 INCLUDES = \
-	-DG_LOG_DOMAIN=\"Unique\"				\
-	-DPREFIX=\""$(prefix)"\"				\
-	-I$(top_srcdir)						\
-	$(UNIQUE_CFLAGS)					\
-	$(UNIQUE_DEBUG_CFLAGS)					\
-	$(DBUS_CFLAGS)						\
-	$(DISABLE_DEPRECATED_FLAGS)				\
+	-DG_LOG_DOMAIN=\"Unique\"	\
+	-DPREFIX=\""$(prefix)"\"	\
+	-I$(top_srcdir)			\
 	$(NULL)
 
 LDADD = \
@@ -65,6 +61,13 @@ libunique_1_0_la_LIBADD = 		\
 	$(unique_backend_libs) 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
+
+libunique_1_0_la_CFLAGS =		\
+	$(UNIQUE_CFLAGS)		\
+	$(UNIQUE_DEBUG_CFLAGS)		\
+	$(MAINTAINER_CFLAGS) 		\
+	$(DBUS_CFLAGS)			\
+	$(DISABLE_DEPRECATED_FLAGS)
 
 libunique_1_0_la_LDFLAGS = $(LDADD)
 
