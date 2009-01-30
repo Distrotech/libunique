@@ -149,6 +149,88 @@ enum
 
 static guint unique_app_signals[LAST_SIGNAL] = { 0, };
 
+/* taken from nautilus */
+static guint32
+slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
+{
+  Display *xdisplay;
+  Window xwindow;
+  XEvent event;
+  XSetWindowAttributes attrs;
+  Atom atom_name;
+  Atom atom_type;
+  char *name;
+
+  xdisplay = GDK_DISPLAY_XDISPLAY (display);
+
+  attrs.override_redirect = True;
+  attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
+
+  xwindow = XCreateWindow (xdisplay, RootWindow (xdisplay, 0),
+                           -100, -100, 1, 1,
+                           0,
+                           CopyFromParent,
+                           CopyFromParent,
+                           CopyFromParent,
+                           CWOverrideRedirect | CWEventMask,
+                           &attrs);
+
+  atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
+  g_assert (atom_name != None);
+
+  atom_type = XInternAtom (xdisplay, "STRING", TRUE);
+  g_assert (atom_type != None);
+
+  name = "Fake Window";
+  XChangeProperty (xdisplay, xwindow, atom_name, atom_type,
+		   8, PropModeReplace,
+                   (unsigned char *) name, strlen (name));
+
+  XWindowEvent (xdisplay, xwindow,
+                PropertyChangeMask,
+                &event);
+
+  XDestroyWindow(xdisplay, xwindow);
+
+  return event.xproperty.time;
+}
+
+static void
+set_startup_id (UniqueBackend *backend,
+                const gchar   *startup_id)
+{
+  gchar *id;
+
+  if (startup_id && startup_id != '\0')
+    id = g_strdup (startup_id);
+  else
+    {
+      GdkDisplay *display = gdk_display_get_default ();
+
+      /* try and get the startup notification id from GDK, the environment
+       * or, if everything else failed, fake one.
+      */
+      startup_id = gdk_x11_display_get_startup_notification_id (display);
+
+      if (!startup_id || startup_id[0] == '\0')
+        startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+
+      if (!startup_id || startup_id[0] == '\0')
+        {
+          guint32 timestamp;
+
+          timestamp = slowly_and_stupidly_obtain_timestamp (display);
+          id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
+        }
+      else
+        id = g_strdup (startup_id);
+    }
+
+  unique_backend_set_startup_id (backend, id);
+
+  g_free (id);
+}
+
 static gboolean
 message_accumulator (GSignalInvocationHint *ihint,
                      GValue                *return_accu,
@@ -229,7 +311,7 @@ unique_app_set_property (GObject      *gobject,
       unique_backend_set_name (backend, g_value_get_string (value));
       break;
     case PROP_STARTUP_ID:
-      unique_backend_set_startup_id (backend, g_value_get_string (value));
+      set_startup_id (backend, g_value_get_string (value));
       break;
     case PROP_SCREEN:
       unique_backend_set_screen (backend, g_value_get_object (value));
@@ -419,52 +501,6 @@ unique_app_init (UniqueApp *app)
   priv->is_running = FALSE;
 }
 
-/* taken from nautilus */
-static guint32
-slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
-{
-  Display *xdisplay;
-  Window xwindow;
-  XEvent event;
-  XSetWindowAttributes attrs;
-  Atom atom_name;
-  Atom atom_type;
-  char *name;
-
-  xdisplay = GDK_DISPLAY_XDISPLAY (display);
-
-  attrs.override_redirect = True;
-  attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
-
-  xwindow = XCreateWindow (xdisplay, RootWindow (xdisplay, 0),
-                           -100, -100, 1, 1,
-                           0,
-                           CopyFromParent,
-                           CopyFromParent,
-                           CopyFromParent,
-                           CWOverrideRedirect | CWEventMask,
-                           &attrs);
-
-  atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
-  g_assert (atom_name != None);
-
-  atom_type = XInternAtom (xdisplay, "STRING", TRUE);
-  g_assert (atom_type != None);
-
-  name = "Fake Window";
-  XChangeProperty (xdisplay, xwindow, atom_name, atom_type,
-		   8, PropModeReplace,
-                   (unsigned char *) name, strlen (name));
-
-  XWindowEvent (xdisplay, xwindow,
-                PropertyChangeMask,
-                &event);
-
-  XDestroyWindow(xdisplay, xwindow);
-
-  return event.xproperty.time;
-}
-
 /**
  * unique_app_new:
  * @name: the name of the application's instance
@@ -492,44 +528,12 @@ UniqueApp *
 unique_app_new (const gchar *name,
                 const gchar *startup_id)
 {
-  UniqueApp *retval;
-  gchar *id;
-
   g_return_val_if_fail (name != NULL, NULL);
 
-  if (startup_id && startup_id != '\0')
-    id = g_strdup (startup_id);
-  else
-    {
-      GdkDisplay *display = gdk_display_get_default ();
-
-      /* try and get the startup notification id from GDK, the environment
-       * or, if everything else failed, fake one.
-      */
-      startup_id = gdk_x11_display_get_startup_notification_id (display);
-
-      if (!startup_id || startup_id[0] == '\0')
-        startup_id = g_getenv ("DESKTOP_STARTUP_ID");
-
-      if (!startup_id || startup_id[0] == '\0')
-        {
-          guint32 timestamp;
-
-          timestamp = slowly_and_stupidly_obtain_timestamp (display);
-          id = g_strdup_printf ("_TIME%lu", (unsigned long) timestamp);
-        }
-      else
-        id = g_strdup (startup_id);
-    }
-
-  retval = g_object_new (UNIQUE_TYPE_APP,
-                         "name", name,
-                         "startup-id", id,
-                         NULL); 
-
-  g_free (id);
-
-  return retval;
+  return g_object_new (UNIQUE_TYPE_APP,
+                       "name", name,
+                       "startup-id", startup_id,
+                       NULL); 
 }
 
 static void
