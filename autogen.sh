@@ -1,4 +1,5 @@
 #! /bin/sh
+# Run this to generate all the initial makefiles, etc.
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -20,7 +21,10 @@ else
         gtkdocize || exit $?
 fi
 
-autoreconf -v --install || exit $?
+which gnome-autogen.sh || {
+    echo "*** You need to install gnome-common from GNOME SVN:"
+    echo "***  svn co http://svn.gnome.org/svn/gnome-common/trunk gnome-common"
+    exit 1
+}
 
-./configure "$@" && echo "Now type 'make' to compile ${PROJECT}"
-
+REQUIRED_AUTOMAKE_VERSION=1.8 . gnome-autogen.sh
