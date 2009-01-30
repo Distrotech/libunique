@@ -2,9 +2,7 @@ libuniqueincludedir = $(includedir)/unique-1.0/unique
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique-Bacon\"	\
-	-I$(top_srcdir)			\
-	$(UNIQUE_CFLAGS)		\
-	$(UNIQUE_DEBUG_FLAGS)
+	-I$(top_srcdir)
 
 LDADD = $(UNIQUE_LIBS)
 
@@ -17,3 +15,8 @@ libunique_bacon_la_SOURCES = 	\
 	uniquefactory-bacon.h	\
 	uniquemessage-bacon.c	\
 	uniquemessage-bacon.h
+
+libunique_bacon_la_CFLAGS =	\
+	$(UNIQUE_CFLAGS)	\
+	$(UNIQUE_DEBUG_FLAGS)	\
+	$(MAINTAINER_CFLAGS)
