@@ -302,6 +302,9 @@ create_server (UniqueBackendBacon *backend)
       return;
     }
   
+  /* For security concern, the socket files should be set 700 */
+  g_chmod (backend->socket_path, 0700);
+
   listen (backend->socket_fd, MAX_CONNECTIONS);
   setup_connection (backend);
 }
