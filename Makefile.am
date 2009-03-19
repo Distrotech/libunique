@@ -1,9 +1,7 @@
 SUBDIRS = unique tests doc po
 
-AUTOMAKE_OPTIONS = 1.7
-
 unique-1.0.pc: unique.pc
-	@cp -f unique.pc unique-1.0.pc
+	@cp -f $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = unique-1.0.pc
@@ -15,9 +13,12 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 DISTCLEANFILES = unique-1.0.pc
 
 dist-hook:
-	@git log --stat > ChangeLog.in && \
-	cp -f ChangeLog.in $(distdir)/ChangeLog && \
-	rm -f ChangeLog.in
-
-snapshot:
-	$(MAKE) dist distdir=$(PACKAGE)-snap`date +"%Y%m%d"`
+	@if test -d "$(srcdir)/.git"; then \
+	  ( cd "$(srcdir)" && \
+	    $(top_srcdir)/missing --run git log --stat ) > ChangeLog.tmp \
+	  && mv -f ChangeLog.tmp $(top_distdir)/ChangeLog \
+	  || ( rm -f ChangeLog.tmp; \
+	       echo Failed to generate ChangeLog >&2 ); \
+	else \
+	  echo A git checkout is required to generate a ChangeLog >&2; \
+	fi
