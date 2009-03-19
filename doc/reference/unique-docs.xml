@@ -7,7 +7,7 @@
 
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
-    <title>Unique Reference Manual</title>
+    <title>Unique &version; Reference Manual</title>
     <releaseinfo>Version &version;</releaseinfo>
 
     <copyright>
