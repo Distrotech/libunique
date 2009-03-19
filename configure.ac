@@ -19,7 +19,9 @@ m4_define([unique_protocol_version], [1.0])
 
 AC_PREREQ(2.54)
 
-AC_INIT([unique], [unique_version], [ebassi@gnome.org], [unique])
+AC_INIT([unique], [unique_version],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=libunique],
+        [libunique])
 
 AC_CONFIG_SRCDIR([unique/unique.h])
 
