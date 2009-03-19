@@ -47,8 +47,8 @@ G_BEGIN_DECLS
  * @UNIQUE_CLOSE: requests to close the currently running instance.
  *
  * Command to send to a currently active instance. User defined commands
- * should be positive integers, and should be added using
- * unique_command_register() before creating the UniqueApp instance.
+ * should be positive integers, and should be added using the
+ * unique_app_add_command() function after creating a #UniqueApp instance
  */
 typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_INVALID  = 0,
