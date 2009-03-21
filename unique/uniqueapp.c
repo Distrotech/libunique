@@ -836,8 +836,7 @@ unique_command_to_string (UniqueApp *app,
       if (!priv->commands_by_id)
         {
           g_warning ("No user commands defined. You should add new commands "
-                     "with unique_command_register() before creating the "
-                     "UniqueApp instance.");
+                     "with unique_app_add_command().");
           return NULL;
         }
 
@@ -873,8 +872,7 @@ unique_command_from_string (UniqueApp   *app,
       if (!priv->commands_by_name)
         {
           g_warning ("No user commands defined. You should add new commands "
-                     "with unique_command_register() before creating the "
-                     "UniqueApp instance.");
+                     "with unique_app_add_command().");
           return 0;
         }
 
