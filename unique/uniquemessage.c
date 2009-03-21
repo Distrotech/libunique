@@ -301,16 +301,19 @@ message_data_get_text_plain (UniqueMessageData *message_data)
   str = g_strdup ((gchar *) message_data->data);
   len = message_data->length;
 
-  g_get_charset (&charset);
-  if (!charset)
-    charset = "ISO-8859-1";
+  if (!g_utf8_validate (str, -1, NULL))
+    {
+      g_get_charset (&charset);
+      if (!charset)
+        charset = "ISO-8859-1";
 
-  tmp = str;
-  str = g_convert_with_fallback (tmp, len,
-                                 charset, "UTF-8",
-                                 NULL, NULL, &len,
-                                 &error);
-  g_free (tmp);
+      tmp = str;
+      str = g_convert_with_fallback (tmp, len,
+                                     charset, "UTF-8",
+                                     NULL, NULL, &len,
+                                     &error);
+      g_free (tmp);
+    }
 
   if (!str)
     {
