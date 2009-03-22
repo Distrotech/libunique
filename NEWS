@@ -1,3 +1,28 @@
+Changes for Unique 1.0.8
+========================
+
+Emmanuele Bassi (9):
+      Post release bump to 1.0.7
+      [build] Use the right environment variables
+      [build] Rework the maintainer compiler flags
+      [backport] Remove the GPL notice from the test
+      [backport] Update AC_INIT parameters
+      [backport] Update the ChangeLog generation rule
+      [backport] Eliminate newline in the version XML template
+      [backport] Rename SGML to XML
+      [backport] Remove mentions of unique_command_register()
+
+Halton Huo (3):
+      [build] Use gnome-autogen instead of autoreconf
+      [build] Support suncc
+      [bacon] Chmod the socket file to 0700
+
+Matthew Barnes (1):
+      Unbreak subclassing of UniqueApp
+
+Takao Fujiwara (1):
+      [backport] Do not attempt to convert UTF-8 data
+
 Changes for Unique 1.0.6
 ========================
 * Fix a double-free error [Matthias Clasen, Richard Hughes]
