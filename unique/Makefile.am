@@ -9,6 +9,10 @@ endif
 DIST_SUBDIRS = bacon dbus
 
 INCLUDES = \
+	-DG_DISABLE_SINGLE_INCLUDES	\
+	-DGTK_DISABLE_SINGLE_INCLUDES	\
+	-DG_DISABLE_DEPRECATED		\
+	-DGTK_DISABLE_DEPRECATED	\
 	-DG_LOG_DOMAIN=\"Unique\"	\
 	-DPREFIX=\""$(prefix)"\"	\
 	-I$(top_srcdir)			\
