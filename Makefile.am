@@ -1,4 +1,4 @@
-SUBDIRS = unique tests doc po
+SUBDIRS = build unique tests doc po
 
 unique-1.0.pc: unique.pc
 	@cp -f $< $@

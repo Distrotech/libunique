@@ -24,9 +24,11 @@ AC_INIT([unique], [unique_version],
         [libunique])
 
 AC_CONFIG_SRCDIR([unique/unique.h])
+AC_CONFIG_MACRO_DIR([build/autotools])
 
 AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER(config.h)
+
+AM_CONFIG_HEADER([config.h])
 
 # version symbols
 UNIQUE_MAJOR_VERSION=unique_major_version
@@ -77,18 +79,18 @@ PKG_CHECK_MODULES(UNIQUE, x11 dnl
                           gtk+-2.0 >= $GTK_REQUIRED)
 
 dnl D-Bus backend dependencies
-if $PKG_CONFIG --atleast-version $DBUS_GLIB_REQUIRED dbus-glib-1; then
-  have_dbus=yes
-  PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED)
+PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED,
+                  [have_dbus=yes],
+                  [have_dbus=no])
+
+if test "x$have_dbus" = "xyes"; then
   AC_SUBST(DBUS_CFLAGS)
   AC_SUBST(DBUS_LIBS)
   AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support]) 
   AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
-else
-  have_dbus=no
 fi
 
-AM_CONDITIONAL([HAVE_DBUS], [test x$have_dbus = xyes])
+AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 
 dnl Bacon backend
 dnl This is the fallback backend, so we *need* these headers and functions
@@ -96,7 +98,7 @@ dnl even if we end up using D-Bus
 AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h])
 
 dnl Choose the default backend
-if test x$have_dbus = xyes; then
+if test "x$have_dbus" = "xyes"; then
   UNIQUE_DEFAULT_BACKEND=dbus
 else
   UNIQUE_DEFAULT_BACKEND=bacon
@@ -153,9 +155,15 @@ AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
 
 GTK_DOC_CHECK([1.11])
 
+SHAVE_INIT([build/autotools], [enable])
+
 AC_CONFIG_FILES([
         Makefile
         unique.pc
+        build/Makefile
+        build/autotools/Makefile
+        build/autotools/shave
+        build/autotools/shave-libtool
         doc/Makefile
         doc/reference/Makefile
         doc/reference/version.xml
