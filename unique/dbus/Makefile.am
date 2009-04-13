@@ -1,3 +1,5 @@
+QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
+
 libuniqueincludedir = $(includedir)/unique-1.0/unique
 
 INCLUDES = \
@@ -24,13 +26,13 @@ libunique_dbus_la_CFLAGS =	\
 	$(DBUS_CFLAGS)
 
 uniquebackend-bindings.h: uniquebackend-dbus.xml $(DBUS_BINDING_TOOL)
-	$(DBUS_BINDING_TOOL) \
+	$(QUIET_GEN)$(DBUS_BINDING_TOOL) \
 		--mode=glib-server \
 		--output=$@ \
 		--prefix=uniquebackend \
 	uniquebackend-dbus.xml
 uniquebackend-glue.h: uniquebackend-dbus.xml $(DBUS_BINDING_TOOL)
-	$(DBUS_BINDING_TOOL) \
+	$(QUIET_GEN)$(DBUS_BINDING_TOOL) \
 		--mode=glib-client \
 		--output=$@ \
 		--prefix=uniquebackend \
