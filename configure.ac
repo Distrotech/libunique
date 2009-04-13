@@ -70,18 +70,33 @@ AM_PROG_CC_STDC
 # Honor aclocal flags
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
-GLIB_REQUIRED=2.12.0
-GTK_REQUIRED=2.11.0
-DBUS_GLIB_REQUIRED=0.70
+m4_define([glib_required], [2.12.0])
+m4_define([gtk_required],  [2.11.0])
+m4_define([dbus_required], [0.70])
 
-PKG_CHECK_MODULES(UNIQUE, x11 dnl
-                          glib-2.0 >= $GLIB_REQUIRED dnl
-                          gtk+-2.0 >= $GTK_REQUIRED)
+PKG_CHECK_MODULES(UNIQUE, x11                           dnl
+                          glib-2.0 >= glib_required     dnl
+                          gtk+-2.0 >= gtk_required)
 
 dnl D-Bus backend dependencies
-PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_GLIB_REQUIRED,
-                  [have_dbus=yes],
-                  [have_dbus=no])
+m4_define([have_dbus_default], [yes])
+AC_ARG_ENABLE([dbus],
+              [AC_HELP_STRING([--enable-dbus=@<:@yes/no@:>@],
+                              [Whether D-BUS IPC should be enabled])],
+              [],
+              [enable_dbus=have_dbus_default])
+
+AS_IF([test "x$enable_dbus" = "xyes"],
+      [
+        PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= dbus_required,
+                          [have_dbus=yes],
+                          [have_dbus=no])
+      ],
+
+      [test "x$enable_dbus" = "xno"], [have_dbus=no],
+
+      [AC_MSG_ERROR([Unknown argument to --enable-dbus])]
+)
 
 if test "x$have_dbus" = "xyes"; then
   AC_SUBST(DBUS_CFLAGS)
@@ -95,6 +110,7 @@ AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 dnl Bacon backend
 dnl This is the fallback backend, so we *need* these headers and functions
 dnl even if we end up using D-Bus
+have_bacon=yes
 AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h])
 
 dnl Choose the default backend
@@ -108,11 +124,12 @@ AC_SUBST(UNIQUE_DEFAULT_BACKEND)
 
 # use strict compiler flags only on development releases
 m4_define([maintainer_flags_default],
-          m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [no]))
+          [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [no])])
 AC_ARG_ENABLE([maintainer-flags],
-              AC_HELP_STRING([--enable-maintainer-flags=@<:@no/yes@:>@],
-                             [Use strict compiler flags @<:@default=no@:>@]),,
-              enable_maintainer_flags=maintainer_flags_default)
+              [AC_HELP_STRING([--enable-maintainer-flags=@<:@no/yes@:>@],
+                              [Use strict compiler flags @<:@default=no@:>@])],
+              [],
+              [enable_maintainer_flags=maintainer_flags_default])
 
 if test "x$enable_maintainer_flags" = "xyes"; then
   if test "x$GCC" = "xyes"; then
@@ -125,20 +142,29 @@ fi
 m4_define([debug_default],
           m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [minimum]))
 AC_ARG_ENABLE([debug],
-              AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
-                             [Turn on debugging @<:@default=debug_default@:>@]),,
-              enable_debug=debug_default)
-if test "x$enable_debug" = "xyes"; then
-  test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
-  UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
-else
-  if test "x$enable_debug" = "xno"; then
-    UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
-  else
-    # test x$enable_debug = xminimum
-    UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
-  fi
-fi
+              [AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
+                              [Turn on debugging @<:@default=debug_default@:>@])],
+              [],
+              [enable_debug=debug_default])
+
+AS_IF([test "x$enable_debug" = "xyes"],
+      [
+        test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
+        UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
+      ],
+
+      [test "x$enable_debug" = "xno"],
+      [
+        UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
+      ],
+
+      [test "x$enable_debug" = "xminimum"],
+      [
+        UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
+      ]
+
+      [AC_MSG_ERROR([Unknown argument to --enable-debug])]
+)
 
 AC_SUBST(UNIQUE_DEBUG_CFLAGS)
 
@@ -153,8 +179,10 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
 
 AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
 
+# gtk-doc
 GTK_DOC_CHECK([1.11])
 
+# shave
 SHAVE_INIT([build/autotools], [enable])
 
 AC_CONFIG_FILES([
@@ -182,4 +210,10 @@ Configuration:
             Maintainer flags: $enable_maintainer_flags
                  Debug level: $enable_debug
          Build documentation: $enable_gtk_doc
+
+Backends:
+          Unix Domain Socket: $have_bacon
+                       D-BUS: $have_dbus
+
+             Default backend: $UNIQUE_DEFAULT_BACKEND
 "
