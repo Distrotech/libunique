@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I build/autotools
+
 SUBDIRS = build unique tests doc po
 
 unique-1.0.pc: unique.pc
