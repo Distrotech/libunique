@@ -1,5 +1,7 @@
 NULL =
 
+QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
+
 SUBDIRS = bacon
 
 if HAVE_DBUS
@@ -78,20 +80,22 @@ libunique_1_0_la_LDFLAGS = $(LDADD)
 uniquemarshal.h: stamp-uniquemarshal.h
 	@true
 stamp-uniquemarshal.h: uniquemarshal.list Makefile
-	$(GLIB_GENMARSHAL) --header \
+	$(QUIET_GEN)$(GLIB_GENMARSHAL) \
 		--prefix=unique_marshal \
-	$(top_srcdir)/unique/uniquemarshal.list >> xgen-umh && \
-	(cmp -s xgen-umh uniquemarshal.h || cp xgen-umh uniquemarshal.h) && \
-	rm -f xgen-umh && \
-	echo timestamp > $(@F)
+		--header \
+	$(srcdir)/uniquemarshal.list > xgen-umh \
+	&& (cmp -s xgen-umh uniquemarshal.h || cp xgen-umh uniquemarshal.h) \
+	&& rm -f xgen-umh \
+	&& echo timestamp > $(@F)
 
 uniquemarshal.c: uniquemarshal.list Makefile
-	( echo "#include \"uniquemarshal.h\"" ; \
-	$(GLIB_GENMARSHAL) --body \
+	$(QUIET_GEN)( echo "#include \"uniquemarshal.h\"" ; \
+	  $(GLIB_GENMARSHAL) \
 		--prefix=unique_marshal \
-	$(top_srcdir)/unique/uniquemarshal.list >> xgen-umc ) && \
-	cp xgen-umc uniquemarshal.c && \
-	rm -f xgen-umc
+		--body \
+	  $(srcdir)/uniquemarshal.list ) >> xgen-umc \
+	&& cp xgen-umc uniquemarshal.c \
+	&& rm -f xgen-umc
 
 CLEANFILES = stamp-uniquemarshal.h
 
@@ -102,4 +106,3 @@ DISTCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = uniquemarshal.list uniqueversion.h.in
-
