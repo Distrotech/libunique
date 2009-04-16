@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns="http://usefulinc.com/ns/doap#">
+  <name>Unique</name>
+  <shortname>libunique</shortname>
+  <shortdesc>Library for single instance applications</shortdesc>
+  <description></description>
+
+  <homepage rdf:resource="http://live.gnome.org/LibUnique"/>
+  <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl"/>
+  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=libunique"/>
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Emmanuele Bassi</foaf:name>
+      <foaf:mbox rdf:resource="mailto:ebassi@gnome.org"/>
+    </foaf:Person>
+  </author>
+
+  <release>
+    <Version>
+       <created>2009-03-22</created>
+       <branch>unique-1.0</branch>
+       <revision>1.0.8</revision>
+       <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libunique/1.0/libunique-1.0.8.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+       <created>2008-12-22</created>
+       <branch>unique-1.0</branch>
+       <revision>1.0.6</revision>
+       <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libunique/1.0/libunique-1.0.6.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+       <created>2008-11-23</created>
+       <branch>unique-1.0</branch>
+       <revision>1.0.4</revision>
+       <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libunique/1.0/libunique-1.0.4.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+       <created>2008-10-01</created>
+       <branch>unique-1.0</branch>
+       <revision>1.0.2</revision>
+       <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libunique/1.0/libunique-1.0.2.tar.gz" />
+    </Version>
+  </release>
+
+  <release>
+    <Version>
+       <created>2008-07-29</created>
+       <branch>unique-1.0</branch>
+       <revision>1.0.0</revision>
+       <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/libunique/1.0/libunique-1.0.0.tar.gz" />
+    </Version>
+  </release>
+</Project>
