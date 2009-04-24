@@ -23,7 +23,7 @@
 #define __UNIQUE_BACKEND_H__
 
 #include <glib-object.h>
-#include <gdk/gdkscreen.h>
+#include <gdk/gdk.h>
 #include <unique/uniqueapp.h>
 
 G_BEGIN_DECLS
