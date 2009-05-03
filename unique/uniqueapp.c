@@ -291,6 +291,16 @@ unique_app_real_message_received (UniqueApp         *app,
   return UNIQUE_RESPONSE_OK;
 }
 
+static void
+window_weak_ref_cb (gpointer  user_data,
+                    GObject  *dead_object)
+{
+  UniqueApp *app = user_data;
+  UniqueAppPrivate *priv = app->priv;
+
+  priv->windows = g_slist_remove (priv->windows, dead_object);
+}
+
 static GObject *
 unique_app_constructor (GType                  gtype,
                         guint                  n_params,
@@ -391,6 +401,7 @@ unique_app_finalize (GObject *gobject)
 {
   UniqueApp *app = UNIQUE_APP (gobject);
   UniqueAppPrivate *priv = app->priv;
+  GSList *l;
 
   if (priv->commands_by_name)
     g_hash_table_destroy (priv->commands_by_name);
@@ -398,8 +409,10 @@ unique_app_finalize (GObject *gobject)
   if (priv->commands_by_id)
     g_hash_table_destroy (priv->commands_by_id);
 
-  if (priv->windows)
-    g_slist_free (priv->windows);
+  for (l = priv->windows; l != NULL; l = l->next)
+    g_object_weak_unref (l->data, window_weak_ref_cb, app);
+
+  g_slist_free (priv->windows);
 
   G_OBJECT_CLASS (unique_app_parent_class)->finalize (gobject);
 }
@@ -785,16 +798,6 @@ unique_app_add_command (UniqueApp   *app,
   g_hash_table_replace (priv->commands_by_id,
                         GUINT_TO_POINTER (command_id),
                         command_nick);
-}
-
-static void
-window_weak_ref_cb (gpointer  user_data,
-                    GObject  *object)
-{
-  UniqueApp *app = user_data;
-  UniqueAppPrivate *priv = app->priv;
-
-  priv->windows = g_slist_remove (priv->windows, object);
 }
 
 /**
