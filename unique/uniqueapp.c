@@ -57,7 +57,10 @@
 #include <glib/gi18n-lib.h>
 
 #include <gdk/gdk.h>
+
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 #include "uniquebackend.h"
 #include "uniqueapp.h"
@@ -149,6 +152,7 @@ enum
 
 static guint unique_app_signals[LAST_SIGNAL] = { 0, };
 
+#ifdef GDK_WINDOWING_X11
 /* taken from nautilus */
 static guint32
 slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
@@ -195,6 +199,20 @@ slowly_and_stupidly_obtain_timestamp (GdkDisplay *display)
   return event.xproperty.time;
 }
 
+#else /* !GDK_WINDOWING_X11 */
+
+static guint32
+slowly_and_stupidly_obtain_timestamp (GdkDisplay *display G_GNUC_UNUSED)
+{
+  GTimeVal timeval = { 0, };
+
+  g_get_current_time (&timeval);
+
+  return timeval.tv_sec;
+}
+
+#endif /* GDK_WINDOWING_X11 */
+
 static void
 set_startup_id (UniqueBackend *backend,
                 const gchar   *startup_id)
@@ -209,8 +227,10 @@ set_startup_id (UniqueBackend *backend,
 
       /* try and get the startup notification id from GDK, the environment
        * or, if everything else failed, fake one.
-      */
+       */
+#ifdef GDK_WINDOWING_X11
       startup_id = gdk_x11_display_get_startup_notification_id (display);
+#endif /* GDK_WINDOWING_X11 */
 
       if (!startup_id || startup_id[0] == '\0')
         startup_id = g_getenv ("DESKTOP_STARTUP_ID");
