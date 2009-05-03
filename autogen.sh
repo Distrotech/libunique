@@ -29,4 +29,3 @@ sed -e 's#) --mode=compile#) --tag=CC --mode=compile#' gtk-doc.make > gtk-doc.te
                 && mv gtk-doc.temp gtk-doc.make
 sed -e 's#) --mode=link#) --tag=CC --mode=link#' gtk-doc.make > gtk-doc.temp \
                 && mv gtk-doc.temp gtk-doc.make
-
