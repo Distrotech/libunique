@@ -2,16 +2,13 @@
 m4_define([unique_major_version], [1])
 m4_define([unique_minor_version], [1])
 m4_define([unique_micro_version], [1])
-m4_define([unique_version],
-          [unique_major_version.unique_minor_version.unique_micro_version])
-m4_define([unique_api_version],
-          [unique_major_version.unique_minor_version])
+m4_define([unique_version], [unique_major_version.unique_minor_version.unique_micro_version])
+m4_define([unique_api_version], [unique_major_version.unique_minor_version])
 
 # if functions have been added, set to 0; otherwise, increment
 # with every release
 m4_define([unique_interface_age], [2])
-m4_define([unique_binary_age],
-          [m4_eval(100 * unique_minor_version + unique_micro_version)])
+m4_define([unique_binary_age], [m4_eval(100 * unique_minor_version + unique_micro_version)])
 # This is the X.Y used in -lunique-FOO-X.Y
 m4_define([unique_api_version], [1.0])
 # This is the X.Y used in the protocol negotiation
@@ -45,8 +42,7 @@ AC_SUBST(UNIQUE_API_VERSION)
 AC_SUBST(UNIQUE_PROTOCOL_VERSION)
 
 # libtool
-m4_define([lt_current],
-          [m4_eval(100 * unique_minor_version + unique_micro_version - unique_interface_age)])
+m4_define([lt_current], [m4_eval(100 * unique_minor_version + unique_micro_version - unique_interface_age)])
 m4_define([lt_revision], [unique_interface_age])
 m4_define([lt_age], [m4_eval(unique_binary_age - unique_interface_age)])
 UNIQUE_LT_VERSION_INFO="lt_current:lt_revision:lt_age"
@@ -61,8 +57,8 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_C_CONST
 AC_PROG_LIBTOOL
-AC_PATH_PROG(GLIB_MKENUMS, glib-mkenums)
-AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+AC_PATH_PROG(GLIB_MKENUMS, [glib-mkenums])
+AC_PATH_PROG(GLIB_GENMARSHAL, [glib-genmarshal])
 
 AM_SANITY_CHECK
 AM_PROG_CC_STDC
@@ -105,7 +101,7 @@ AS_IF([test "x$have_dbus" = "xyes"],
         AC_SUBST(DBUS_CFLAGS)
         AC_SUBST(DBUS_LIBS)
         AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support])
-        AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
+        AC_PATH_PROG(DBUS_BINDING_TOOL, [dbus-binding-tool])
       ]
 )
 
@@ -114,21 +110,45 @@ AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 dnl Bacon backend
 dnl This is the fallback backend, so we *need* these headers and functions
 dnl even if we end up using D-Bus
-have_bacon=yes
-AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h])
+dnl D-Bus backend dependencies
+m4_define([have_bacon_default], [yes])
+AC_ARG_ENABLE([bacon],
+              [AC_HELP_STRING([--enable-bacon=@<:@yes/no@:>@],
+                              [Whether Unix domain sockets IPC should be enabled])],
+              [],
+              [enable_bacon=have_bacon_default])
+
+AS_IF([test "x$enable_bacon" = "xyes"],
+      [
+        AC_CHECK_HEADERS([fcntl.h sys/types.h sys/socket.h sys/un.h],
+                         [have_bacon=yes],
+                         [have_bacon=no])
+      ],
+
+      [have_bacon=no]
+)
 
 dnl Choose the default backend
-if test "x$have_dbus" = "xyes"; then
-  UNIQUE_DEFAULT_BACKEND=dbus
-else
-  UNIQUE_DEFAULT_BACKEND=bacon
-fi
+AC_MSG_CHECKING([for default IPC mechanism])
+AS_IF([test "x$have_dbus" = "xyes"],
+      [
+        UNIQUE_DEFAULT_BACKEND=dbus
+        AC_MSG_RESULT([D-Bus])
+      ],
+
+      [test "x$have_bacon" = "xyes"],
+      [
+        UNIQUE_DEFAULT_BACKEND=bacon
+        AC_MSG_RESULT([Unix domain sockets])
+      ],
+
+      [AC_MSG_ERROR([No IPC backend enabled.])]
+)
 
 AC_SUBST(UNIQUE_DEFAULT_BACKEND)
 
 # use strict compiler flags only on development releases
-m4_define([maintainer_flags_default],
-          [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [no])])
+m4_define([maintainer_flags_default], [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [no])])
 AC_ARG_ENABLE([maintainer-flags],
               [AC_HELP_STRING([--enable-maintainer-flags=@<:@no/yes@:>@],
                               [Use strict compiler flags @<:@default=no@:>@])],
@@ -143,8 +163,7 @@ AS_IF([test "x$enable_maintainer_flags" = "xyes" &&  test "x$GCC" = "xyes"],
 )
 
 # enable debug flags and symbols
-m4_define([debug_default],
-          m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [minimum]))
+m4_define([debug_default], [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [minimum])])
 AC_ARG_ENABLE([debug],
               [AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
                               [Turn on debugging @<:@default=debug_default@:>@])],
@@ -180,8 +199,7 @@ AM_GLIB_GNU_GETTEXT
 
 GETTEXT_PACKAGE=unique
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
-                   [Define the gettext package to be used])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
 
 AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
 
@@ -212,6 +230,8 @@ AC_CONFIG_FILES([
 AC_OUTPUT
 
 echo "
+Unique $UNIQUE_VERSION
+
 Configuration:
             Maintainer flags: $enable_maintainer_flags
                  Debug level: $enable_debug
