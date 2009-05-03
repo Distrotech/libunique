@@ -52,7 +52,6 @@ AC_SUBST(UNIQUE_LT_CURRENT_MINUS_AGE)
 
 AC_ISC_POSIX
 AC_PROG_CC
-AC_PATH_XTRA
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_C_CONST
@@ -70,9 +69,23 @@ m4_define([glib_required], [2.12.0])
 m4_define([gtk_required],  [2.11.0])
 m4_define([dbus_required], [0.70])
 
-PKG_CHECK_MODULES(UNIQUE, x11                           dnl
-                          glib-2.0 >= glib_required     dnl
+PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= glib_required dnl
                           gtk+-2.0 >= gtk_required)
+
+gdktarget=`$PKG_CONFIG --variable=target gdk-2.0`
+AS_IF([test "X$gdktarget" = "Xx11"],
+      [
+        AC_PATH_XTRA
+
+        PKG_CHECK_MODULES(UNIQUE_X11, x11)
+
+        UNIQUE_CFLAGS="$UNIQUE_CFLAGS $UNIQUE_X11_CFLAGS"
+        UNIQUE_LIBS="$UNIQUE_LIBS $UNIQUE_X11_LIBS"
+      ]
+)
+
+AC_SUBST(UNIQUE_CFLAGS)
+AC_SUBST(UNIQUE_LIBS)
 
 dnl D-Bus backend dependencies
 m4_define([have_dbus_default], [yes])
