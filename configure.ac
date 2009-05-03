@@ -17,7 +17,7 @@ m4_define([unique_api_version], [1.0])
 # This is the X.Y used in the protocol negotiation
 m4_define([unique_protocol_version], [1.0])
 
-AC_PREREQ(2.54)
+AC_PREREQ([2.59])
 
 AC_INIT([unique], [unique_version],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=libunique],
@@ -86,24 +86,28 @@ AC_ARG_ENABLE([dbus],
               [],
               [enable_dbus=have_dbus_default])
 
-AS_IF([test "x$enable_dbus" = "xyes"],
-      [
-        PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= dbus_required,
-                          [have_dbus=yes],
-                          [have_dbus=no])
-      ],
+AS_CASE([$enable_dbus],
 
-      [test "x$enable_dbus" = "xno"], [have_dbus=no],
+        [yes],
+        [
+          PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= dbus_required,
+                            [have_dbus=yes],
+                            [have_dbus=no])
+        ],
 
-      [AC_MSG_ERROR([Unknown argument to --enable-dbus])]
+        [no], [have_dbus=no],
+
+        [*], [AC_MSG_ERROR([Unknown argument to --enable-dbus])]
 )
 
-if test "x$have_dbus" = "xyes"; then
-  AC_SUBST(DBUS_CFLAGS)
-  AC_SUBST(DBUS_LIBS)
-  AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support]) 
-  AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
-fi
+AS_IF([test "x$have_dbus" = "xyes"],
+      [
+        AC_SUBST(DBUS_CFLAGS)
+        AC_SUBST(DBUS_LIBS)
+        AC_DEFINE([HAVE_DBUS], [1], [Building with D-Bus support])
+        AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool)
+      ]
+)
 
 AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 
@@ -131,12 +135,12 @@ AC_ARG_ENABLE([maintainer-flags],
               [],
               [enable_maintainer_flags=maintainer_flags_default])
 
-if test "x$enable_maintainer_flags" = "xyes"; then
-  if test "x$GCC" = "xyes"; then
-    MAINTAINER_CFLAGS="-Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self"
-    AC_SUBST(MAINTAINER_CFLAGS)
-  fi
-fi
+AS_IF([test "x$enable_maintainer_flags" = "xyes" &&  test "x$GCC" = "xyes"],
+      [
+        MAINTAINER_CFLAGS="-Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self"
+        AC_SUBST(MAINTAINER_CFLAGS)
+      ]
+)
 
 # enable debug flags and symbols
 m4_define([debug_default],
@@ -147,23 +151,25 @@ AC_ARG_ENABLE([debug],
               [],
               [enable_debug=debug_default])
 
-AS_IF([test "x$enable_debug" = "xyes"],
-      [
-        test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
-        UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
-      ],
+AS_CASE([$enable_debug],
 
-      [test "x$enable_debug" = "xno"],
-      [
-        UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
-      ],
+        [yes],
+        [
+          test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
+          UNIQUE_DEBUG_CFLAGS="-DUNIQUE_ENABLE_DEBUG"
+        ],
 
-      [test "x$enable_debug" = "xminimum"],
-      [
-        UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
-      ]
+        [no],
+        [
+          UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
+        ],
 
-      [AC_MSG_ERROR([Unknown argument to --enable-debug])]
+        [minimum],
+        [
+          UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
+        ]
+
+        [*], [AC_MSG_ERROR([Unknown argument to --enable-debug])]
 )
 
 AC_SUBST(UNIQUE_DEBUG_CFLAGS)
