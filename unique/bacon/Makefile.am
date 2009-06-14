@@ -2,6 +2,7 @@ libuniqueincludedir = $(includedir)/unique-1.0/unique
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique-Bacon\"	\
+	-DG_DISABLE_SINGLE_INCLUDES \
 	-I$(top_srcdir)
 
 LDADD = $(UNIQUE_LIBS)
