@@ -5,6 +5,7 @@ Makefile.in
 aclocal.m4
 !/build/autotools/shave.m4
 !/build/autotools/as-compiler-flag.m4
+!/build/autotools/introspection.m4
 /build/autotools/*.m4
 /build/autotools/shave
 /build/autotools/shave-libtool
@@ -35,6 +36,8 @@ unique.pc
 /unique/dbus/*.o
 /unique/*.lo
 /unique/*.o
+/unique/*.gir
+/unique/*.typelib
 xmldocs.make
 .*.swp
 *~

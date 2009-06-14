@@ -216,9 +216,14 @@ AM_GLIB_GNU_GETTEXT
 
 GETTEXT_PACKAGE=unique
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],
+                   ["$GETTEXT_PACKAGE"],
+                   [Define the gettext package to be used])
 
 AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
+
+# introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.3])
 
 # gtk-doc
 GTK_DOC_CHECK([1.11])
@@ -253,6 +258,7 @@ Configuration:
             Maintainer flags: $enable_maintainer_flags
                  Debug level: $enable_debug
          Build documentation: $enable_gtk_doc
+    Build introspection data: $enable_introspection
 
 Backends:
           Unix Domain Socket: $have_bacon

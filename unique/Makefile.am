@@ -106,3 +106,39 @@ DISTCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = uniquemarshal.list uniqueversion.h.in
+
+if HAVE_INTROSPECTION
+BUILT_GIRSOURCES =
+
+Unique-1.0.gir: $(INTROSPECTION_SCANNER) libunique-1.0.la
+	$(INTROSPECTION_SCANNER) -v \
+		--namespace Unique --nsversion=1.0 \
+		$(INCLUDES) \
+		--c-include='unique/unique.h' \
+		--include=GObject-2.0 \
+		--include=Gtk-2.0 \
+		--library=unique-1.0 \
+		--pkg gobject-2.0 \
+		--pkg gtk+-2.0 \
+		--pkg unique-1.0 \
+		--output $@ \
+		$(unique_sources_h) \
+		$(unique_sources_c)
+
+BUILT_GIRSOURCES += Unique-1.0.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(QUIET_GEN)$(DEBUG) $(INTROSPECTION_COMPILER) \
+		--includedir=$(srcdir) \
+		--includedir=. \
+		$(INTROSPECTION_COMPILER_OPTS) \
+	$< -o $(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif # HAVE_INTROSPECTION
