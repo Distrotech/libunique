@@ -3,7 +3,9 @@ INSTALL
 Makefile
 Makefile.in
 aclocal.m4
-/build/autotools/gtk-doc.m4
+!/build/autotools/shave.m4
+!/build/autotools/as-compiler-flag.m4
+/build/autotools/*.m4
 /build/autotools/shave
 /build/autotools/shave-libtool
 config.guess

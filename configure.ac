@@ -106,7 +106,7 @@ AS_CASE([$enable_dbus],
 
         [no], [have_dbus=no],
 
-        [*], [AC_MSG_ERROR([Unknown argument to --enable-dbus])]
+        [AC_MSG_ERROR([Unknown argument to --enable-dbus])]
 )
 
 AS_IF([test "x$have_dbus" = "xyes"],
@@ -170,10 +170,14 @@ AC_ARG_ENABLE([maintainer-flags],
 
 AS_IF([test "x$enable_maintainer_flags" = "xyes" &&  test "x$GCC" = "xyes"],
       [
-        MAINTAINER_CFLAGS="-Werror -Wall -Wshadow -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self"
-        AC_SUBST(MAINTAINER_CFLAGS)
+        AS_COMPILER_FLAGS([MAINTAINER_CFLAGS],
+                          ["-Werror -Wall -Wshadow -Wcast-align
+                            -Wno-uninitialized -Wempty-body -Wformat-security
+                            -Winit-self"])
       ]
 )
+
+AC_SUBST(MAINTAINER_CFLAGS)
 
 # enable debug flags and symbols
 m4_define([debug_default], [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [minimum])])
@@ -201,7 +205,7 @@ AS_CASE([$enable_debug],
           UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
         ]
 
-        [*], [AC_MSG_ERROR([Unknown argument to --enable-debug])]
+        [AC_MSG_ERROR([Unknown argument to --enable-debug])]
 )
 
 AC_SUBST(UNIQUE_DEBUG_CFLAGS)
