@@ -10,6 +10,8 @@ LDADD = $(UNIQUE_LIBS) $(DBUS_LIBS)
 
 noinst_LTLIBRARIES = libunique-dbus.la
 
+unique_dbus_xml = $(srcdir)/uniquebackend-dbus.xml
+
 BUILT_SOURCES =	uniquebackend-bindings.h uniquebackend-glue.h
 
 libunique_dbus_la_SOURCES = 	\
@@ -25,17 +27,18 @@ libunique_dbus_la_CFLAGS =	\
 	$(MAINTAINER_CFLAGS)	\
 	$(DBUS_CFLAGS)
 
-uniquebackend-bindings.h: uniquebackend-dbus.xml $(DBUS_BINDING_TOOL)
+uniquebackend-bindings.h: $(unique_dbus_xml) $(DBUS_BINDING_TOOL)
 	$(QUIET_GEN)$(DBUS_BINDING_TOOL) \
 		--mode=glib-server \
 		--output=$@ \
 		--prefix=uniquebackend \
-	uniquebackend-dbus.xml
-uniquebackend-glue.h: uniquebackend-dbus.xml $(DBUS_BINDING_TOOL)
+	$(unique_dbus_xml)
+
+uniquebackend-glue.h: $(unique_dbus_xml) $(DBUS_BINDING_TOOL)
 	$(QUIET_GEN)$(DBUS_BINDING_TOOL) \
 		--mode=glib-client \
 		--output=$@ \
 		--prefix=uniquebackend \
-	uniquebackend-dbus.xml
+	$(unique_dbus_xml)
 
-EXTRA_DIST = uniquebackend-dbus.xml
+EXTRA_DIST = $(unique_dbus_xml)
