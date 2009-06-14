@@ -16,8 +16,9 @@ DISTCLEANFILES = unique-1.0.pc
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; then \
-	  ( cd "$(srcdir)" && \
-	    $(top_srcdir)/missing --run git log --stat ) > ChangeLog.tmp \
+	  echo Generating ChangeLog ; \
+	  ( cd "$(srcdir)" \
+	    && $(top_srcdir)/missing --run git log --stat ) > ChangeLog.tmp \
 	  && mv -f ChangeLog.tmp $(top_distdir)/ChangeLog \
 	  || ( rm -f ChangeLog.tmp; \
 	       echo Failed to generate ChangeLog >&2 ); \
