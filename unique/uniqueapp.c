@@ -46,6 +46,8 @@
  *
  * You can define custom commands using unique_app_add_command(): you
  * need to provide an arbitrary integer and a string for the command.
+ *
+ * <note>You need to initialize GTK+ in order to use UniqueApp.</note>
  */
 
 #include <config.h>
