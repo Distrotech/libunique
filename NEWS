@@ -1,3 +1,16 @@
+Changes for Unique 1.1.2
+========================
+* Follow GTK+'s single header include policy [Armin Burgmeier]
+* Remove a weak reference on the watched window [Armin Burgmeier]
+* Rework the build environment:
+  - use a recent syntax for the configure.ac
+  - use AS_COMPILER_FLAGS to ensure portability
+  - use Shave to clean up the build output
+* Allow compiling out the Unix Domain Socket backend (bacon)
+* Use the D-Bus backend by default
+* Use GTK-Doc >= 1.11 to generate a proper Index
+* Use X11-specific API only if we have support for it
+
 Changes for Unique 1.0.4
 ========================
 * Plug a leak in UniqueMessageData [Cosimo Cecchi]
