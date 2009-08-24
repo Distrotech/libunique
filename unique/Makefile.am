@@ -28,18 +28,18 @@ LDADD = \
 	$(NULL)
 
 unique_sources_h = \
-	uniqueapp.h 		\
-	uniquebackend.h		\
-	uniquemessage.h		\
+	$(top_srcdir)/unique/uniqueapp.h 	\
+	$(top_srcdir)/unique/uniquebackend.h	\
+	$(top_srcdir)/unique/uniquemessage.h	\
 	$(NULL)
 
 unique_sources_c = \
-	uniqueapp.c		\
-	uniquebackend.c		\
-	uniquemessage.c		\
+	$(srcdir)/uniqueapp.c		\
+	$(srcdir)/uniquebackend.c	\
+	$(srcdir)/uniquemessage.c	\
 	$(NULL)
 
-unique_sources_priv_h = uniqueinternals.h
+unique_sources_priv_h = $(top_srcdir)/unique/uniqueinternals.h
 
 BUILT_SOURCES = uniquemarshal.h uniquemarshal.c
 
@@ -51,9 +51,9 @@ endif
 
 uniquedir = $(includedir)/unique-1.0/unique
 unique_HEADERS = \
-	$(unique_sources_h) 	\
-	uniqueversion.h		\
-	unique.h		\
+	$(unique_sources_h) 			\
+	$(top_builddir)/unique/uniqueversion.h	\
+	$(top_srcdir)/unique/unique.h		\
 	$(NULL)
 
 lib_LTLIBRARIES = libunique-1.0.la
@@ -118,6 +118,7 @@ Unique-1.0.gir: $(INTROSPECTION_SCANNER) libunique-1.0.la
 		--include=GObject-2.0 \
 		--include=Gtk-2.0 \
 		--library=unique-1.0 \
+		--libtool="$(top_builddir)/libtool" \
 		--pkg gobject-2.0 \
 		--pkg gtk+-2.0 \
 		--pkg unique-1.0 \
