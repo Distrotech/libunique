@@ -45,10 +45,12 @@
  * unique_message_data_free().
  *
  * You can set data using unique_message_data_set(),
- * unique_message_data_set_text() or unique_message_data_set_uris().
+ * unique_message_data_set_text(), unique_message_data_set_filename()
+ * or unique_message_data_set_uris().
  *
  * You can retrieve the data set using unique_message_data_get(),
- * unique_message_data_get_text() or unique_message_data_get_uris().
+ * unique_message_data_get_text(), unique_message_data_get_filename()
+ * or unique_message_data_get_uris().
  */
 
 GType
