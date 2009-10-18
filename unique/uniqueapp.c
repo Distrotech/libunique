@@ -34,7 +34,7 @@
  * of the #UniqueApp instance and the call to unique_app_is_running().
  *
  * The usual method for using the #UniqueApp API is to create a new
- * instance, passing an application-dependent name as constuction-only
+ * instance, passing an application-dependent name as construction-only
  * property; the UniqueApp:name property is required, and should be in the
  * form of a domain name, like <literal>org.gnome.YourApplication</literal>.
  *
