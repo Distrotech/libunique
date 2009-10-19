@@ -38,8 +38,10 @@
 #include <glib/gi18n.h>
 
 #include <gdk/gdk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #include <X11/Xatom.h>
+#endif
 
 #include "uniquebackend.h"
 #include "uniqueinternals.h"
@@ -209,10 +211,12 @@ unique_backend_get_workspace (UniqueBackend *backend)
 {
   GdkDisplay *display;
   GdkWindow *root_win;
+#ifdef GDK_WINDOWING_X11
   Atom _net_current_desktop, type;
   int format;
   unsigned long n_items, bytes_after;
   unsigned char *data_return = 0;
+#endif
 
   g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), 0);
 
@@ -222,6 +226,7 @@ unique_backend_get_workspace (UniqueBackend *backend)
   display = gdk_screen_get_display (backend->screen);
   root_win = gdk_screen_get_root_window (backend->screen);
 
+#ifdef GDK_WINDOWING_X11
   _net_current_desktop =
     gdk_x11_get_xatom_by_name_for_display (display, "_NET_CURRENT_DESKTOP");
 
@@ -238,6 +243,7 @@ unique_backend_get_workspace (UniqueBackend *backend)
       backend->workspace = (guint) data_return[0];
       XFree (data_return);
     }
+#endif
 
   return backend->workspace;
 }
