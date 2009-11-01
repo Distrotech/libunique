@@ -77,9 +77,10 @@ endif
 
 uniquedir = $(includedir)/unique-1.0/unique
 unique_HEADERS = \
-	$(unique_sources_h) 			\
-	$(top_builddir)/unique/uniqueversion.h	\
-	$(top_srcdir)/unique/unique.h		\
+	$(unique_sources_h) 				\
+	$(top_builddir)/unique/uniqueenumtypes.h	\
+	$(top_builddir)/unique/uniqueversion.h		\
+	$(top_srcdir)/unique/unique.h			\
 	$(NULL)
 
 lib_LTLIBRARIES = libunique-1.0.la
