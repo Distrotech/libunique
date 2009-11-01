@@ -1,4 +1,4 @@
-QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
+include $(top_srcdir)/build/autotools/Makefile.am.silent
 
 libuniqueincludedir = $(includedir)/unique-1.0/unique
 

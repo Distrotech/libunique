@@ -64,56 +64,11 @@
 #include <gdk/gdkx.h>
 #endif
 
-#include "uniquebackend.h"
 #include "uniqueapp.h"
+#include "uniquebackend.h"
+#include "uniqueenumtypes.h"
 #include "uniquemarshal.h"
 #include "uniqueinternals.h"
-
-
-
-GType
-unique_command_get_type (void)
-{
-  static GType etype = 0;
-
-  if (G_UNLIKELY (etype == 0))
-    {
-      static const GEnumValue values[] = {
-        { UNIQUE_INVALID, "UNIQUE_INVALID", "invalid" },
-        { UNIQUE_ACTIVATE, "UNIQUE_ACTIVATE", "activate" },
-        { UNIQUE_NEW, "UNIQUE_NEW", "new" },
-        { UNIQUE_OPEN, "UNIQUE_OPEN", "open" },
-        { UNIQUE_CLOSE, "UNIQUE_CLOSE", "close" },
-        { 0, NULL, NULL }
-      };
-
-      etype = g_enum_register_static (I_("UniqueCommand"), values);
-    }
-
-  return etype;
-}
-
-GType
-unique_response_get_type (void)
-{
-  static GType etype = 0;
-
-  if (G_UNLIKELY (etype == 0))
-    {
-      static const GEnumValue values[] = {
-        { UNIQUE_RESPONSE_INVALID, "UNIQUE_RESPONSE_INVALID", "invalid" },
-        { UNIQUE_RESPONSE_OK, "UNIQUE_RESPONSE_OK", "ok" },
-        { UNIQUE_RESPONSE_CANCEL, "UNIQUE_RESPONSE_CANCEL", "cancel" },
-        { UNIQUE_RESPONSE_FAIL, "UNIQUE_RESPONSE_FAIL", "fail" },
-        { UNIQUE_RESPONSE_PASSTHROUGH, "UNIQUE_RESPONSE_PASSTHROUGH", "passthrough" },
-        { 0, NULL, NULL }
-      };
-
-      etype = g_enum_register_static (I_("UniqueResponse"), values);
-    }
-
-  return etype;
-}
 
 
 

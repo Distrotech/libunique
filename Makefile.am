@@ -1,9 +1,11 @@
+include $(top_srcdir)/build/autotools/Makefile.am.silent
+
 ACLOCAL_AMFLAGS = -I build/autotools
 
 SUBDIRS = build unique tests doc po
 
 unique-1.0.pc: unique.pc
-	@cp -f $< $@
+	$(QUIET_GEN)cp -f $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = unique-1.0.pc

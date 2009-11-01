@@ -23,8 +23,7 @@ AC_INIT([unique], [unique_version],
 AC_CONFIG_SRCDIR([unique/unique.h])
 AC_CONFIG_MACRO_DIR([build/autotools])
 
-AM_INIT_AUTOMAKE
-
+AM_INIT_AUTOMAKE([1.10])
 AM_CONFIG_HEADER([config.h])
 
 # version symbols
@@ -141,6 +140,8 @@ AS_IF([test "x$enable_bacon" = "xyes"],
       [have_bacon=no]
 )
 
+AM_CONDITIONAL([HAVE_BACON], [test "x$have_bacon" = "xyes"])
+
 dnl Choose the default backend
 AC_MSG_CHECKING([for default IPC mechanism])
 AS_IF([test "x$have_dbus" = "xyes"],
@@ -228,16 +229,28 @@ GOBJECT_INTROSPECTION_CHECK([0.6.3])
 # gtk-doc
 GTK_DOC_CHECK([1.11])
 
-# shave
-SHAVE_INIT([build/autotools], [enable])
+# nice builds
+m4_ifdef([AM_SILENT_RULES],
+         [
+           AM_SILENT_RULES([yes])
+           use_shave=no
+         ],
+         [
+           SHAVE_INIT([build/autotools], [enable])
+           AC_CONFIG_FILES([
+                build/autotools/shave-libtool
+                build/autotools/shave
+           ])
+           use_shave=yes
+         ])
+
+AM_CONDITIONAL([USE_SHAVE], [test "x$use_shave" = "xyes"])
 
 AC_CONFIG_FILES([
         Makefile
         unique.pc
         build/Makefile
         build/autotools/Makefile
-        build/autotools/shave
-        build/autotools/shave-libtool
         doc/Makefile
         doc/reference/Makefile
         doc/reference/version.xml

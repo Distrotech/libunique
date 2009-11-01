@@ -28,8 +28,6 @@
 
 G_BEGIN_DECLS
 
-#define UNIQUE_TYPE_COMMAND             (unique_command_get_type ())
-#define UNIQUE_TYPE_RESPONSE            (unique_response_get_type ())
 #define UNIQUE_TYPE_APP                 (unique_app_get_type ())
 #define UNIQUE_APP(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), UNIQUE_TYPE_APP, UniqueApp))
 #define UNIQUE_IS_APP(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), UNIQUE_TYPE_APP))
@@ -58,8 +56,6 @@ typedef enum { /*< prefix=UNIQUE >*/
   UNIQUE_CLOSE    = -4
 } UniqueCommand;
 
-GType unique_command_get_type (void) G_GNUC_CONST;
-
 /**
  * UniqueResponse:
  * @UNIQUE_RESPONSE_INVALID: Internal error code, should never be used.
@@ -78,8 +74,6 @@ typedef enum { /*< prefix=UNIQUE_RESPONSE >*/
   UNIQUE_RESPONSE_FAIL,
   UNIQUE_RESPONSE_PASSTHROUGH
 } UniqueResponse;
-
-GType unique_response_get_type (void) G_GNUC_CONST;
 
 typedef struct _UniqueApp               UniqueApp;
 typedef struct _UniqueAppPrivate        UniqueAppPrivate;

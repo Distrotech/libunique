@@ -1,8 +1,12 @@
+include $(top_srcdir)/build/autotools/Makefile.am.silent
+
 NULL =
 
-QUIET_GEN = $(Q:@=@echo '  GEN   '$@;)
+SUBDIRS =
 
-SUBDIRS = bacon
+if HAVE_BACON
+SUBDIRS += bacon
+endif
 
 if HAVE_DBUS
 SUBDIRS += dbus
@@ -10,15 +14,7 @@ endif
 
 DIST_SUBDIRS = bacon dbus
 
-INCLUDES = \
-	-DG_DISABLE_SINGLE_INCLUDES	\
-	-DGTK_DISABLE_SINGLE_INCLUDES	\
-	-DG_DISABLE_DEPRECATED		\
-	-DGTK_DISABLE_DEPRECATED	\
-	-DG_LOG_DOMAIN=\"Unique\"	\
-	-DPREFIX=\""$(prefix)"\"	\
-	-I$(top_srcdir)			\
-	$(NULL)
+INCLUDES = -I$(top_srcdir)
 
 LDADD = \
 	-version-info $(UNIQUE_LT_VERSION_INFO)	\
@@ -27,6 +23,25 @@ LDADD = \
 	-rpath $(libdir)			\
 	$(NULL)
 
+AM_CPPFLAGS = \
+	-DG_DISABLE_SINGLE_INCLUDES	\
+	-DGTK_DISABLE_SINGLE_INCLUDES	\
+	-DG_DISABLE_DEPRECATED		\
+	-DGTK_DISABLE_DEPRECATED	\
+	-DG_LOG_DOMAIN=\"Unique\"	\
+	-DPREFIX=\""$(prefix)"\"	\
+	$(DISABLE_DEPRECATED_FLAGS)	\
+	$(UNIQUE_DEBUG_CFLAGS)		\
+	$(NULL)
+
+AM_CFLAGS = $(MAINTAINER_CFLAGS) $(DBUS_CFLAGS) $(UNIQUE_CFLAGS)
+
+BUILT_SOURCES =
+
+EXTRA_DIST =
+CLEANFILES =
+DISTCLEANFILES =
+
 unique_sources_h = \
 	$(top_srcdir)/unique/uniqueapp.h 	\
 	$(top_srcdir)/unique/uniquebackend.h	\
@@ -34,14 +49,25 @@ unique_sources_h = \
 	$(NULL)
 
 unique_sources_c = \
-	$(srcdir)/uniqueapp.c		\
-	$(srcdir)/uniquebackend.c	\
-	$(srcdir)/uniquemessage.c	\
+	$(srcdir)/uniqueapp.c			\
+	$(srcdir)/uniquebackend.c		\
+	$(srcdir)/uniquemessage.c		\
 	$(NULL)
 
-unique_sources_priv_h = $(top_srcdir)/unique/uniqueinternals.h
+unique_sources_priv_h = \
+	$(top_srcdir)/unique/uniqueinternals.h	\
+	$(NULL)
 
-BUILT_SOURCES = uniquemarshal.h uniquemarshal.c
+# glib-mkenums rules
+glib_enum_h = uniqueenumtypes.h
+glib_enum_c = uniqueenumtypes.c
+glib_enum_headers = $(unique_sources_h)
+include $(top_srcdir)/build/autotools/Makefile.am.enums
+
+# glib-genmarshal rules
+glib_marshal_list = uniquemarshal.list
+glib_marshal_prefix = unique_marshal
+include $(top_srcdir)/build/autotools/Makefile.am.marshal
 
 unique_backend_libs = $(top_builddir)/unique/bacon/libunique-bacon.la
 
@@ -68,60 +94,24 @@ libunique_1_0_la_LIBADD = 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
 
-libunique_1_0_la_CFLAGS =		\
-	$(UNIQUE_CFLAGS)		\
-	$(UNIQUE_DEBUG_CFLAGS)		\
-	$(MAINTAINER_CFLAGS) 		\
-	$(DBUS_CFLAGS)			\
-	$(DISABLE_DEPRECATED_FLAGS)
+DISTCLEANFILES += uniqueversion.h
 
-libunique_1_0_la_LDFLAGS = $(LDADD)
-
-uniquemarshal.h: stamp-uniquemarshal.h
-	@true
-stamp-uniquemarshal.h: uniquemarshal.list Makefile
-	$(QUIET_GEN)$(GLIB_GENMARSHAL) \
-		--prefix=unique_marshal \
-		--header \
-	$(srcdir)/uniquemarshal.list > xgen-umh \
-	&& (cmp -s xgen-umh uniquemarshal.h || cp xgen-umh uniquemarshal.h) \
-	&& rm -f xgen-umh \
-	&& echo timestamp > $(@F)
-
-uniquemarshal.c: uniquemarshal.list Makefile
-	$(QUIET_GEN)( echo "#include \"uniquemarshal.h\"" ; \
-	  $(GLIB_GENMARSHAL) \
-		--prefix=unique_marshal \
-		--body \
-	  $(srcdir)/uniquemarshal.list ) >> xgen-umc \
-	&& cp xgen-umc uniquemarshal.c \
-	&& rm -f xgen-umc
-
-CLEANFILES = stamp-uniquemarshal.h
-
-DISTCLEANFILES = \
-	uniquemarshal.h \
-	uniquemarshal.c \
-	uniqueversion.h \
-	$(NULL)
-
-EXTRA_DIST = uniquemarshal.list uniqueversion.h.in
+EXTRA_DIST += uniqueversion.h.in
 
 if HAVE_INTROSPECTION
 BUILT_GIRSOURCES =
 
 Unique-1.0.gir: $(INTROSPECTION_SCANNER) libunique-1.0.la
-	$(INTROSPECTION_SCANNER) -v \
+	$(QUIET_GEN)$(INTROSPECTION_SCANNER) -v \
 		--namespace Unique --nsversion=1.0 \
-		$(INCLUDES) \
+		$(INCLUDES) $(AM_CPPFLAGS) \
 		--c-include='unique/unique.h' \
 		--include=GObject-2.0 \
 		--include=Gtk-2.0 \
-		--library=unique-1.0 \
+		--library=libunique-1.0.la \
 		--libtool="$(top_builddir)/libtool" \
 		--pkg gobject-2.0 \
 		--pkg gtk+-2.0 \
-		--pkg unique-1.0 \
 		--output $@ \
 		$(unique_sources_h) \
 		$(unique_sources_c)

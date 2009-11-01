@@ -38,6 +38,11 @@ unique.pc
 /unique/*.o
 /unique/*.gir
 /unique/*.typelib
+/unique/stamp-*
+/unique/uniqueenumtypes.h
+/unique/uniqueenumtypes.c
+/unique/uniquemarshal.h
+/unique/uniquemarshal.c
 xmldocs.make
 .*.swp
 *~

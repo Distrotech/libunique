@@ -23,6 +23,7 @@
 
 #include "uniqueapp.h"
 #include "uniquebackend.h"
+#include "uniqueenumtypes.h"
 #include "uniquemessage.h"
 #include "uniqueversion.h"
 
