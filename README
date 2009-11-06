@@ -6,7 +6,7 @@ LibUnique can be compiled against various backends, to allow the usage of
 different IPC mechanisms depending on the platform.
 
 Project page: http://live.gnome.org/LibUnique
-Main repository: git://github.com/ebassi/unique.git
+Main repository: git://git.gnome.org/unique
 
 Copyright (C) 2007,2008,2009  Emmanuele Bassi
 
