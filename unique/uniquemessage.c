@@ -386,7 +386,8 @@ unique_message_data_get_text (UniqueMessageData *message_data)
 /**
  * unique_message_data_set_uris:
  * @message_data: a #UniqueMessageData
- * @uris: a list of URIs in a string vector
+ * @uris: (array zero-terminated=1) (element-type utf8): a list of URIs
+ *   in a %NULL-terminated string vector
  *
  * Converts @uris to a valid URI list and sets it as payload of
  * @message_data. You can use unique_message_data_get_uris() to
@@ -430,10 +431,10 @@ unique_message_data_set_uris (UniqueMessageData  *message_data,
  * unique_message_data_get_uris:
  * @message_data: a #UniqueMessageData
  *
- * Retrieves a string vector containing the URIs set with
+ * Retrieves a %NULL-terminated string vector containing the URIs set with
  * unique_message_data_set_uris().
  *
- * Return value: an allocated list of URIs. Use g_strfreev() to free it.
+ * Return value: (array zero-terminated=1) (element-type utf8) (transfer full): an allocated list of URIs. Use g_strfreev() to free it.
  */
 gchar **
 unique_message_data_get_uris (UniqueMessageData *message_data)
