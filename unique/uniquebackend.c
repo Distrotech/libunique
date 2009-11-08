@@ -321,13 +321,17 @@ unique_backend_create (void)
 
   if (backend_name && backend_name[0] != '\0')
     {
+#ifdef HAVE_BACON
       if (strcmp (backend_name, "bacon") == 0)
         backend_gtype = unique_backend_bacon_get_type ();
-
+#endif
 #ifdef HAVE_DBUS
       if (strcmp (backend_name, "dbus") == 0)
         backend_gtype = unique_backend_dbus_get_type ();
 #endif /* HAVE_DBUS */
+#if !defined(HAVE_BACON) && !defined(HAVE_DBUS)
+#error Need either bacon or dbus
+#endif 
     }
 
   return g_object_new (backend_gtype, NULL);

@@ -140,6 +140,12 @@ AS_IF([test "x$enable_bacon" = "xyes"],
       [have_bacon=no]
 )
 
+AS_IF([test "x$have_bacon" = "xyes"],
+      [
+        AC_DEFINE([HAVE_BACON], [1], [Building with Unix domain socket support])
+      ]
+)
+
 AM_CONDITIONAL([HAVE_BACON], [test "x$have_bacon" = "xyes"])
 
 dnl Choose the default backend

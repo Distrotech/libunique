@@ -69,7 +69,11 @@ glib_marshal_list = uniquemarshal.list
 glib_marshal_prefix = unique_marshal
 include $(top_srcdir)/build/autotools/Makefile.am.marshal
 
-unique_backend_libs = $(top_builddir)/unique/bacon/libunique-bacon.la
+unique_backend_libs =
+
+if HAVE_BACON
+unique_backend_libs += $(top_builddir)/unique/bacon/libunique-bacon.la
+endif
 
 if HAVE_DBUS
 unique_backend_libs += $(top_builddir)/unique/dbus/libunique-dbus.la
@@ -94,6 +98,9 @@ libunique_1_0_la_LIBADD = 		\
 	$(unique_backend_libs) 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
+
+libunique_1_0_la_LDFLAGS = 		\
+	-no-undefined
 
 DISTCLEANFILES += uniqueversion.h
 
