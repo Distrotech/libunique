@@ -16,13 +16,6 @@ DIST_SUBDIRS = bacon dbus
 
 INCLUDES = -I$(top_srcdir)
 
-LDADD = \
-	-version-info $(UNIQUE_LT_VERSION_INFO)	\
-	-export-dynamic				\
-	-export-symbols-regex "^unique.*"
-	-rpath $(libdir)			\
-	$(NULL)
-
 AM_CPPFLAGS = \
 	-DG_DISABLE_SINGLE_INCLUDES	\
 	-DGTK_DISABLE_SINGLE_INCLUDES	\
@@ -99,7 +92,11 @@ libunique_1_0_la_LIBADD = 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
 
-libunique_1_0_la_LDFLAGS = 		\
+libunique_1_0_la_LDFLAGS = 			\
+	-version-info $(UNIQUE_LT_VERSION_INFO)	\
+	-export-dynamic				\
+	-export-symbols-regex "^unique.*"	\
+	-rpath $(libdir)			\
 	-no-undefined
 
 DISTCLEANFILES += uniqueversion.h
