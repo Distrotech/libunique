@@ -1,3 +1,12 @@
+Changes for Unique 1.1.4
+========================
+• Fix last usage of GDK X11 API without guards [Anders F. Bjorklund]
+• Fix UNIQUE_CHECK_VERSION macro [Emmanuel Rodriguez]
+• Documentation fixes
+• Update the build environment
+• Fix introspection annotation for unique_message_data_[sg]et_uris()
+• Allow building only the D-Bus backend [Tor Lillqvist]
+
 Changes for Unique 1.1.2
 ========================
 * Follow GTK+'s single header include policy [Armin Burgmeier]
