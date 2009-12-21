@@ -13,7 +13,7 @@ G_BEGIN_DECLS
 struct _UniqueMessageData
 {
   guchar *data;
-  gint length;
+  gint length;  /* length of data not including NUL terminator */
 
   GdkScreen *screen;
   gchar *startup_id;

@@ -493,7 +493,7 @@ unique_message_data_get_filename (UniqueMessageData *message_data)
 {
   g_return_val_if_fail (message_data != NULL, NULL);
 
-  return g_memdup (message_data->data, message_data->length);
+  return g_memdup (message_data->data, message_data->length + 1);
 }
 
 /**
