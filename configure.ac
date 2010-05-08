@@ -14,7 +14,7 @@ m4_define([unique_api_version], [1.0])
 # This is the X.Y used in the protocol negotiation
 m4_define([unique_protocol_version], [1.0])
 
-AC_PREREQ([2.59])
+AC_PREREQ([2.63])
 
 AC_INIT([unique], [unique_version],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=libunique],
@@ -23,8 +23,20 @@ AC_INIT([unique], [unique_version],
 AC_CONFIG_SRCDIR([unique/unique.h])
 AC_CONFIG_MACRO_DIR([build/autotools])
 
-AM_INIT_AUTOMAKE([1.10])
+AM_INIT_AUTOMAKE([1.11 no-define -Wno-portability dist-bzip2])
 AM_CONFIG_HEADER([config.h])
+
+AM_SILENT_RULES([yes])
+
+AC_PROG_CC_C_O
+
+AM_PATH_GLIB_2_0
+
+LT_PREREQ([2.2.6])
+LT_INIT([disable-static])
+
+# Honor aclocal flags
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 # version symbols
 UNIQUE_MAJOR_VERSION=unique_major_version
@@ -48,21 +60,6 @@ UNIQUE_LT_VERSION_INFO="lt_current:lt_revision:lt_age"
 UNIQUE_LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
 AC_SUBST(UNIQUE_LT_VERSION_INFO)
 AC_SUBST(UNIQUE_LT_CURRENT_MINUS_AGE)
-
-AC_ISC_POSIX
-AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
-AC_C_CONST
-AC_PROG_LIBTOOL
-AC_PATH_PROG(GLIB_MKENUMS, [glib-mkenums])
-AC_PATH_PROG(GLIB_GENMARSHAL, [glib-genmarshal])
-
-AM_SANITY_CHECK
-AM_PROG_CC_STDC
-
-# Honor aclocal flags
-ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
 m4_define([glib_required], [2.12.0])
 m4_define([gtk_required],  [2.11.0])
@@ -122,7 +119,6 @@ AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 dnl Bacon backend
 dnl This is the fallback backend, so we *need* these headers and functions
 dnl even if we end up using D-Bus
-dnl D-Bus backend dependencies
 m4_define([have_bacon_default], [yes])
 AC_ARG_ENABLE([bacon],
               [AC_HELP_STRING([--enable-bacon=@<:@yes/no@:>@],
@@ -178,9 +174,9 @@ AC_ARG_ENABLE([maintainer-flags],
 AS_IF([test "x$enable_maintainer_flags" = "xyes" &&  test "x$GCC" = "xyes"],
       [
         AS_COMPILER_FLAGS([MAINTAINER_CFLAGS],
-                          ["-Werror -Wall -Wshadow -Wcast-align
-                            -Wno-uninitialized -Wempty-body -Wformat-security
-                            -Winit-self"])
+                          ["-Wall -Wshadow -Wcast-align
+                            -Wno-uninitialized -Wempty-body
+                            -Wformat-security -Winit-self"])
       ]
 )
 
@@ -230,27 +226,10 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],
 AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
 
 # introspection
-GOBJECT_INTROSPECTION_CHECK([0.6.3])
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
 
 # gtk-doc
-GTK_DOC_CHECK([1.11])
-
-# nice builds
-m4_ifdef([AM_SILENT_RULES],
-         [
-           AM_SILENT_RULES([yes])
-           use_shave=no
-         ],
-         [
-           SHAVE_INIT([build/autotools], [enable])
-           AC_CONFIG_FILES([
-                build/autotools/shave-libtool
-                build/autotools/shave
-           ])
-           use_shave=yes
-         ])
-
-AM_CONDITIONAL([USE_SHAVE], [test "x$use_shave" = "xyes"])
+GTK_DOC_CHECK([1.13])
 
 AC_CONFIG_FILES([
         Makefile
