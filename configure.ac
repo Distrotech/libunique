@@ -1,7 +1,7 @@
 # versioning
-m4_define([unique_major_version], [2])
-m4_define([unique_minor_version], [90])
-m4_define([unique_micro_version], [0])
+m4_define([unique_major_version], [1])
+m4_define([unique_minor_version], [1])
+m4_define([unique_micro_version], [7])
 m4_define([unique_version], [unique_major_version.unique_minor_version.unique_micro_version])
 m4_define([unique_api_version], [unique_major_version.unique_minor_version])
 
@@ -10,7 +10,7 @@ m4_define([unique_api_version], [unique_major_version.unique_minor_version])
 m4_define([unique_interface_age], [7])
 m4_define([unique_binary_age], [m4_eval(100 * unique_minor_version + unique_micro_version)])
 # This is the X.Y used in -lunique-FOO-X.Y
-m4_define([unique_api_version], [3.0])
+m4_define([unique_api_version], [1.0])
 # This is the X.Y used in the protocol negotiation
 m4_define([unique_protocol_version], [1.0])
 
@@ -62,13 +62,13 @@ AC_SUBST(UNIQUE_LT_VERSION_INFO)
 AC_SUBST(UNIQUE_LT_CURRENT_MINUS_AGE)
 
 m4_define([glib_required], [2.12.0])
-m4_define([gtk_required],  [2.90.0])
+m4_define([gtk_required],  [2.11.0])
 m4_define([dbus_required], [0.70])
 
 PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= glib_required dnl
-                          gtk+-3.0 >= gtk_required)
+                          gtk+-2.0 >= gtk_required)
 
-gdktarget=`$PKG_CONFIG --variable=target gdk-3.0`
+gdktarget=`$PKG_CONFIG --variable=target gdk-2.0`
 AS_IF([test "X$gdktarget" = "Xx11"],
       [
         AC_PATH_XTRA
@@ -188,7 +188,7 @@ AC_ARG_ENABLE([debug],
               [AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
                               [Turn on debugging @<:@default=debug_default@:>@])],
               [],
-              [enable_debug=$debug_default])
+              [enable_debug=debug_default])
 
 AS_CASE([$enable_debug],
 

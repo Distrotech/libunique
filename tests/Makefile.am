@@ -5,8 +5,8 @@ INCLUDES = \
 	$(UNIQUE_CFLAGS) 		\
 	$(UNIQUE_DEBUG_FLAGS)
 
-DEPS = $(top_builddir)/unique/libunique-3.0.la
-LDADD = $(top_builddir)/unique/libunique-3.0.la $(UNIQUE_LIBS)
+DEPS = $(top_builddir)/unique/libunique-1.0.la
+LDADD = $(top_builddir)/unique/libunique-1.0.la $(UNIQUE_LIBS)
 
 noinst_PROGRAMS = 	\
 	test-unique

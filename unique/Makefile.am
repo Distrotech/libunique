@@ -72,7 +72,7 @@ if HAVE_DBUS
 unique_backend_libs += $(top_builddir)/unique/dbus/libunique-dbus.la
 endif
 
-uniquedir = $(includedir)/unique-3.0/unique
+uniquedir = $(includedir)/unique-1.0/unique
 unique_HEADERS = \
 	$(unique_sources_h) 				\
 	$(top_builddir)/unique/uniqueenumtypes.h	\
@@ -80,19 +80,19 @@ unique_HEADERS = \
 	$(top_srcdir)/unique/unique.h			\
 	$(NULL)
 
-lib_LTLIBRARIES = libunique-3.0.la
+lib_LTLIBRARIES = libunique-1.0.la
 
-libunique_3_0_la_SOURCES = 		\
+libunique_1_0_la_SOURCES = 		\
 	$(unique_sources_c) 		\
 	$(unique_sources_priv_h) 	\
 	$(BUILT_SOURCES)
 
-libunique_3_0_la_LIBADD = 		\
+libunique_1_0_la_LIBADD = 		\
 	$(unique_backend_libs) 		\
 	$(UNIQUE_LIBS)			\
 	$(DBUS_LIBS)
 
-libunique_3_0_la_LDFLAGS = 			\
+libunique_1_0_la_LDFLAGS = 			\
 	-version-info $(UNIQUE_LT_VERSION_INFO)	\
 	-export-dynamic				\
 	-export-symbols-regex "^unique.*"	\
@@ -106,14 +106,14 @@ EXTRA_DIST += uniqueversion.h.in
 if HAVE_INTROSPECTION
 BUILT_GIRSOURCES =
 
-Unique-3.0.gir: $(INTROSPECTION_SCANNER) libunique-3.0.la
+Unique-1.0.gir: $(INTROSPECTION_SCANNER) libunique-1.0.la
 	$(QUIET_GEN)$(INTROSPECTION_SCANNER) -v \
-		--namespace Unique --nsversion=3.0 \
+		--namespace Unique --nsversion=1.0 \
 		$(INCLUDES) $(AM_CPPFLAGS) \
 		--c-include='unique/unique.h' \
 		--include=GObject-2.0 \
 		--include=Gtk-2.0 \
-		--library=libunique-3.0.la \
+		--library=libunique-1.0.la \
 		--libtool="$(top_builddir)/libtool" \
 		--pkg gobject-2.0 \
 		--pkg gtk+-2.0 \
@@ -121,7 +121,7 @@ Unique-3.0.gir: $(INTROSPECTION_SCANNER) libunique-3.0.la
 		$(unique_sources_h) \
 		$(unique_sources_c)
 
-BUILT_GIRSOURCES += Unique-3.0.gir
+BUILT_GIRSOURCES += Unique-1.0.gir
 
 girdir = $(datadir)/gir-1.0
 gir_DATA = $(BUILT_GIRSOURCES)

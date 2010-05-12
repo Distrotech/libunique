@@ -4,11 +4,11 @@ ACLOCAL_AMFLAGS = -I build/autotools
 
 SUBDIRS = build unique tests doc po
 
-unique-3.0.pc: unique.pc
+unique-1.0.pc: unique.pc
 	$(QUIET_GEN)cp -f $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = unique-3.0.pc
+pkgconfig_DATA = unique-1.0.pc
 
 EXTRA_DIST = unique.pc.in NEWS TODO
 

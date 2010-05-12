@@ -3,7 +3,6 @@
 Makefile
 Makefile.in
 libunique-dbus-1.0.la
-libunique-dbus-3.0.la
 stamp-uniquemarshal.h
 uniqueapp.lo
 uniqueapp.o
@@ -17,4 +16,3 @@ uniquemessage.lo
 uniquemessage.o
 uniqueversion.h
 libunique-1.0.la
-libunique-3.0.la
