@@ -29,6 +29,8 @@ omf.make
 stamp-h1
 unique-1.0.pc
 unique-dbus-1.0.pc
+unique-3.0.pc
+unique-dbus-3.0.pc
 unique.pc
 /unique/bacon/*.lo
 /unique/bacon/*.o
