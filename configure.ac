@@ -32,7 +32,7 @@ AC_PROG_CC_C_O
 
 AM_PATH_GLIB_2_0
 
-LT_PREREQ([2.2.6])
+LT_PREREQ([2.2])
 LT_INIT([disable-static])
 
 # Honor aclocal flags
@@ -116,6 +116,19 @@ AS_IF([test "x$have_dbus" = "xyes"],
 
 AM_CONDITIONAL([HAVE_DBUS], [test "x$have_dbus" = "xyes"])
 
+dnl GDBus backend
+dnl This is the default backend if GIO is recent enough
+m4_define([gdbus_gio_required],[2.25.7])
+PKG_CHECK_MODULES([GDBUS],[gio-2.0 >= gdbus_gio_required],[have_gdbus=yes],[have_gdbus=no])
+
+AS_IF([test "x$have_gdbus" = "xyes"],
+  [
+    AC_DEFINE([HAVE_GDBUS],[1],[Define if GDBus backend is enabled])
+  ]
+  )
+
+AM_CONDITIONAL([HAVE_GDBUS],[test "$have_gdbus" = "yes"])
+
 dnl Bacon backend
 dnl This is the fallback backend, so we *need* these headers and functions
 dnl even if we end up using D-Bus
@@ -146,7 +159,13 @@ AM_CONDITIONAL([HAVE_BACON], [test "x$have_bacon" = "xyes"])
 
 dnl Choose the default backend
 AC_MSG_CHECKING([for default IPC mechanism])
-AS_IF([test "x$have_dbus" = "xyes"],
+AS_IF([test "x$have_gdbus" = "xyes"],
+      [
+        UNIQUE_DEFAULT_BACKEND=gdbus
+        AC_MSG_RESULT([GDBus])
+      ],
+
+      [test "x$have_dbus" = "xyes"],
       [
         UNIQUE_DEFAULT_BACKEND=dbus
         AC_MSG_RESULT([D-Bus])
@@ -243,6 +262,7 @@ AC_CONFIG_FILES([
         unique/uniqueversion.h
         unique/bacon/Makefile
         unique/dbus/Makefile
+        unique/gdbus/Makefile
         tests/Makefile
         po/Makefile.in
 ])
@@ -261,6 +281,7 @@ Configuration:
 Backends:
           Unix Domain Socket: $have_bacon
                        D-BUS: $have_dbus
+                       GDBus: $have_gdbus
 
              Default backend: $UNIQUE_DEFAULT_BACKEND
 "
