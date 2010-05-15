@@ -298,6 +298,9 @@ unique_backend_send_message (UniqueBackend     *backend,
 #ifdef HAVE_DBUS
 #include "dbus/uniquebackend-dbus.h"
 #endif
+#ifdef HAVE_GDBUS
+#include "gdbus/uniquebackend-gdbus.h"
+#endif
 
 /**
  * unique_backend_create:
@@ -329,6 +332,10 @@ unique_backend_create (void)
       if (strcmp (backend_name, "dbus") == 0)
         backend_gtype = unique_backend_dbus_get_type ();
 #endif /* HAVE_DBUS */
+#ifdef HAVE_GDBUS
+      if (strcmp (backend_name, "gdbus") == 0)
+        backend_gtype = unique_backend_gdbus_get_type ();
+#endif /* HAVE_GDBUS */
 #if !defined(HAVE_BACON) && !defined(HAVE_DBUS)
 #error Need either bacon or dbus
 #endif 

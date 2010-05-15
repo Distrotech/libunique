@@ -50,7 +50,8 @@ IGNORE_HFILES = \
 	uniquemarshal.h \
 	stamp-uniquemarshal.h \
 	bacon \
-	dbus 
+	dbus \
+	gdbus
 
 EXTRA_HFILES =
 

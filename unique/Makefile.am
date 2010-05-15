@@ -12,7 +12,11 @@ if HAVE_DBUS
 SUBDIRS += dbus
 endif
 
-DIST_SUBDIRS = bacon dbus
+if HAVE_GDBUS
+SUBDIRS += gdbus
+endif
+
+DIST_SUBDIRS = bacon dbus gdbus
 
 INCLUDES = -I$(top_srcdir)
 
@@ -70,6 +74,10 @@ endif
 
 if HAVE_DBUS
 unique_backend_libs += $(top_builddir)/unique/dbus/libunique-dbus.la
+endif
+
+if HAVE_GDBUS
+unique_backend_libs += $(top_builddir)/unique/gdbus/libunique-gdbus.la
 endif
 
 uniquedir = $(includedir)/unique-3.0/unique
