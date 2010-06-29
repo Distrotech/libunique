@@ -34,7 +34,10 @@ MKTMPL_OPTIONS =
 
 # Extra options to supply to gtkdoc-fixref. Not normally needed.
 # e.g. FIXXREF_OPTIONS=--extra-dir=../gdk-pixbuf/html --extra-dir=../gdk/html
-FIXXREF_OPTIONS =
+FIXXREF_OPTIONS = \
+	--extra-dir=$(GLIB_PREFIX)/share/gtk-doc/html/glib \
+	--extra-dir=$(GDK_PREFIX)/share/gtk-doc/html/gdk \
+	--extra-dir=$(GTK_PREFIX)/share/gtk-doc/html/gtk
 
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
@@ -75,7 +78,7 @@ expand_content_files =
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
 
 INCLUDES = -I$(top_srcdir) $(UNIQUE_CFLAGS) $(DBUS_CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/unique/libunique-1.0.la $(UNIQUE_LIBS) $(DBUS_LIBS)
+GTKDOC_LIBS = $(top_builddir)/unique/libunique-3.0.la $(UNIQUE_LIBS) $(DBUS_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
