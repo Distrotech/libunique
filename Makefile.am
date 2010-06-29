@@ -14,7 +14,7 @@ EXTRA_DIST = unique.pc.in NEWS TODO
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --disable-rebuilds
 
-DISTCLEANFILES = unique-1.0.pc
+DISTCLEANFILES = unique-3.0.pc
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; then \

@@ -6,7 +6,7 @@ libunique_gdbus_la_SOURCES = 	\
 	uniquebackend-gdbus.h	\
 	uniquebackend-gdbus.c
 
-libunique_gdbus_la_PPCFLAGS = \
+libunique_gdbus_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Unique-GDBus\"	\
 	-DG_DISABLE_SINGLE_INCLUDES	\
 	-I$(top_srcdir)			\
