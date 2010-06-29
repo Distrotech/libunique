@@ -1,3 +1,8 @@
+Changes for Unique 2.90.1
+=========================
+• Link against GTK+ 3.0 [Bastien Nocera]
+• Use GDBus by default [Christian Persch]
+
 Changes for Unique 1.1.6
 ========================
 • Fix linker flags [Emilio Pozuelo Monfort]
