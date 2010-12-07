@@ -1,3 +1,7 @@
+Changes for Unique 2.91.4
+=========================
+• Build introspection against GTK+ 3.0 [Frédéric Péters]
+
 Changes for Unique 2.90.1
 =========================
 • Link against GTK+ 3.0 [Bastien Nocera]
