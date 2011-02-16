@@ -496,7 +496,7 @@ unique_app_init (UniqueApp *app)
 /**
  * unique_app_new:
  * @name: the name of the application's instance
- * @startup_id: the startup notification id, or %NULL
+ * @startup_id: (allow-none): the startup notification id, or %NULL
  *
  * Creates a new #UniqueApp instance for @name passing a start-up notification
  * id @startup_id.  The name must be a unique identifier for the application,
@@ -556,7 +556,7 @@ unique_app_add_commands_valist (UniqueApp   *app,
 /**
  * unique_app_new_with_commands:
  * @name: the name of the application
- * @startup_id: startup notification id, or %NULL
+ * @startup_id: (allow-none): startup notification id, or %NULL
  * @first_command_name: first custom command
  * @Varargs: %NULL terminated list of command names and command ids
  *
@@ -607,7 +607,7 @@ unique_app_is_running (UniqueApp *app)
  * unique_app_send_message:
  * @app: a #UniqueApp
  * @command_id: command to send
- * @message_data: #UniqueMessageData, or %NULL
+ * @message_data: (allow-none): #UniqueMessageData, or %NULL
  *
  * Sends @command to a running instance of @app. If you need to pass data
  * to the instance, you should create a #UniqueMessageData object using
