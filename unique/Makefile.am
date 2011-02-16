@@ -111,38 +111,27 @@ DISTCLEANFILES += uniqueversion.h
 
 EXTRA_DIST += uniqueversion.h.in
 
+# introspection
+-include $(INTROSPECTION_MAKEFILE)
+
 if HAVE_INTROSPECTION
-BUILT_GIRSOURCES =
+INTROSPECTION_GIRS = Unique-3.0.gir
 
-Unique-3.0.gir: $(INTROSPECTION_SCANNER) libunique-3.0.la
-	$(QUIET_GEN)$(INTROSPECTION_SCANNER) -v \
-		--namespace Unique --nsversion=3.0 \
-		$(INCLUDES) $(AM_CPPFLAGS) \
-		--c-include='unique/unique.h' \
-		--include=GObject-2.0 \
-		--include=Gtk-3.0 \
-		--library=libunique-3.0.la \
-		--libtool="$(top_builddir)/libtool" \
-		--pkg gobject-2.0 \
-		--pkg gtk+-3.0 \
-		--output $@ \
-		$(unique_sources_h) \
-		$(unique_sources_c)
+Unique-3.0.gir: libunique-3.0.la Makefile
 
-BUILT_GIRSOURCES += Unique-3.0.gir
+Unique_3_0_gir_NAMESPACE = Unique
+Unique_3_0_gir_VERSION = 3.0
+Unique_3_0_gir_LIBS = libunique-3.0.la
+Unique_3_0_gir_FILES = $(unique_sources_h) $(unique_sources_c) uniqueenumtypes.h uniqueenumtypes.c
+Unique_3_0_gir_CFLAGS = $(INCLUDES) $(AM_CPPFLAGS)
+Unique_3_0_gir_INCLUDES = GObject-2.0 Gtk-3.0
+Unique_3_0_gir_SCANNERFLAGS = --warn-all --pkg-export unique-3.0 --c-include "unique/unique.h"
 
 girdir = $(datadir)/gir-1.0
-gir_DATA = $(BUILT_GIRSOURCES)
+dist_gir_DATA = Unique-3.0.gir
 
-typelibsdir = $(libdir)/girepository-1.0
-typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+typelibsdir = $(libdir)/girepository-1.0/
+typelibs_DATA = Unique-3.0.typelib
 
-%.typelib: %.gir $(INTROSPECTION_COMPILER)
-	$(QUIET_GEN)$(DEBUG) $(INTROSPECTION_COMPILER) \
-		--includedir=$(srcdir) \
-		--includedir=. \
-		$(INTROSPECTION_COMPILER_OPTS) \
-	$< -o $(@F)
-
-CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+CLEANFILES += $(dist_gir_DATA) $(typelibs_DATA)
 endif # HAVE_INTROSPECTION
