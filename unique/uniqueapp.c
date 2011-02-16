@@ -457,6 +457,8 @@ unique_app_class_init (UniqueAppClass *klass)
    * %UNIQUE_RESPONSE_PASSTHROUGH return value is used, the signal
    * emission chain will continue until another handler will return another
    * response code.
+   *
+   * Return value: a #UniqueRespose
    */
   unique_app_signals[MESSAGE_RECEIVED] =
     g_signal_new (I_("message-received"),

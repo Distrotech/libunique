@@ -188,7 +188,7 @@ unique_backend_set_screen (UniqueBackend *backend,
  *
  * FIXME
  *
- * Return value: FIXME
+ * Return value: (transfer none): FIXME
  */
 GdkScreen *
 unique_backend_get_screen (UniqueBackend *backend)
@@ -310,7 +310,7 @@ unique_backend_send_message (UniqueBackend     *backend,
  * <literal>UNIQUE_BACKEND</literal> environment variable with the
  * name of the desired backend.
  *
- * Return value: the newly created #UniqueBackend instance
+ * Return value: (transfer full): the newly created #UniqueBackend instance
  */
 UniqueBackend *
 unique_backend_create (void)

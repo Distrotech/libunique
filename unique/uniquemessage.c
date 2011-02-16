@@ -90,7 +90,7 @@ unique_message_data_new (void)
  *
  * Copies @message_data.
  *
- * Return value: a copy of the passed #UniqueMessageData
+ * Return value: (transfer full): a copy of the passed #UniqueMessageData
  */
 UniqueMessageData *
 unique_message_data_copy (UniqueMessageData *message_data)
@@ -174,7 +174,7 @@ unique_message_data_set (UniqueMessageData *message_data,
 /**
  * unique_message_data_get:
  * @message_data: a #UniqueMessageData
- * @length: return location for the length of the contents
+ * @length: (out): return location for the length of the contents
  *
  * Retrieves the raw contents of @message_data set using
  * unique_messaget_data_set().
@@ -375,7 +375,7 @@ unique_message_data_set_text (UniqueMessageData *message_data,
  *
  * Retrieves the text set using unique_message_data_set_text().
  *
- * Return value: an allocated string.
+ * Return value: (transfer full): a newly-allocated string.
  */
 gchar *
 unique_message_data_get_text (UniqueMessageData *message_data)
@@ -434,7 +434,8 @@ unique_message_data_set_uris (UniqueMessageData  *message_data,
  * Retrieves a %NULL-terminated string vector containing the URIs set with
  * unique_message_data_set_uris().
  *
- * Return value: (array zero-terminated=1) (element-type utf8) (transfer full): an allocated list of URIs. Use g_strfreev() to free it.
+ * Return value: (array zero-terminated=1) (element-type utf8) (transfer full): a newly-allocated,
+ *   %NULL-terminated list of URIs. Use g_strfreev() to free it.
  */
 gchar **
 unique_message_data_get_uris (UniqueMessageData *message_data)
@@ -483,8 +484,9 @@ unique_message_data_set_filename (UniqueMessageData *message_data,
  *
  * Retrieves the filename set with unique_message_data_set_filename().
  *
- * Return value: a newly allocated string containing the filename.
- *   Use g_free() to free the resources used by the returned value.
+ * Return value: (transfer full): a newly allocated string containing the
+ *   filename. Use g_free() to free the resources used by the returned
+ *   value.
  *
  * Since: 1.0.2
  */
@@ -504,7 +506,7 @@ unique_message_data_get_filename (UniqueMessageData *message_data)
  * can use gtk_window_set_screen() to move windows or dialogs to the
  * right screen. This field is always set by the Unique library.
  *
- * Return value: a #GdkScreen
+ * Return value: (transfer none): a #GdkScreen
  */
 GdkScreen *
 unique_message_data_get_screen (UniqueMessageData *message_data)
