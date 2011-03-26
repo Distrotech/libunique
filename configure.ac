@@ -68,16 +68,15 @@ m4_define([dbus_required], [0.70])
 PKG_CHECK_MODULES(UNIQUE, glib-2.0 >= glib_required dnl
                           gtk+-3.0 >= gtk_required)
 
-gdktarget=`$PKG_CONFIG --variable=target gdk-3.0`
-AS_IF([test "X$gdktarget" = "Xx11"],
-      [
-        AC_PATH_XTRA
+GTK_CHECK_BACKEND([x11], [gtk_required],
+                  [
+                    AC_PATH_XTRA
 
-        PKG_CHECK_MODULES(UNIQUE_X11, x11)
+                    PKG_CHECK_MODULES(UNIQUE_X11, x11)
 
-        UNIQUE_CFLAGS="$UNIQUE_CFLAGS $UNIQUE_X11_CFLAGS"
-        UNIQUE_LIBS="$UNIQUE_LIBS $UNIQUE_X11_LIBS"
-      ]
+                    UNIQUE_CFLAGS="$UNIQUE_CFLAGS $UNIQUE_X11_CFLAGS"
+                    UNIQUE_LIBS="$UNIQUE_LIBS $UNIQUE_X11_LIBS"
+                  ]
 )
 
 AC_SUBST(UNIQUE_CFLAGS)
