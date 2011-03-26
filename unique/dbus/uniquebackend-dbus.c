@@ -77,7 +77,10 @@ unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
   backend_dbus->proxy = dbus_g_proxy_new_for_name (connection, name,
                                                    "/Factory",
                                                    "org.gtk.UniqueApp");
-  
+
+  /* do not wait for the default 30 seconds timeout */
+  dbus_g_proxy_set_default_timeout (backend_dbus->proxy, 3000);
+
   return (backend_dbus->proxy != NULL);
 }
 
