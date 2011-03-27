@@ -84,7 +84,6 @@ unique_backend_dbus_register_proxy (UniqueBackendDBus *backend_dbus)
 static gboolean
 unique_backend_dbus_request_name (UniqueBackend *backend)
 {
-  UniqueBackendDBus *backend_dbus;
   const gchar *name;
   DBusGConnection *connection;
   DBusGProxy *proxy;
@@ -96,8 +95,6 @@ unique_backend_dbus_request_name (UniqueBackend *backend)
   connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
   if (!connection)
     return FALSE;
-
-  backend_dbus = UNIQUE_BACKEND_DBUS (backend);
 
   retval = TRUE;
   name = unique_backend_get_name (backend);
@@ -207,10 +204,14 @@ unique_backend_dbus_send_message (UniqueBackend     *backend,
                                         cmd, data, time_,
                                         &resp,
                                         &error);
-  if (error)
+  if (!res)
     {
-      g_warning ("Error while sending message: %s", error->message);
-      g_error_free (error);
+      if (error)
+        {
+          g_warning ("Error while sending message: %s", error->message);
+          g_error_free (error);
+        }
+
       g_free (cmd);
       
       return UNIQUE_RESPONSE_INVALID;
