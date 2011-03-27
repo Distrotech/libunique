@@ -181,20 +181,21 @@ AS_IF([test "x$have_gdbus" = "xyes"],
 
 AC_SUBST(UNIQUE_DEFAULT_BACKEND)
 
-# use strict compiler flags only on development releases
+# use strict compiler flags only during development cycles
 m4_define([maintainer_flags_default], [m4_if(m4_eval(unique_minor_version % 2), [1], [yes], [no])])
 AC_ARG_ENABLE([maintainer-flags],
               [AC_HELP_STRING([--enable-maintainer-flags=@<:@no/yes@:>@],
-                              [Use strict compiler flags @<:@default=no@:>@])],
+                              [Use strict compiler flags @<:@default=maintainer_flags_default@:>@])],
               [],
               [enable_maintainer_flags=maintainer_flags_default])
 
-AS_IF([test "x$enable_maintainer_flags" = "xyes" &&  test "x$GCC" = "xyes"],
+AS_IF([test "x$enable_maintainer_flags" = "xyes" && test "x$GCC" = "xyes"],
       [
         AS_COMPILER_FLAGS([MAINTAINER_CFLAGS],
-                          ["-Wall -Wshadow -Wcast-align
-                            -Wno-uninitialized -Wempty-body
-                            -Wformat-security -Winit-self"])
+                          ["-Wall -Wshadow -Wcast-align -Wuninitialized
+                            -Wno-strict-aliasing -Wempty-body -Wformat
+                            -Wformat-security -Winit-self
+                            -Wdeclaration-after-statement -Wvla"])
       ]
 )
 
