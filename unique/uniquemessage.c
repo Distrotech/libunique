@@ -133,7 +133,7 @@ unique_message_data_free (UniqueMessageData *message_data)
 /**
  * unique_message_data_set:
  * @message_data: a #UniqueMessageData
- * @data: binary blob to set, or %NULL
+ * @data: (allow-none): binary blob to set, or %NULL
  * @length: length of @data
  *
  * Sets @data as the payload of @message_data. Any other data is removed
@@ -146,7 +146,7 @@ unique_message_data_free (UniqueMessageData *message_data)
 void
 unique_message_data_set (UniqueMessageData *message_data,
                          const guchar      *data,
-                         gsize              length)
+                         gssize             length)
 {
   g_return_if_fail (message_data != NULL);
 
@@ -168,7 +168,7 @@ unique_message_data_set (UniqueMessageData *message_data,
         message_data->data = (guchar *) g_strdup ("");
     }
 
-  message_data->length = length;
+  message_data->length = length >= 0 ? length : 0;
 }
 
 /**

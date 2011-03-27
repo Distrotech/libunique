@@ -47,7 +47,7 @@ void                   unique_message_data_free           (UniqueMessageData *me
 
 void                   unique_message_data_set            (UniqueMessageData *message_data,
                                                            const guchar      *data,
-                                                           gsize              length);
+                                                           gssize             length);
 G_CONST_RETURN guchar *unique_message_data_get            (UniqueMessageData *message_data,
                                                            gsize             *length);
 
