@@ -457,7 +457,7 @@ unique_app_class_init (UniqueAppClass *klass)
    * emission chain will continue until another handler will return another
    * response code.
    *
-   * Return value: a #UniqueRespose
+   * Return value: a #UniqueResponse
    */
   unique_app_signals[MESSAGE_RECEIVED] =
     g_signal_new (I_("message-received"),
