@@ -2,7 +2,7 @@ include $(top_srcdir)/build/autotools/Makefile.am.silent
 
 ACLOCAL_AMFLAGS = -I build/autotools
 
-SUBDIRS = build unique tests doc po
+SUBDIRS = build unique tests doc
 
 unique-3.0.pc: unique.pc
 	$(QUIET_GEN)cp -f $< $@

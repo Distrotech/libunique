@@ -25,7 +25,6 @@
 #include <string.h>
 
 #include <glib.h>
-#include <glib/gi18n.h>
 
 #include "uniquemessage.h"
 #include "uniqueinternals.h"

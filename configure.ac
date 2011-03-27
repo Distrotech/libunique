@@ -232,18 +232,6 @@ AS_CASE([$enable_debug],
 
 AC_SUBST(UNIQUE_DEBUG_CFLAGS)
 
-# i18n stuff
-ALL_LINGUAS=""
-AM_GLIB_GNU_GETTEXT
-
-GETTEXT_PACKAGE=unique
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],
-                   ["$GETTEXT_PACKAGE"],
-                   [Define the gettext package to be used])
-
-AM_GLIB_DEFINE_LOCALEDIR(UNIQUE_LOCALEDIR)
-
 # introspection
 GOBJECT_INTROSPECTION_CHECK([0.9.0])
 
@@ -271,7 +259,6 @@ AC_CONFIG_FILES([
         unique/dbus/Makefile
         unique/gdbus/Makefile
         tests/Makefile
-        po/Makefile.in
 ])
 
 AC_OUTPUT

@@ -35,8 +35,6 @@
 #include <errno.h>
 #include <time.h>
 
-#include <glib/gi18n.h>
-
 #include <gdk/gdk.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
