@@ -207,7 +207,7 @@ AC_ARG_ENABLE([debug],
               [AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
                               [Turn on debugging @<:@default=debug_default@:>@])],
               [],
-              [enable_debug=$debug_default])
+              [enable_debug=debug_default])
 
 AS_CASE([$enable_debug],
 
