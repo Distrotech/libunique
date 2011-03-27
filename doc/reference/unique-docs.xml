@@ -53,8 +53,15 @@
     <xi:include href="xml/unique-version.xml"/>
   </chapter>
 
+  <chapter id="unique-glossary">
+    <title>Glossaries</title>
+
+    <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+  </chapter>
+
   <index>
-    <title>Index</title>
+    <title>Index of all symbols</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
   </index>
 
   <appendix id="license">

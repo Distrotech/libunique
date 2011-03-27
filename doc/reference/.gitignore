@@ -6,6 +6,7 @@ xml
 html-build.stamp
 html.stamp
 scan-build.stamp
+setup-build.stamp
 sgml-build.stamp
 sgml.stamp
 tmpl-build.stamp
