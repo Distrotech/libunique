@@ -300,6 +300,9 @@ message_data_get_text_plain (UniqueMessageData *message_data)
   gsize len;
   GError *error = NULL;
 
+  if (message_data->length == 0)
+    return NULL;
+
   str = g_strdup ((gchar *) message_data->data);
   len = message_data->length;
 
