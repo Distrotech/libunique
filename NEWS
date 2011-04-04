@@ -1,3 +1,17 @@
+Changes for Unique 3.0.0
+========================
+• Set default DBus timeout to 3 seconds [Bill Nottingham]
+• Fix introspection annotations [Luciana Fujii Pontello]
+• Use GTK_CHECK_BACKEND to enable X11-specific API usage
+• Fix signedness of the lenght parameter of UniqueMessageData.set()
+• Bail out of UniqueMessageData.get_text_plain() if the message is empty
+• Fix the help string of the --enable-maintainer-flags configure switch
+• Update the documentation
+• Use the gobject-introspection Makefile template to generate
+  introspection files
+• Correctly version the API reference, to avoid collisions with the
+  gtk2.x series
+
 Changes for Unique 2.91.4
 =========================
 • Build introspection against GTK+ 3.0 [Frédéric Péters]
