@@ -225,7 +225,7 @@ AS_CASE([$enable_debug],
         [minimum],
         [
           UNIQUE_DEBUG_CFLAGS="-DG_DISABLE_CAST_CHECKS"
-        ]
+        ],
 
         [AC_MSG_ERROR([Unknown argument to --enable-debug])]
 )
