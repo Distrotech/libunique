@@ -1,3 +1,7 @@
+Changes for Uniqye 3.0.2
+========================
+• Remove the deprecated G_CONST_RETURN
+
 Changes for Unique 3.0.0
 ========================
 • Set default DBus timeout to 3 seconds [Bill Nottingham]
