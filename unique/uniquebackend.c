@@ -109,7 +109,7 @@ unique_backend_set_name (UniqueBackend *backend,
  *
  * Return value: FIXME
  */
-G_CONST_RETURN gchar *
+const gchar *
 unique_backend_get_name (UniqueBackend *backend)
 {
   g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), NULL);
@@ -152,7 +152,7 @@ unique_backend_set_startup_id (UniqueBackend *backend,
  *
  * Return value: FIXME
  */
-G_CONST_RETURN gchar *
+const gchar *
 unique_backend_get_startup_id (UniqueBackend *backend)
 {
   g_return_val_if_fail (UNIQUE_IS_BACKEND (backend), NULL);

@@ -782,7 +782,7 @@ unique_app_watch_window (UniqueApp *app,
 }
 
 
-G_CONST_RETURN gchar *
+const gchar *
 unique_command_to_string (UniqueApp *app,
                           gint       command)
 {
@@ -864,7 +864,7 @@ unique_command_from_string (UniqueApp   *app,
   return retval;
 }
 
-G_CONST_RETURN gchar *
+const gchar *
 unique_response_to_string (UniqueResponse response)
 {
   GEnumClass *enum_class;

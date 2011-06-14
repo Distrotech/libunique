@@ -94,10 +94,10 @@ GType                 unique_backend_get_type       (void) G_GNUC_CONST;
 
 UniqueBackend *       unique_backend_create         (void);
 
-G_CONST_RETURN gchar *unique_backend_get_name       (UniqueBackend     *backend);
+const gchar *         unique_backend_get_name       (UniqueBackend     *backend);
 void                  unique_backend_set_name       (UniqueBackend     *backend,
                                                      const gchar       *name);
-G_CONST_RETURN gchar *unique_backend_get_startup_id (UniqueBackend     *backend);
+const gchar *         unique_backend_get_startup_id (UniqueBackend     *backend);
 void                  unique_backend_set_startup_id (UniqueBackend     *backend,
                                                      const gchar       *startup_id);
 GdkScreen *           unique_backend_get_screen     (UniqueBackend     *backend);

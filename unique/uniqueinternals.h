@@ -44,11 +44,11 @@ UniqueResponse unique_app_emit_message_received (UniqueApp         *app,
  * and then back into an id
  */
 UniqueResponse        unique_response_from_string  (const gchar    *response);
-G_CONST_RETURN gchar *unique_response_to_string    (UniqueResponse  response);
+const gchar *         unique_response_to_string    (UniqueResponse  response);
 
 gint                  unique_command_from_string   (UniqueApp      *app,
                                                     const gchar    *command);
-G_CONST_RETURN gchar *unique_command_to_string     (UniqueApp      *app,
+const gchar *         unique_command_to_string     (UniqueApp      *app,
                                                     gint            command);
 
 G_END_DECLS

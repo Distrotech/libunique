@@ -184,7 +184,7 @@ unique_message_data_set (UniqueMessageData *message_data,
  *
  * Since: 1.0.2
  */
-G_CONST_RETURN guchar *
+const guchar *
 unique_message_data_get (UniqueMessageData *message_data,
                          gsize             *length)
 {
@@ -529,7 +529,7 @@ unique_message_data_get_screen (UniqueMessageData *message_data)
  *   owned by the #UniqueMessageData structure and should not be
  *   modified or freed
  */
-G_CONST_RETURN gchar *
+const gchar *
 unique_message_data_get_startup_id (UniqueMessageData *message_data)
 {
   g_return_val_if_fail (message_data != NULL, NULL);

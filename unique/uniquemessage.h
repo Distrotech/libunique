@@ -48,7 +48,7 @@ void                   unique_message_data_free           (UniqueMessageData *me
 void                   unique_message_data_set            (UniqueMessageData *message_data,
                                                            const guchar      *data,
                                                            gssize             length);
-G_CONST_RETURN guchar *unique_message_data_get            (UniqueMessageData *message_data,
+const guchar *         unique_message_data_get            (UniqueMessageData *message_data,
                                                            gsize             *length);
 
 gboolean               unique_message_data_set_text       (UniqueMessageData *message_data,
@@ -63,7 +63,7 @@ void                   unique_message_data_set_filename   (UniqueMessageData *me
 gchar *                unique_message_data_get_filename   (UniqueMessageData *message_data);
 
 GdkScreen *            unique_message_data_get_screen     (UniqueMessageData *message_data);
-G_CONST_RETURN gchar * unique_message_data_get_startup_id (UniqueMessageData *message_data);
+const gchar *          unique_message_data_get_startup_id (UniqueMessageData *message_data);
 guint                  unique_message_data_get_workspace  (UniqueMessageData *message_data);
 
 G_END_DECLS
