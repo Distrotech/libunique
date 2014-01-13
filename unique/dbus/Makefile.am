@@ -5,7 +5,8 @@ libuniqueincludedir = $(includedir)/unique-1.0/unique
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Unique-DBus\"	\
 	-DG_DISABLE_SINGLE_INCLUDES \
-	-I$(top_srcdir)
+	-I$(top_srcdir) \
+	-I$(top_builddir)/unique
 
 LDADD = $(UNIQUE_LIBS) $(DBUS_LIBS)
 

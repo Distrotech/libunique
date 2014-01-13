@@ -2,6 +2,7 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"Test-Unique\" 	\
 	-I$(top_srcdir) 		\
 	-I$(top_builddir)	 	\
+	-I$(top_builddir)/unique 	\
 	$(UNIQUE_CFLAGS) 		\
 	$(UNIQUE_DEBUG_FLAGS)
 

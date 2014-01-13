@@ -18,7 +18,7 @@ endif
 
 DIST_SUBDIRS = bacon dbus gdbus
 
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir)
 
 AM_CPPFLAGS = \
 	-DG_DISABLE_SINGLE_INCLUDES	\

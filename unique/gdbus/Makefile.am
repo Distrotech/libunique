@@ -10,6 +10,7 @@ libunique_gdbus_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Unique-GDBus\"	\
 	-DG_DISABLE_SINGLE_INCLUDES	\
 	-I$(top_srcdir)			\
+	-I$(top_builddir)/unique	\
 	$(AM_CPPFLAGS)
 
 libunique_gdbus_la_CFLAGS =	\

@@ -1,8 +1,9 @@
 libuniqueincludedir = $(includedir)/unique-1.0/unique
 
-INCLUDES = -I$(top_srcdir)
-
 AM_CPPFLAGS = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_builddir)/unique \
 	-DG_LOG_DOMAIN=\"Unique-Bacon\"	\
 	-DG_DISABLE_SINGLE_INCLUDES
 
